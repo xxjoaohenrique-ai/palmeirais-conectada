@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Denúncia - Palmeirais Conectada</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-city"></i>
+                <span>Palmeirais Conectada</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                <li id="navDenuncia"><a href="denuncia.html" class="nav-link active"><i class="fas fa-plus-circle"></i> Nova Denúncia</a></li>
+                <li id="navMinhasDenuncias"><a href="minhas-denuncias.html" class="nav-link"><i class="fas fa-list"></i> Minhas Denúncias</a></li>
+                <li id="navAdmin" style="display: none;"><a href="admin.html" class="nav-link"><i class="fas fa-cog"></i> Painel Admin</a></li>
+                <li id="navLogout"><a href="#" class="nav-link btn-nav-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+            
+            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Formulário de Denúncia -->
+    <section class="form-container">
+        <div class="form-card wide">
+            <div class="form-header">
+                <i class="fas fa-bullhorn"></i>
+                <h1>Nova Denúncia</h1>
+                <p>Preencha os dados para registrar sua denúncia</p>
+            </div>
+            
+            <div id="denunciaError" style="display: none;"></div>
+            <div id="denunciaSuccess" style="display: none;"></div>
+            
+            <form id="denunciaForm" onsubmit="handleDenuncia(event)">
+                <div class="form-group">
+                    <label for="titulo">
+                        <i class="fas fa-heading"></i> Título da Denúncia
+                    </label>
+                    <input 
+                        type="text" 
+                        id="titulo" 
+                        class="form-control" 
+                        placeholder="Ex: Lixo acumulado na Rua das Flores"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="categoria">
+                        <i class="fas fa-tags"></i> Categoria
+                    </label>
+                    <select id="categoria" class="form-control" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="Lixo Acumulado">🗑️ Lixo Acumulado</option>
+                        <option value="Entulho">🏗️ Entulho</option>
+                        <option value="Esgoto Vazando">💧 Esgoto Vazando</option>
+                        <option value="Iluminação Pública">💡 Iluminação Pública</option>
+                        <option value="Buracos nas Ruas">🛣️ Buracos nas Ruas</option>
+                        <option value="Terrenos Abandonados">🏚️ Terrenos Abandonados</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endereco">
+                        <i class="fas fa-map-marker-alt"></i> Endereço / Localização
+                    </label>
+                    <input 
+                        type="text" 
+                        id="endereco" 
+                        class="form-control" 
+                        placeholder="Ex: Rua das Flores, 123 - Centro"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="descricao">
+                        <i class="fas fa-align-left"></i> Descrição Detalhada
+                    </label>
+                    <textarea 
+                        id="descricao" 
+                        class="form-control" 
+                        rows="5"
+                        placeholder="Descreva o problema com o máximo de detalhes possível..."
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-camera"></i> Foto da Ocorrência
+                    </label>
+                    <div class="image-upload" onclick="document.getElementById('foto').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Clique para selecionar uma imagem</p>
+                        <span>JPG, PNG ou GIF - Máximo 5MB</span>
+                        <input 
+                            type="file" 
+                            id="foto" 
+                            accept="image/*"
+                            style="display: none;"
+                            onchange="previewImage(this)"
+                        >
+                    </div>
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImg" src="" alt="Preview">
+                        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeImage()">
+                            <i class="fas fa-trash"></i> Remover Imagem
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="index.html" class="btn btn-outline" style="flex: 1;">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">
+                        <i class="fas fa-paper-plane"></i> Enviar Denúncia
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/denuncia.js"></script>
+    <script>
+        // Verificar login
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!requireLogin()) return;
+            
+            // Atualizar navbar
+            const currentUser = getCurrentUser();
+            if (currentUser && currentUser.isAdmin) {
+                document.getElementById('navAdmin').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

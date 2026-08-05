@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Denúncias - Palmeirais Conectada</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-city"></i>
+                <span>Palmeirais Conectada</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                <li id="navDenuncia"><a href="denuncia.html" class="nav-link"><i class="fas fa-plus-circle"></i> Nova Denúncia</a></li>
+                <li id="navMinhasDenuncias"><a href="minhas-denuncias.html" class="nav-link active"><i class="fas fa-list"></i> Minhas Denúncias</a></li>
+                <li id="navAdmin" style="display: none;"><a href="admin.html" class="nav-link"><i class="fas fa-cog"></i> Painel Admin</a></li>
+                <li id="navLogout"><a href="#" class="nav-link btn-nav-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+            
+            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Dashboard -->
+    <section class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-list-alt"></i>
+                    Minhas Denúncias
+                </h1>
+                <a href="denuncia.html" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Nova Denúncia
+                </a>
+            </div>
+            
+            <!-- Cards de Status -->
+            <div class="dashboard-cards" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon yellow">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="countPendente">0</h3>
+                        <p>Pendentes</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon blue">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="countEmAnalise">0</h3>
+                        <p>Em Análise</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="countResolvido">0</h3>
+                        <p>Resolvidos</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Buscar denúncias..."
+                        onkeyup="handleSearch()"
+                    >
+                </div>
+                <select class="filter-select" id="statusFilter" onchange="handleFilter()">
+                    <option value="todos">Todos os Status</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="em-analise">Em Análise</option>
+                    <option value="resolvido">Resolvido</option>
+                </select>
+            </div>
+            
+            <!-- Grid de Denúncias -->
+            <div class="my-complaints-grid" id="minhasDenunciasGrid">
+                <!-- Carregado via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Palmeirais Conectada - Prefeitura Municipal de Palmeirais. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/denuncia.js"></script>
+    <script>
+        // Verificar login
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!requireLogin()) return;
+            
+            // Atualizar navbar
+            const currentUser = getCurrentUser();
+            if (currentUser && currentUser.isAdmin) {
+                document.getElementById('navAdmin').style.display = 'block';
+            }
+            
+            // Carregar denúncias
+            loadMinhasDenuncias();
+            updateStatusCounts();
+        });
+        
+        // Atualizar contadores de status
+        function updateStatusCounts() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+            
+            const denuncias = getDenuncias();
+            const minhas = denuncias.filter(d => d.userId === currentUser.id);
+            
+            document.getElementById('countPendente').textContent = 
+                minhas.filter(d => d.status === 'pendente').length;
+            document.getElementById('countEmAnalise').textContent = 
+                minhas.filter(d => d.status === 'em-analise').length;
+            document.getElementById('countResolvido').textContent = 
+                minhas.filter(d => d.status === 'resolvido').length;
+        }
+        
+        // Pesquisa
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            let denuncias = searchDenuncias(query);
+            
+            if (statusFilter !== 'todos') {
+                denuncias = denuncias.filter(d => d.status === statusFilter);
+            }
+            
+            renderDenuncias(denuncias);
+        }
+        
+        // Filtro
+        function handleFilter() {
+            handleSearch();
+        }
+        
+        // Renderizar denúncias
+        function renderDenuncias(denuncias) {
+            const container = document.getElementById('minhasDenunciasGrid');
+            
+            if (denuncias.length === 0) {
+                container.innerHTML = `
+                    <div class="no-complaints" style="grid-column: 1 / -1;">
+                        <i class="fas fa-inbox"></i>
+                        <p>Nenhuma denúncia encontrada.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = denuncias.map(denuncia => `
+                <div class="my-complaint-card">
+                    <div class="my-complaint-image">
+                        <img src="${denuncia.foto}" alt="${denuncia.titulo}">
+                        <div class="my-complaint-status">
+                            <span class="status-badge ${denuncia.status}">
+                                <i class="${getStatusIcon(denuncia.status)}"></i>
+                                ${capitalizeFirst(denuncia.status.replace('-', ' '))}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="my-complaint-content">
+                        <span class="my-complaint-category">
+                            <i class="${getCategoryIcon(denuncia.categoria)}"></i>
+                            ${denuncia.categoria}
+                        </span>
+                        <h3 class="my-complaint-title">${denuncia.titulo}</h3>
+                        <p class="my-complaint-description">${denuncia.descricao}</p>
+                        <div class="my-complaint-meta">
+                            <span>
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${denuncia.endereco}
+                            </span>
+                            <span>
+                                <i class="fas fa-calendar"></i>
+                                ${formatDate(denuncia.data)}
+                            </span>
+                        </div>
+                        <div class="my-complaint-actions">
+                            <a href="detalhes.html?id=${denuncia.id}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i> Ver Detalhes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

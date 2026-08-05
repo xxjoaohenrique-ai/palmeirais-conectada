@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palmeirais Conectada - Denúncias Urbanas</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-city"></i>
+                <span>Palmeirais Conectada</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                <li id="navDenuncia" style="display: none;"><a href="denuncia.html" class="nav-link"><i class="fas fa-plus-circle"></i> Nova Denúncia</a></li>
+                <li id="navMinhasDenuncias" style="display: none;"><a href="minhas-denuncias.html" class="nav-link"><i class="fas fa-list"></i> Minhas Denúncias</a></li>
+                <li id="navAdmin" style="display: none;"><a href="admin.html" class="nav-link"><i class="fas fa-cog"></i> Painel Admin</a></li>
+                <li id="navLogin"><a href="login.html" class="nav-link btn-nav"><i class="fas fa-sign-in-alt"></i> Entrar</a></li>
+                <li id="navLogout" style="display: none;"><a href="#" class="nav-link btn-nav-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+            
+            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title animate-fade-in">
+                <i class="fas fa-city"></i>
+                Palmeirais Conectada
+            </h1>
+            <p class="hero-subtitle animate-fade-in-delay">
+                Sua voz pela cidade. Denuncie problemas urbanos e ajude a melhorar nossa comunidade.
+            </p>
+            <div class="hero-buttons animate-fade-in-delay-2">
+                <a href="cadastro.html" class="btn btn-primary btn-lg" id="heroBtn">
+                    <i class="fas fa-user-plus"></i> Cadastre-se Agora
+                </a>
+                <a href="sobre.html" class="btn btn-outline btn-lg">
+                    <i class="fas fa-info-circle"></i> Saiba Mais
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card animate-on-scroll">
+                    <i class="fas fa-file-alt stat-icon"></i>
+                    <h3 class="stat-number" id="totalDenuncias">0</h3>
+                    <p class="stat-label">Denúncias Registradas</p>
+                </div>
+                <div class="stat-card animate-on-scroll">
+                    <i class="fas fa-check-circle stat-icon"></i>
+                    <h3 class="stat-number" id="denunciasResolvidas">0</h3>
+                    <p class="stat-label">Problemas Resolvidos</p>
+                </div>
+                <div class="stat-card animate-on-scroll">
+                    <i class="fas fa-users stat-icon"></i>
+                    <h3 class="stat-number" id="totalUsuarios">0</h3>
+                    <p class="stat-label">Cidadãos Cadastrados</p>
+                </div>
+                <div class="stat-card animate-on-scroll">
+                    <i class="fas fa-clock stat-icon"></i>
+                    <h3 class="stat-number" id="emAnalise">0</h3>
+                    <p class="stat-label">Em Análise</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-tags"></i>
+                Categorias de Denúncia
+            </h2>
+            <p class="section-subtitle">Selecione o tipo de problema que deseja reportar</p>
+            
+            <div class="categories-grid">
+                <div class="category-card animate-on-scroll">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <h3>Lixo Acumulado</h3>
+                    <p>Descarte irregular de lixo em vias públicas</p>
+                </div>
+                <div class="category-card animate-on-scroll">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-dumpster"></i>
+                    </div>
+                    <h3>Entulho</h3>
+                    <p>Restos de construção e materiais descartados</p>
+                </div>
+                <div class="category-card animate-on-scroll">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <i class="fas fa-water"></i>
+                    </div>
+                    <h3>Esgoto Vazando</h3>
+                    <p>Vazamentos e problemas de saneamento</p>
+                </div>
+                <div class="category-card animate-on-scroll">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Iluminação Pública</h3>
+                    <p>Postes queimados ou com defeito</p>
+                </div>
+                <div class="category-card animate-on-scroll">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <h3>Buracos nas Ruas</h3>
+                    <p>Pavimentação danificada e buracos</p>
+                </div>
+                <div class="category-card animate-on-scroll">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Terrenos Abandonados</h3>
+                    <p>Terrenos com mato alto e abandonados</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-question-circle"></i>
+                Como Funciona?
+            </h2>
+            <p class="section-subtitle">Em apenas 3 passos simples você pode ajudar sua cidade</p>
+            
+            <div class="steps-grid">
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3>Cadastre-se</h3>
+                    <p>Crie sua conta gratuitamente e faça parte da comunidade</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Registre</h3>
+                    <p>Tire uma foto do problema e preencha o formulário</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <h3>Acompanhe</h3>
+                    <p>Acompanhe o status da sua denúncia até a resolução</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Complaints Section -->
+    <section class="recent-complaints">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-clock"></i>
+                Denúncias Recentes
+            </h2>
+            <p class="section-subtitle">Veja as últimas denúncias registradas na plataforma</p>
+            
+            <div class="complaints-grid" id="recentComplaints">
+                <!-- Denúncias serão carregadas via JavaScript -->
+                <div class="no-complaints">
+                    <i class="fas fa-inbox"></i>
+                    <p>Nenhuma denúncia registrada ainda.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2><i class="fas fa-bullhorn"></i> Faça a Diferença na Sua Cidade</h2>
+                <p>Sua denúncia pode transformar a realidade da sua comunidade. Cadastre-se agora e ajude a construir uma cidade melhor para todos.</p>
+                <a href="cadastro.html" class="btn btn-white btn-lg" id="ctaBtn">
+                    <i class="fas fa-rocket"></i> Começar Agora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3><i class="fas fa-city"></i> Palmeirais Conectada</h3>
+                    <p>Plataforma de denúncias urbanas para cidadãos de Palmeirais engajados em construir uma cidade melhor.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook da Prefeitura"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter da Prefeitura"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/prefeituradepalmeirais.pi/" target="_blank" rel="noopener noreferrer" aria-label="Instagram da Prefeitura"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn da Prefeitura"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Links Úteis</h4>
+                    <ul>
+                        <li><a href="index.html">Início</a></li>
+                        <li><a href="sobre.html">Sobre</a></li>
+                        <li><a href="login.html">Entrar</a></li>
+                        <li><a href="cadastro.html">Cadastrar</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Categorias</h4>
+                    <ul>
+                        <li><a href="#">Lixo Acumulado</a></li>
+                        <li><a href="#">Entulho</a></li>
+                        <li><a href="#">Esgoto</a></li>
+                        <li><a href="#">Iluminação</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-envelope"></i> prefeitura@palmeirais.pi.gov.br</li>
+                        <li><i class="fas fa-phone"></i> (86) 3279-1142</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Rua Venâncio Borges, 710 - Centro - CEP: 64420-000</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Palmeirais Conectada - Prefeitura Municipal de Palmeirais. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

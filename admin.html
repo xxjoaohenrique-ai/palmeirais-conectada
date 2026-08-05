@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Palmeirais Conectada</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-city"></i>
+                <span>Palmeirais Conectada</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="admin.html" class="nav-link active"><i class="fas fa-cog"></i> Painel Admin</a></li>
+                <li><a href="#" class="nav-link btn-nav-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+            
+            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Dashboard Admin -->
+    <section class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Painel Administrativo
+                </h1>
+                <span style="color: var(--text-secondary);">
+                    <i class="fas fa-user-shield"></i>
+                    Administrador
+                </span>
+            </div>
+            
+            <!-- Cards Informativos -->
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon blue">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="totalDenuncias">0</h3>
+                        <p>Total de Denúncias</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon yellow">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="pendentes">0</h3>
+                        <p>Pendentes</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon red">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="emAnalise">0</h3>
+                        <p>Em Análise</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="dashboard-card-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="dashboard-card-info">
+                        <h3 id="resolvidos">0</h3>
+                        <p>Resolvidos</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Buscar denúncias..."
+                        onkeyup="handleAdminSearch()"
+                    >
+                </div>
+                <select class="filter-select" id="categoryFilter" onchange="handleAdminFilter()">
+                    <option value="todas">Todas as Categorias</option>
+                    <option value="Lixo Acumulado">Lixo Acumulado</option>
+                    <option value="Entulho">Entulho</option>
+                    <option value="Esgoto Vazando">Esgoto Vazando</option>
+                    <option value="Iluminação Pública">Iluminação Pública</option>
+                    <option value="Buracos nas Ruas">Buracos nas Ruas</option>
+                    <option value="Terrenos Abandonados">Terrenos Abandonados</option>
+                </select>
+                <select class="filter-select" id="statusFilter" onchange="handleAdminFilter()">
+                    <option value="todos">Todos os Status</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="em-analise">Em Análise</option>
+                    <option value="resolvido">Resolvido</option>
+                </select>
+            </div>
+            
+            <!-- Tabela de Denúncias -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-list"></i> Lista de Denúncias</h3>
+                    <span id="countLabel" style="color: var(--text-muted);">0 denúncias</span>
+                </div>
+                <table class="complaints-table">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Categoria</th>
+                            <th>Endereço</th>
+                            <th>Usuário</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="denunciasTableBody">
+                        <!-- Carregado via JavaScript -->
+                    </tbody>
+                </table>
+                
+                <!-- Paginação -->
+                <div class="pagination" id="pagination">
+                    <!-- Carregado via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Alterar Status -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Alterar Status</h2>
+                <button class="modal-close" onclick="closeModal('statusModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modalDenunciaId">
+                <div class="form-group">
+                    <label for="novoStatus">
+                        <i class="fas fa-flag"></i> Novo Status
+                    </label>
+                    <select id="novoStatus" class="form-control">
+                        <option value="pendente">Pendente</option>
+                        <option value="em-analise">Em Análise</option>
+                        <option value="resolvido">Resolvido</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('statusModal')">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" onclick="saveStatus()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Confirmar Exclusão</h2>
+                <button class="modal-close" onclick="closeModal('deleteModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteDenunciaId">
+                <p style="text-align: center; color: var(--text-secondary);">
+                    Tem certeza que deseja excluir esta denúncia?<br>
+                    <strong style="color: var(--danger);">Esta ação não pode ser desfeita.</strong>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('deleteModal')">
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        // Verificar se é admin
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!requireAdmin()) return;
+            
+            // Carregar dashboard
+            loadAdminDashboard();
+        });
+    </script>
+</body>
+</html>
