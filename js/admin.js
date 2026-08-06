@@ -33,11 +33,13 @@ function updateAdminStats() {
     const pendentes = allDenuncias.filter(d => d.status === 'pendente').length;
     const emAnalise = allDenuncias.filter(d => d.status === 'em-analise').length;
     const resolvidos = allDenuncias.filter(d => d.status === 'resolvido').length;
+    const usuarios = JSON.parse(localStorage.getItem('cidadeLimpa_users') || '[]').filter(u => !u.isAdmin).length;
     
     animateAdminCounter('totalDenuncias', total);
     animateAdminCounter('pendentes', pendentes);
     animateAdminCounter('emAnalise', emAnalise);
     animateAdminCounter('resolvidos', resolvidos);
+    animateAdminCounter('totalUsuarios', usuarios);
 }
 
 function animateAdminCounter(elementId, target) {
