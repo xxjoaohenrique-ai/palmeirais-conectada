@@ -1075,6 +1075,9 @@ select.form-control {
     margin-bottom: 2rem;
 }
 
+/* Deployment touch: updated to trigger GitHub Pages rebuild */
+/* Updated: 2026-08-05 */
+
 .dashboard-card {
     background: var(--bg-card);
     padding: 1.5rem;
