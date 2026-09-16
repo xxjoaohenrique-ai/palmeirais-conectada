@@ -428,6 +428,22 @@ function getCurrentUser() {
     }
 }
 
+async function restoreSupabaseSession() {
+    const currentUser = getCurrentUser();
+    if (currentUser || !window.supabaseGetSessionUser) return currentUser;
+
+    try {
+        const supabaseUser = await window.supabaseGetSessionUser();
+        if (!supabaseUser) return null;
+
+        sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(supabaseUser));
+        return supabaseUser;
+    } catch (error) {
+        console.warn('Não foi possível restaurar a sessão do Supabase:', error);
+        return null;
+    }
+}
+
 // Obter todas as denúncias
 function getDenuncias() {
     return JSON.parse(localStorage.getItem('cidadeLimpa_denuncias')) || [];
@@ -803,6 +819,7 @@ window.closeModal = closeModal;
 window.requireLogin = requireLogin;
 window.requireAdmin = requireAdmin;
 window.getCurrentUser = getCurrentUser;
+window.restoreSupabaseSession = restoreSupabaseSession;
 window.getDenuncias = getDenuncias;
 window.saveDenuncias = saveDenuncias;
 window.generateId = generateId;

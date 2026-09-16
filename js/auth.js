@@ -126,6 +126,7 @@ async function handleCadastro(event) {
     const senha = document.getElementById('senha').value;
     const confirmarSenha = document.getElementById('confirmarSenha').value;
     const errorDiv = document.getElementById('cadastroError');
+    const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
     
     if (!nome || !email || !senha || !confirmarSenha) {
         showError(errorDiv, 'Por favor, preencha todos os campos.');
@@ -152,22 +153,56 @@ async function handleCadastro(event) {
         return;
     }
 
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalLabel = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
+    }
+
     if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
         try {
-            const { data, error } = await window.supabaseSignUp({ email, password: senha, nome });
+            let { data, error } = await window.supabaseSignUp({ email, password: senha, nome });
             if (error) {
                 showError(errorDiv, error.message || 'Não foi possível cadastrar no Supabase.');
                 return;
             }
 
-            showToast('Cadastro realizado com sucesso!', 'success');
+            if (!data?.session) {
+                const loginResult = await window.supabaseSignIn({ email, password: senha });
+                if (loginResult.error) {
+                    const message = String(loginResult.error.message || '').toLowerCase();
+                    if (message.includes('email not confirmed')) {
+                        showError(errorDiv, 'Conta criada. Confirme seu e-mail no Supabase para entrar.');
+                    } else {
+                        showError(errorDiv, loginResult.error.message || 'Conta criada, mas não foi possível entrar automaticamente.');
+                    }
+                    return;
+                }
+                data = loginResult.data;
+            }
+
+            const user = {
+                id: data?.user?.id || data?.session?.user?.id,
+                nome: data?.user?.user_metadata?.nome || nome,
+                email: data?.user?.email || email,
+                isAdmin: Boolean(data?.user?.user_metadata?.is_admin)
+                    || (data?.user?.email || email) === 'admin@palmeirais.pi.gov.br'
+            };
+
+            sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(user));
+            showToast('Cadastro realizado! Você já está logado.', 'success');
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = user.isAdmin ? 'admin.html' : 'index.html';
             }, 1500);
             return;
         } catch (error) {
             showError(errorDiv, 'Erro ao cadastrar com Supabase.');
             return;
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = submitButton.dataset.originalLabel || 'Criar Conta';
+            }
         }
     }
     
@@ -190,11 +225,17 @@ async function handleCadastro(event) {
     
     users.push(newUser);
     localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
+    sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify({
+        id: newUser.id,
+        nome: newUser.nome,
+        email: newUser.email,
+        isAdmin: false
+    }));
     
     showToast('Cadastro realizado com sucesso!', 'success');
     
     setTimeout(() => {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     }, 1500);
 }
 
