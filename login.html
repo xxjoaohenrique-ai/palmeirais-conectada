@@ -41,7 +41,7 @@
                 <p>Acesse sua conta para fazer denúncias</p>
             </div>
             
-            <div id="loginError" style="display: none;"></div>
+            <div id="loginError" style="display: none;" role="alert" aria-live="polite"></div>
             
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
@@ -83,6 +83,8 @@
                     <i class="fas fa-sign-in-alt"></i> Entrar
                 </button>
             </form>
+
+            <p class="auth-note"><i class="fas fa-shield-halved"></i> Entre com a senha da conta cadastrada no Supabase.</p>
             
             <div class="form-footer">
                 <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
@@ -93,7 +95,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer" style="position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem 0;">
+    <footer class="footer">
         <div class="container">
             <div class="footer-bottom" style="border: none; padding: 0;">
                 <p>&copy; 2024 Palmeirais Conectada - Prefeitura Municipal de Palmeirais. Todos os direitos reservados.</p>

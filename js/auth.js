@@ -13,6 +13,7 @@ async function handleLogin(event) {
     const email = document.getElementById('email').value.trim().toLowerCase();
     const senha = document.getElementById('senha').value;
     const errorDiv = document.getElementById('loginError');
+    const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
     
     if (!email || !senha) {
         showError(errorDiv, 'Por favor, preencha todos os campos.');
@@ -24,11 +25,24 @@ async function handleLogin(event) {
         return;
     }
 
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalLabel = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    }
+
     if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
         try {
             const { data, error } = await window.supabaseSignIn({ email, password: senha });
             if (error) {
-                showError(errorDiv, error.message || 'Falha ao entrar com o Supabase.');
+                const message = String(error.message || '').toLowerCase();
+                if (message.includes('email not confirmed')) {
+                    showError(errorDiv, 'Confirme seu e-mail no Supabase antes de entrar.');
+                } else if (message.includes('invalid login credentials')) {
+                    showError(errorDiv, 'E-mail ou senha incorretos. Use a senha cadastrada no Supabase.');
+                } else {
+                    showError(errorDiv, error.message || 'Não foi possível entrar agora.');
+                }
                 return;
             }
 
@@ -50,6 +64,11 @@ async function handleLogin(event) {
         } catch (error) {
             showError(errorDiv, 'Erro ao autenticar com Supabase.');
             return;
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = submitButton.dataset.originalLabel || 'Entrar';
+            }
         }
     }
     

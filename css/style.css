@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
 /* ===============================================
    CIDADE LIMPA - CSS PRINCIPAL
    Sistema de Denúncias Urbanas
@@ -2308,6 +2310,182 @@ select.form-control {
    =============================================== */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
+
+/* ===============================================
+   21. DIREÇÃO VISUAL PALMEIRAIS
+   =============================================== */
+:root {
+    --primary: #155e75;
+    --primary-dark: #0e3f52;
+    --primary-light: #2f8ca3;
+    --secondary: #e26d4f;
+    --secondary-dark: #b84b35;
+    --accent: #f2b84b;
+    --bg-primary: #fbfaf7;
+    --bg-secondary: #eef4f2;
+    --bg-card: #ffffff;
+    --text-primary: #17343b;
+    --text-secondary: #577077;
+    --text-muted: #8da0a3;
+    --shadow: 0 8px 24px rgba(23, 52, 59, 0.08);
+    --shadow-lg: 0 18px 44px rgba(23, 52, 59, 0.13);
+    --radius: 0.7rem;
+    --radius-lg: 1.15rem;
+    --radius-xl: 1.5rem;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #102a30;
+    --bg-secondary: #173b42;
+    --bg-card: #1a4147;
+    --text-primary: #f3f7f4;
+    --text-secondary: #c1d1ce;
+    --text-muted: #8eaaa9;
+    --primary: #7bc4c0;
+    --primary-dark: #4aa09f;
+    --secondary: #f08a68;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--bg-primary);
+    letter-spacing: 0;
+}
+
+h1, h2, h3, h4, .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0;
+}
+
+.navbar {
+    background: rgba(251, 250, 247, 0.92);
+    border-bottom: 1px solid rgba(21, 94, 117, 0.09);
+    box-shadow: 0 3px 18px rgba(23, 52, 59, 0.06);
+}
+
+.nav-logo {
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.nav-logo i, .nav-link:hover, .nav-link.active, .theme-toggle:hover {
+    color: var(--secondary);
+}
+
+.hero {
+    min-height: 78vh;
+    justify-content: flex-start;
+    padding: calc(var(--navbar-height) + 5rem) max(1.5rem, calc((100vw - 1200px) / 2)) 5rem;
+    background: var(--primary-dark);
+    color: #fff;
+}
+
+.hero::before {
+    background: radial-gradient(circle at 82% 25%, rgba(242, 184, 75, 0.28), transparent 22%),
+        radial-gradient(circle at 10% 85%, rgba(47, 140, 163, 0.32), transparent 26%);
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    width: 34rem;
+    height: 34rem;
+    right: -12rem;
+    bottom: -18rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3rem rgba(255, 255, 255, 0.04), 0 0 0 7rem rgba(255, 255, 255, 0.025);
+}
+
+.hero-content {
+    max-width: 690px;
+    text-align: left;
+}
+
+.hero-title {
+    max-width: 680px;
+    font-size: clamp(2.7rem, 6vw, 5.25rem);
+    color: #fff;
+    line-height: 1.02;
+    margin-bottom: 1.25rem;
+}
+
+.hero-title i { color: var(--accent); }
+
+.hero-subtitle {
+    max-width: 580px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 1.12rem;
+    line-height: 1.7;
+}
+
+.hero-buttons { justify-content: flex-start; }
+
+.btn-primary {
+    background: var(--secondary);
+    box-shadow: 0 8px 20px rgba(226, 109, 79, 0.28);
+}
+
+.btn-primary:hover { background: var(--secondary-dark); }
+
+.btn-outline {
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #fff;
+}
+
+.btn-outline:hover { background: #fff; color: var(--primary-dark); }
+
+.stats { background: var(--bg-secondary); padding: 3.5rem 0; }
+
+.stat-card, .category-card, .step-card, .form-card {
+    border: 1px solid rgba(21, 94, 117, 0.09);
+    box-shadow: var(--shadow);
+}
+
+.stat-card:hover, .category-card:hover { box-shadow: var(--shadow-lg); }
+
+.stat-icon, .section-title i, .form-header i { color: var(--secondary); }
+
+.section-title { font-size: clamp(1.9rem, 4vw, 2.8rem); }
+
+.section-subtitle { max-width: 620px; margin-left: auto; margin-right: auto; }
+
+.category-card { border-radius: var(--radius); text-align: left; }
+
+.category-icon { width: 58px; height: 58px; border-radius: 0.8rem; margin: 0 0 1.25rem; }
+
+.form-container {
+    background: var(--bg-secondary);
+    background-image: radial-gradient(circle at 15% 20%, rgba(21, 94, 117, 0.1), transparent 23%),
+        radial-gradient(circle at 85% 80%, rgba(226, 109, 79, 0.1), transparent 20%);
+}
+
+.form-card { border-radius: var(--radius-lg); }
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(21, 94, 117, 0.12);
+}
+
+.auth-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.auth-note i { color: var(--primary); }
+
+.alert-error { border-left: 4px solid var(--danger); }
+
+@media (max-width: 768px) {
+    .hero { min-height: 82vh; padding-top: calc(var(--navbar-height) + 3rem); }
+    .hero-content { text-align: left; }
+    .hero-buttons { justify-content: flex-start; }
+}
 .text-right { text-align: right; }
 
 .mt-1 { margin-top: 0.5rem; }
