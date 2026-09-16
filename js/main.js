@@ -32,30 +32,130 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ===============================================
+// SEGURANÇA E UTILITÁRIOS
+// ===============================================
+
+function escapeHtml(value = '') {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+async function hashPassword(password) {
+    if (!password) return '';
+
+    const encoder = new TextEncoder();
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(password),
+        'PBKDF2',
+        false,
+        ['deriveBits']
+    );
+
+    const derivedBits = await crypto.subtle.deriveBits({
+        name: 'PBKDF2',
+        salt,
+        iterations: 120000,
+        hash: 'SHA-256'
+    }, keyMaterial, 256);
+
+    const saltBase64 = btoa(String.fromCharCode(...salt));
+    const hashBase64 = btoa(String.fromCharCode(...new Uint8Array(derivedBits)));
+
+    return `${saltBase64}:${hashBase64}`;
+}
+
+async function verifyPassword(password, storedHash) {
+    if (!password || !storedHash) return false;
+
+    const [saltBase64, hashBase64] = String(storedHash).split(':');
+    if (!saltBase64 || !hashBase64) {
+        return false;
+    }
+
+    try {
+        const encoder = new TextEncoder();
+        const salt = Uint8Array.from(atob(saltBase64), char => char.charCodeAt(0));
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw',
+            encoder.encode(password),
+            'PBKDF2',
+            false,
+            ['deriveBits']
+        );
+
+        const derivedBits = await crypto.subtle.deriveBits({
+            name: 'PBKDF2',
+            salt,
+            iterations: 120000,
+            hash: 'SHA-256'
+        }, keyMaterial, 256);
+
+        const expectedHash = btoa(String.fromCharCode(...new Uint8Array(derivedBits)));
+        return constantTimeEqual(expectedHash, hashBase64);
+    } catch (error) {
+        return false;
+    }
+}
+
+function constantTimeEqual(a, b) {
+    if (a.length !== b.length) return false;
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+}
+
+function safeParseStorage(key, fallback) {
+    try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+    } catch (error) {
+        console.warn(`Conteúdo inválido em ${key}. Recarregando com fallback.`);
+        return fallback;
+    }
+}
+
+function sanitizeUser(user) {
+    if (!user) return null;
+    return {
+        id: user.id || generateId(),
+        nome: String(user.nome || '').trim(),
+        email: String(user.email || '').trim().toLowerCase(),
+        senhaHash: user.senhaHash || user.senha || '',
+        isAdmin: Boolean(user.isAdmin),
+        dataCadastro: user.dataCadastro || new Date().toISOString()
+    };
+}
+
+// ===============================================
 // ADMINISTRADOR PADRÃO
 // ===============================================
 
-function initializeAdmin() {
-    // Limpar dados antigos (remover usuários com email antigo)
-    let users = JSON.parse(localStorage.getItem('cidadeLimpa_users')) || [];
-    
-    // Remover admin antigo se existir
-    users = users.filter(u => u.email !== 'admin@cidade.com');
-    
-    const adminExists = users.find(u => u.email === 'admin@palmeirais.pi.gov.br');
-    
+async function initializeAdmin() {
+    let users = safeParseStorage('cidadeLimpa_users', []);
+    users = users.filter(u => u && u.email !== 'admin@cidade.com');
+
+    const adminExists = users.find(u => u && u.email === 'admin@palmeirais.pi.gov.br');
     if (!adminExists) {
+        const adminPassword = 'Palmeirais@2026!Segura';
         const admin = {
             id: generateId(),
             nome: 'Prefeitura Municipal de Palmeirais',
             email: 'admin@palmeirais.pi.gov.br',
-            senha: 'ocute',
+            senhaHash: await hashPassword(adminPassword),
             isAdmin: true,
             dataCadastro: new Date().toISOString()
         };
         users.push(admin);
     }
-    
+
     localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
 }
 
@@ -276,17 +376,17 @@ function loadRecentComplaints() {
     container.innerHTML = recentDenuncias.map(denuncia => `
         <div class="complaint-card animate-on-scroll">
             <div class="complaint-image">
-                <img src="${denuncia.foto || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'}" alt="${denuncia.titulo}">
+                <img src="${escapeHtml(denuncia.foto || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400')}" alt="${escapeHtml(denuncia.titulo)}">
             </div>
             <div class="complaint-content">
                 <span class="complaint-category">
                     <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                    ${denuncia.categoria}
+                    ${escapeHtml(denuncia.categoria)}
                 </span>
-                <h3 class="complaint-title">${denuncia.titulo}</h3>
+                <h3 class="complaint-title">${escapeHtml(denuncia.titulo)}</h3>
                 <p class="complaint-address">
                     <i class="fas fa-map-marker-alt"></i>
-                    ${denuncia.endereco}
+                    ${escapeHtml(denuncia.endereco)}
                 </p>
                 <div class="complaint-footer">
                     <span class="complaint-date">
@@ -295,7 +395,7 @@ function loadRecentComplaints() {
                     </span>
                     <span class="complaint-status status-${denuncia.status.replace(' ', '-')}">
                         <i class="${getStatusIcon(denuncia.status)}"></i>
-                        ${capitalizeFirst(denuncia.status.replace('-', ' '))}
+                        ${escapeHtml(capitalizeFirst(denuncia.status.replace('-', ' ')))}
                     </span>
                 </div>
             </div>
@@ -317,8 +417,15 @@ function generateId() {
 
 // Obter usuário atual
 function getCurrentUser() {
-    const userJson = localStorage.getItem('cidadeLimpa_currentUser');
-    return userJson ? JSON.parse(userJson) : null;
+    const userJson = sessionStorage.getItem('cidadeLimpa_currentUser') || localStorage.getItem('cidadeLimpa_currentUser');
+    if (!userJson) return null;
+    try {
+        return JSON.parse(userJson);
+    } catch (error) {
+        sessionStorage.removeItem('cidadeLimpa_currentUser');
+        localStorage.removeItem('cidadeLimpa_currentUser');
+        return null;
+    }
 }
 
 // Obter todas as denúncias
@@ -477,7 +584,16 @@ function requireAdmin() {
 // LOGOUT
 // ===============================================
 
-function logout() {
+async function logout() {
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            await window.supabaseSignOut();
+        } catch (error) {
+            console.warn('Logout do Supabase falhou:', error);
+        }
+    }
+
+    sessionStorage.removeItem('cidadeLimpa_currentUser');
     localStorage.removeItem('cidadeLimpa_currentUser');
     showToast('Logout realizado com sucesso!', 'success');
     setTimeout(() => {
@@ -649,26 +765,25 @@ document.addEventListener('keydown', function(e) {
 // INICIALIZAÇÃO DO SISTEMA
 // ===============================================
 
-function initializeApp() {
-    // Criar usuário admin padrão se não existir
-    const users = JSON.parse(localStorage.getItem('cidadeLimpa_users')) || [];
-    
-    // Verificar se já existe um admin
-    const adminExists = users.some(u => u.isAdmin);
-    
-    if (!adminExists && users.length === 0) {
-        // Criar admin padrão na primeira execução
+async function initializeApp() {
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        return;
+    }
+
+    const users = safeParseStorage('cidadeLimpa_users', []);
+    const adminExists = users.some(u => u && u.isAdmin);
+
+    if (!adminExists) {
         const defaultAdmin = {
             id: generateId(),
             nome: 'Administrador',
-            email: 'admin@palmeirais.com.br',
-            senha: 'admin123',
+            email: 'admin@palmeirais.pi.gov.br',
+            senhaHash: await hashPassword('Palmeirais@2026!Segura'),
             isAdmin: true,
             dataCadastro: new Date().toISOString()
         };
         users.push(defaultAdmin);
         localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
-        console.log('✓ Usuário admin padrão criado: admin@palmeirais.com.br / admin123');
     }
 }
 

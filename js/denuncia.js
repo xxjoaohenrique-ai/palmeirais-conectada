@@ -196,25 +196,25 @@ function loadMinhasDenuncias() {
     container.innerHTML = minhasDenuncias.map(denuncia => `
         <div class="my-complaint-card">
             <div class="my-complaint-image">
-                <img src="${denuncia.foto}" alt="${denuncia.titulo}">
+                <img src="${escapeHtml(denuncia.foto)}" alt="${escapeHtml(denuncia.titulo)}">
                 <div class="my-complaint-status">
                     <span class="status-badge ${denuncia.status}">
                         <i class="${getStatusIcon(denuncia.status)}"></i>
-                        ${capitalizeFirst(denuncia.status.replace('-', ' '))}
+                        ${escapeHtml(capitalizeFirst(denuncia.status.replace('-', ' ')))}
                     </span>
                 </div>
             </div>
             <div class="my-complaint-content">
                 <span class="my-complaint-category">
                     <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                    ${denuncia.categoria}
+                    ${escapeHtml(denuncia.categoria)}
                 </span>
-                <h3 class="my-complaint-title">${denuncia.titulo}</h3>
-                <p class="my-complaint-description">${denuncia.descricao}</p>
+                <h3 class="my-complaint-title">${escapeHtml(denuncia.titulo)}</h3>
+                <p class="my-complaint-description">${escapeHtml(denuncia.descricao)}</p>
                 <div class="my-complaint-meta">
                     <span>
                         <i class="fas fa-map-marker-alt"></i>
-                        ${denuncia.endereco}
+                        ${escapeHtml(denuncia.endereco)}
                     </span>
                     <span>
                         <i class="fas fa-calendar"></i>
@@ -222,7 +222,7 @@ function loadMinhasDenuncias() {
                     </span>
                 </div>
                 <div class="my-complaint-actions">
-                    <a href="detalhes.html?id=${denuncia.id}" class="btn btn-primary btn-sm">
+                    <a href="detalhes.html?id=${escapeHtml(denuncia.id)}" class="btn btn-primary btn-sm">
                         <i class="fas fa-eye"></i> Ver Detalhes
                     </a>
                 </div>

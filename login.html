@@ -41,7 +41,7 @@
                 <p>Acesse sua conta para fazer denúncias</p>
             </div>
             
-            <div id="loginError" style="display: none;"></div>
+            <div id="loginError" style="display: none;" role="alert" aria-live="polite"></div>
             
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
@@ -83,6 +83,8 @@
                     <i class="fas fa-sign-in-alt"></i> Entrar
                 </button>
             </form>
+
+            <p class="auth-note"><i class="fas fa-shield-halved"></i> Entre com a senha da conta cadastrada no Supabase.</p>
             
             <div class="form-footer">
                 <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
@@ -93,16 +95,18 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer" style="position: fixed; bottom: 0; left: 0; right: 0; padding: 1rem 0;">
+    <footer class="footer">
         <div class="container">
             <!-- footer-bottom removed per request -->
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        // Verificar se já está logado
         document.addEventListener('DOMContentLoaded', function() {
             const currentUser = getCurrentUser();
             if (currentUser) {

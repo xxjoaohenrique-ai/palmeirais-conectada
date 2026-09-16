@@ -7,14 +7,14 @@
 // LOGIN
 // ===============================================
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
     
-    const email = document.getElementById('email').value.trim();
+    const email = document.getElementById('email').value.trim().toLowerCase();
     const senha = document.getElementById('senha').value;
     const errorDiv = document.getElementById('loginError');
+    const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
     
-    // Validações
     if (!email || !senha) {
         showError(errorDiv, 'Por favor, preencha todos os campos.');
         return;
@@ -24,36 +24,87 @@ function handleLogin(event) {
         showError(errorDiv, 'Por favor, insira um e-mail válido.');
         return;
     }
+
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalLabel = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    }
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            const { data, error } = await window.supabaseSignIn({ email, password: senha });
+            if (error) {
+                const message = String(error.message || '').toLowerCase();
+                if (message.includes('email not confirmed')) {
+                    showError(errorDiv, 'Confirme seu e-mail no Supabase antes de entrar.');
+                } else if (message.includes('invalid login credentials')) {
+                    showError(errorDiv, 'E-mail ou senha incorretos. Use a senha cadastrada no Supabase.');
+                } else {
+                    showError(errorDiv, error.message || 'Não foi possível entrar agora.');
+                }
+                return;
+            }
+
+            const user = {
+                id: data?.user?.id || data?.session?.user?.id,
+                nome: data?.user?.user_metadata?.nome || data?.user?.email?.split('@')[0] || 'Usuário',
+                email: data?.user?.email || email,
+                isAdmin: Boolean(data?.user?.user_metadata?.is_admin)
+                    || (data?.user?.email || email) === 'admin@palmeirais.pi.gov.br'
+            };
+
+            sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(user));
+            showToast('Login realizado com sucesso!', 'success');
+
+            setTimeout(() => {
+                window.location.href = user.isAdmin ? 'admin.html' : 'index.html';
+            }, 1000);
+            return;
+        } catch (error) {
+            showError(errorDiv, 'Erro ao autenticar com Supabase.');
+            return;
+        } finally {
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = submitButton.dataset.originalLabel || 'Entrar';
+            }
+        }
+    }
     
-    // Buscar usuário
-    const users = JSON.parse(localStorage.getItem('cidadeLimpa_users')) || [];
-    const userWithEmail = users.find(u => u.email === email);
+    const users = safeParseStorage('cidadeLimpa_users', []);
+    const userWithEmail = users.find(u => String(u.email || '').toLowerCase() === email);
     
     if (!userWithEmail) {
         showError(errorDiv, 'E-mail incorreto. Verifique e tente novamente.');
         return;
     }
+
+    const passwordMatches = userWithEmail.senhaHash
+        ? await verifyPassword(senha, userWithEmail.senhaHash)
+        : userWithEmail.senha === senha;
     
-    if (userWithEmail.senha !== senha) {
+    if (!passwordMatches) {
         showError(errorDiv, 'Senha incorreta. Verifique e tente novamente.');
         return;
     }
+
+    if (userWithEmail.senha && !userWithEmail.senhaHash) {
+        userWithEmail.senhaHash = await hashPassword(senha);
+        delete userWithEmail.senha;
+        localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
+    }
     
-    const user = userWithEmail;
-    
-    // Salvar sessão
-    const sessionUser = {
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-        isAdmin: user.isAdmin || false
+    const user = {
+        id: userWithEmail.id,
+        nome: userWithEmail.nome,
+        email: userWithEmail.email,
+        isAdmin: Boolean(userWithEmail.isAdmin)
     };
-    localStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(sessionUser));
     
-    // Mostrar sucesso
+    sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(user));
     showToast('Login realizado com sucesso!', 'success');
     
-    // Redirecionar
     setTimeout(() => {
         if (user.isAdmin) {
             window.location.href = 'admin.html';
@@ -67,16 +118,15 @@ function handleLogin(event) {
 // CADASTRO
 // ===============================================
 
-function handleCadastro(event) {
+async function handleCadastro(event) {
     event.preventDefault();
     
     const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
+    const email = document.getElementById('email').value.trim().toLowerCase();
     const senha = document.getElementById('senha').value;
     const confirmarSenha = document.getElementById('confirmarSenha').value;
     const errorDiv = document.getElementById('cadastroError');
     
-    // Validações
     if (!nome || !email || !senha || !confirmarSenha) {
         showError(errorDiv, 'Por favor, preencha todos os campos.');
         return;
@@ -101,22 +151,39 @@ function handleCadastro(event) {
         showError(errorDiv, 'As senhas não coincidem.');
         return;
     }
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            const { data, error } = await window.supabaseSignUp({ email, password: senha, nome });
+            if (error) {
+                showError(errorDiv, error.message || 'Não foi possível cadastrar no Supabase.');
+                return;
+            }
+
+            showToast('Cadastro realizado com sucesso!', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+            return;
+        } catch (error) {
+            showError(errorDiv, 'Erro ao cadastrar com Supabase.');
+            return;
+        }
+    }
     
-    // Verificar se e-mail já existe
-    const users = JSON.parse(localStorage.getItem('cidadeLimpa_users')) || [];
-    const emailExists = users.find(u => u.email === email);
+    const users = safeParseStorage('cidadeLimpa_users', []);
+    const emailExists = users.find(u => String(u.email || '').toLowerCase() === email);
     
     if (emailExists) {
         showError(errorDiv, 'Este e-mail já está cadastrado.');
         return;
     }
-    
-    // Criar novo usuário
+
     const newUser = {
         id: generateId(),
         nome: nome,
         email: email,
-        senha: senha,
+        senhaHash: await hashPassword(senha),
         isAdmin: false,
         dataCadastro: new Date().toISOString()
     };
@@ -124,10 +191,8 @@ function handleCadastro(event) {
     users.push(newUser);
     localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
     
-    // Mostrar sucesso
     showToast('Cadastro realizado com sucesso!', 'success');
     
-    // Redirecionar para login
     setTimeout(() => {
         window.location.href = 'login.html';
     }, 1500);
@@ -187,3 +252,79 @@ function togglePasswordVisibility(inputId, buttonElement) {
 window.handleLogin = handleLogin;
 window.handleCadastro = handleCadastro;
 window.togglePasswordVisibility = togglePasswordVisibility;
+
+// ===============================================
+// CADASTRO DO ADMINISTRADOR
+// ===============================================
+
+async function handleCadastroAdmin(event) {
+    event.preventDefault();
+    
+    const email = 'admin@palmeirais.pi.gov.br';
+    const senha = 'admin123';
+    const errorDiv = document.getElementById('cadastroAdminError');
+    
+    if (!email || !senha) {
+        showError(errorDiv, 'Por favor, preencha todos os campos.');
+        return;
+    }
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            const { data, error } = await window.supabaseSignUp({ email, password: senha, nome: 'Administrador' });
+            if (error) {
+                showError(errorDiv, error.message || 'Não foi possível cadastrar no Supabase.');
+                return;
+            }
+
+            showToast('Cadastro realizado com sucesso!', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+            return;
+        } catch (error) {
+            showError(errorDiv, 'Erro ao cadastrar com Supabase.');
+            return;
+        }
+    }
+    
+    const users = safeParseStorage('cidadeLimpa_users', []);
+    const emailExists = users.find(u => String(u.email || '').toLowerCase() === email);
+    
+    if (emailExists) {
+        showError(errorDiv, 'Este e-mail já está cadastrado.');
+        return;
+    }
+
+    const newUser = {
+        id: generateId(),
+        nome: 'Administrador',
+        email: email,
+        senhaHash: await hashPassword(senha),
+        isAdmin: true,
+        dataCadastro: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
+    
+    showToast('Cadastro realizado com sucesso!', 'success');
+    
+    setTimeout(() => {
+        window.location.href = 'login.html';
+    }, 1500);
+
+    // Atualizar o perfil do usuário
+    await updateProfile(email, { is_admin: true });
+}
+
+// ===============================================
+// FUNÇÕES DE ATUALIZAÇÃO DE PERFIL
+// ===============================================
+
+async function updateProfile(email, data) {
+    const { data: { user }, error } = await window.supabase.updateUser({ email, data });
+    if (error) {
+        console.error('Erro ao atualizar perfil:', error.message);
+    }
+}
