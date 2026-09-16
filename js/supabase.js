@@ -81,6 +81,7 @@
             nome: session.user.user_metadata?.nome || session.user.email?.split('@')[0] || 'Usuário',
             email: session.user.email,
             isAdmin: Boolean(session.user.user_metadata?.is_admin)
+                || session.user.email === 'admin@palmeirais.pi.gov.br'
         };
     }
 

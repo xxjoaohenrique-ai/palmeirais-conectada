@@ -37,6 +37,7 @@ async function handleLogin(event) {
                 nome: data?.user?.user_metadata?.nome || data?.user?.email?.split('@')[0] || 'Usuário',
                 email: data?.user?.email || email,
                 isAdmin: Boolean(data?.user?.user_metadata?.is_admin)
+                    || (data?.user?.email || email) === 'admin@palmeirais.pi.gov.br'
             };
 
             sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(user));
