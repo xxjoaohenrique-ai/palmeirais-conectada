@@ -110,8 +110,9 @@ function handleDenuncia(event) {
     
     // Salvar
     const denuncias = getDenuncias();
-    denuncias.unshift(novaDenuncia); // Adiciona no início
+    denuncias.unshift(normalizeComplaint(novaDenuncia));
     saveDenuncias(denuncias);
+    syncComplaintToSupabase(novaDenuncia).catch(() => {});
     
     // Mostrar sucesso
     showToast('Denúncia registrada com sucesso!', 'success');

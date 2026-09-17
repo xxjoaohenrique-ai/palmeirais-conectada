@@ -16,6 +16,7 @@
     --secondary: #10b981;
     --secondary-dark: #059669;
     --accent: #06b6d4;
+    --dashboard-surface: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(16, 185, 129, 0.08));
     
     /* Cores de Status */
     --success: #22c55e;
@@ -1062,7 +1063,10 @@ select.form-control {
 .dashboard {
     padding: calc(var(--navbar-height) + 2rem) 1.5rem 2rem;
     min-height: 100vh;
-    background: var(--bg-secondary);
+    background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.10), transparent 32%),
+        var(--bg-secondary);
 }
 
 .dashboard-header {
@@ -1072,11 +1076,21 @@ select.form-control {
     margin-bottom: 2rem;
     flex-wrap: wrap;
     gap: 1rem;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, rgba(255,255,255,0.88), rgba(248,250,252,0.78));
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="dark"] .dashboard-header {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 50, 46, 0.75));
 }
 
 .dashboard-title {
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 2vw, 2.4rem);
     color: var(--text-primary);
+    letter-spacing: -0.04em;
 }
 
 .dashboard-title i {
@@ -1084,39 +1098,63 @@ select.form-control {
     margin-right: 0.5rem;
 }
 
+.dashboard-header > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-full);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
 /* Dashboard Cards */
 .dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.25rem;
     margin-bottom: 2rem;
 }
 
 .dashboard-card {
-    background: var(--bg-card);
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--bg-card), rgba(255,255,255,0.88));
+    padding: 1.4rem 1.2rem;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
     display: flex;
     align-items: center;
     gap: 1rem;
     transition: var(--transition);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.dashboard-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
 }
 
 .dashboard-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 18px 34px rgba(15, 23, 42, 0.09);
 }
 
 .dashboard-card-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: var(--radius-lg);
+    width: 62px;
+    height: 62px;
+    border-radius: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     color: var(--white);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 16px 24px rgba(15, 23, 42, 0.12);
 }
 
 .dashboard-card-icon.blue {
@@ -1136,14 +1174,16 @@ select.form-control {
 }
 
 .dashboard-card-info h3 {
-    font-size: 1.75rem;
+    font-size: clamp(1.7rem, 1.9vw, 2.1rem);
     color: var(--text-primary);
     margin-bottom: 0.25rem;
+    letter-spacing: -0.06em;
 }
 
 .dashboard-card-info p {
     color: var(--text-secondary);
     font-size: 0.9rem;
+    font-weight: 600;
 }
 
 /* Filtros */
@@ -1153,6 +1193,15 @@ select.form-control {
     gap: 1rem;
     margin-bottom: 1.5rem;
     flex-wrap: wrap;
+    padding: 1rem 1.15rem;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: var(--radius-xl);
+    background: rgba(255,255,255,0.7);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="dark"] .filters-bar {
+    background: rgba(15, 23, 42, 0.7);
 }
 
 .search-box {
@@ -1171,54 +1220,68 @@ select.form-control {
 
 .search-box input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    border: 2px solid var(--gray-200);
-    border-radius: var(--radius);
-    background: var(--bg-card);
+    padding: 0.8rem 1rem 0.8rem 2.8rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.8);
     color: var(--text-primary);
     font-size: 1rem;
+    transition: var(--transition);
 }
 
 .search-box input:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .filter-select {
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--gray-200);
-    border-radius: var(--radius);
-    background: var(--bg-card);
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.8);
     color: var(--text-primary);
     font-size: 1rem;
     cursor: pointer;
     min-width: 180px;
+    transition: var(--transition);
 }
 
 .filter-select:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 /* Tabela */
 .table-container {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
+    background: linear-gradient(180deg, var(--bg-card), rgba(248,250,252,0.9));
+    border-radius: var(--radius-xl);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.18);
 }
 
 .table-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 1.2rem;
     border-bottom: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, rgba(37,99,235,0.04), rgba(16,185,129,0.06));
 }
 
 .table-header h3 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     color: var(--text-primary);
+}
+
+#countLabel {
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--primary);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-weight: 700;
 }
 
 .complaints-table {
@@ -1233,12 +1296,14 @@ select.form-control {
 }
 
 .complaints-table th {
-    background: var(--bg-secondary);
-    font-weight: 600;
+    background: rgba(148, 163, 184, 0.08);
+    font-weight: 700;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    position: sticky;
+    top: 0;
 }
 
 .complaints-table tbody tr {
@@ -1247,28 +1312,31 @@ select.form-control {
 }
 
 .complaints-table tbody tr:hover {
-    background: var(--bg-secondary);
+    background: linear-gradient(90deg, rgba(37,99,235,0.04), rgba(16,185,129,0.03));
 }
 
 .complaints-table td {
     color: var(--text-primary);
+    vertical-align: middle;
 }
 
 .table-actions {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .btn-icon {
     width: 36px;
     height: 36px;
-    border-radius: var(--radius);
+    border-radius: 0.8rem;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition-fast);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .btn-icon.view {
@@ -2179,6 +2247,10 @@ select.form-control {
    19. RESPONSIVIDADE
    =============================================== */
 @media (max-width: 1024px) {
+    .dashboard-header {
+        padding: 1.2rem 1.25rem;
+    }
+
     .hero {
         flex-direction: column;
         text-align: center;
@@ -2225,10 +2297,11 @@ select.form-control {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    .about-grid {
-        grid-template-columns: 1fr;
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    
+
     .team-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -2343,6 +2416,30 @@ select.form-control {
 
     .section-title {
         font-size: 2rem;
+    }
+
+    .dashboard {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .dashboard-card {
+        padding: 1.1rem 0.9rem;
+    }
+
+    .filters-bar {
+        padding: 0.85rem;
+    }
+
+    .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .complaints-table th,
+    .complaints-table td {
+        padding: 0.9rem 0.8rem;
     }
 
     .stats-grid {

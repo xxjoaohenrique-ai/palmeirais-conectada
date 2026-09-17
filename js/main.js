@@ -134,6 +134,63 @@ function sanitizeUser(user) {
     };
 }
 
+function normalizeComplaint(complaint = {}) {
+    const item = { ...complaint };
+    item.id = item.id || item.denuncia_id || generateId();
+    item.titulo = item.titulo || item.title || '';
+    item.categoria = item.categoria || item.category || '';
+    item.endereco = item.endereco || item.address || '';
+    item.descricao = item.descricao || item.description || '';
+    item.foto = item.foto || item.imagem || item.image_url || '';
+    item.status = item.status || 'pendente';
+    item.userId = item.userId || item.user_id || item.userID || '';
+    item.user_id = item.userId;
+    item.userName = item.userName || item.user_name || item.nome_usuario || 'Usuário';
+    item.user_name = item.userName;
+    item.userEmail = item.userEmail || item.user_email || item.email || '';
+    item.data = item.data || item.created_at || item.dataCriacao || new Date().toISOString();
+    item.created_at = item.data;
+    return item;
+}
+
+function mergeComplaints(...sources) {
+    const merged = new Map();
+
+    sources.flat().forEach((complaint) => {
+        const normalized = normalizeComplaint(complaint);
+        if (!normalized.id) return;
+        merged.set(normalized.id, normalized);
+    });
+
+    return [...merged.values()].sort((a, b) => new Date(b.data) - new Date(a.data));
+}
+
+async function syncComplaintToSupabase(complaint) {
+    if (!(window.isSupabaseConfigured && window.isSupabaseConfigured()) || !window.supabaseCreateComplaint) {
+        return;
+    }
+
+    try {
+        const normalized = normalizeComplaint(complaint);
+
+        await window.supabaseCreateComplaint({
+            id: normalized.id,
+            titulo: normalized.titulo,
+            categoria: normalized.categoria,
+            endereco: normalized.endereco,
+            descricao: normalized.descricao,
+            foto: normalized.foto,
+            status: normalized.status,
+            user_id: normalized.userId,
+            user_name: normalized.userName,
+            user_email: normalized.userEmail,
+            created_at: normalized.data
+        });
+    } catch (error) {
+        console.warn('Não foi possível sincronizar denúncia com o Supabase:', error);
+    }
+}
+
 // ===============================================
 // ADMINISTRADOR PADRÃO
 // ===============================================
@@ -467,12 +524,14 @@ async function restoreSupabaseSession() {
 
 // Obter todas as denúncias
 function getDenuncias() {
-    return JSON.parse(localStorage.getItem('cidadeLimpa_denuncias')) || [];
+    const stored = JSON.parse(localStorage.getItem('cidadeLimpa_denuncias')) || [];
+    return stored.map(normalizeComplaint);
 }
 
 // Salvar denúncias
 function saveDenuncias(denuncias) {
-    localStorage.setItem('cidadeLimpa_denuncias', JSON.stringify(denuncias));
+    const normalized = (denuncias || []).map(normalizeComplaint);
+    localStorage.setItem('cidadeLimpa_denuncias', JSON.stringify(normalized));
 }
 
 // Formatar data

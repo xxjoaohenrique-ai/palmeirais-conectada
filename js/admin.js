@@ -16,8 +16,19 @@ const itemsPerPage = 10;
 // CARREGAR DASHBOARD
 // ===============================================
 
-function loadAdminDashboard() {
-    allDenuncias = getDenuncias();
+async function loadAdminDashboard() {
+    const localDenuncias = getDenuncias();
+    let supabaseDenuncias = [];
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetComplaints) {
+        try {
+            supabaseDenuncias = await window.supabaseGetComplaints();
+        } catch (error) {
+            console.warn('Não foi possível carregar denúncias do Supabase:', error);
+        }
+    }
+
+    allDenuncias = mergeComplaints(localDenuncias, supabaseDenuncias);
     filteredDenuncias = [...allDenuncias];
     
     updateAdminStats();
