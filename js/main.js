@@ -466,11 +466,18 @@ function loadRecentComplaints() {
                     <i class="fas fa-map-marker-alt"></i>
                     ${escapeHtml(denuncia.endereco)}
                 </p>
-                <div class="complaint-footer">
+                <div class="complaint-meta-row">
+                    <span class="complaint-user">
+                        <i class="fas fa-user"></i>
+                        ${escapeHtml(denuncia.userName || 'Usuário')} 
+                    </span>
                     <span class="complaint-date">
                         <i class="fas fa-calendar"></i>
                         ${formatDate(denuncia.data)}
                     </span>
+                </div>
+                <div class="complaint-footer">
+                    <span class="complaint-label">Registrada</span>
                     <span class="complaint-status status-${denuncia.status.replace(' ', '-')}">
                         <i class="${getStatusIcon(denuncia.status)}"></i>
                         ${escapeHtml(capitalizeFirst(denuncia.status.replace('-', ' ')))}

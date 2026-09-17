@@ -213,6 +213,16 @@
                                 ${formatDate(denuncia.data)}
                             </span>
                         </div>
+                        <div class="my-complaint-meta" style="margin-top: 0.5rem; border-top: 1px solid rgba(21,94,117,0.08); padding-top: 0.5rem;">
+                            <span>
+                                <i class="fas fa-user"></i>
+                                ${denuncia.userName || 'Usuário'}
+                            </span>
+                            <span>
+                                <i class="fas fa-clipboard-check"></i>
+                                Registrada
+                            </span>
+                        </div>
                         <div class="my-complaint-actions">
                             <a href="detalhes.html?id=${denuncia.id}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-eye"></i> Ver Detalhes

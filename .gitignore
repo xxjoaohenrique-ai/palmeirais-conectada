@@ -5,9 +5,18 @@ __v0_jsx-dev-runtime.ts
 .snowflake/
 .v0-trash/
 .vercel/
+.wrangler/
+.cloudflare/
 
 # Environment variables
+.env
+.env.*
 .env*.local
+
+# Build artifacts
+dist/
+build/
+coverage/
 
 # Common ignores
 node_modules

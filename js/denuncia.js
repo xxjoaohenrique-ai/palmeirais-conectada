@@ -115,7 +115,7 @@ function handleDenuncia(event) {
     syncComplaintToSupabase(novaDenuncia).catch(() => {});
     
     // Mostrar sucesso
-    showToast('Denúncia registrada com sucesso!', 'success');
+    showToast('Denúncia registrada com sucesso! Está pendente de análise.', 'success');
     
     // Limpar formulário
     document.getElementById('denunciaForm').reset();
