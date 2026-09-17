@@ -469,7 +469,7 @@ function loadRecentComplaints() {
                 <div class="complaint-meta-row">
                     <span class="complaint-user">
                         <i class="fas fa-user"></i>
-                        ${escapeHtml(denuncia.userName || 'Usuário')} 
+                        Cidadão
                     </span>
                     <span class="complaint-date">
                         <i class="fas fa-calendar"></i>
