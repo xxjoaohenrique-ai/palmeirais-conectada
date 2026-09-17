@@ -66,6 +66,10 @@
     async function signOut() {
         const supabase = getSupabaseClient();
         if (!supabase) return { error: null };
+
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return { error: null };
+
         return supabase.auth.signOut();
     }
 

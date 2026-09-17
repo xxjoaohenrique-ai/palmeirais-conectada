@@ -165,7 +165,15 @@
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-      new window.VLibras.Widget('https://vlibras.gov.br/app');
+      window.addEventListener('load', function() {
+        if (window.VLibras && typeof window.VLibras.Widget === 'function') {
+          try {
+            new window.VLibras.Widget('https://vlibras.gov.br/app');
+          } catch (error) {
+            console.warn('VLibras não pôde ser inicializado:', error);
+          }
+        }
+      });
     </script></body>
 </html>
 

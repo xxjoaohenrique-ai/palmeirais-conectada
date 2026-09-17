@@ -681,9 +681,12 @@ function requireAdmin() {
 // ===============================================
 
 async function logout() {
-    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseSignOut) {
         try {
-            await window.supabaseSignOut();
+            const { data: { session } } = await window.supabaseClient?.auth?.getSession?.() || { data: { session: null } };
+            if (session) {
+                await window.supabaseSignOut();
+            }
         } catch (error) {
             console.warn('Logout do Supabase falhou:', error);
         }
