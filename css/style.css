@@ -740,10 +740,41 @@ main, section, header, footer, nav, article, aside, .container, .dashboard, .for
     margin-bottom: 1rem;
 }
 
+.complaint-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin: 0.75rem 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+}
+
+.complaint-user,
+.complaint-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.complaint-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
 .complaint-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .complaint-date {
@@ -2714,6 +2745,56 @@ select.form-control {
     .filter-select,
     .search-box input {
         min-height: 2.875rem;
+    }
+
+    .complaints-grid,
+    .my-complaints-grid,
+    .team-grid,
+    .categories-grid,
+    .stats-grid,
+    .dashboard-cards,
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .complaint-card,
+    .my-complaint-card,
+    .dashboard-card,
+    .form-card,
+    .table-container {
+        border-radius: 1rem;
+    }
+
+    .complaint-content,
+    .my-complaint-content {
+        padding: 1rem;
+    }
+
+    .complaint-meta-row,
+    .complaint-footer,
+    .my-complaint-meta,
+    .details-header,
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .complaint-status,
+    .status-badge {
+        align-self: flex-start;
+    }
+
+    .details-image {
+        height: 260px;
+    }
+
+    .details-content {
+        padding: 1.25rem;
+    }
+
+    .details-info {
+        grid-template-columns: 1fr;
+        padding: 1rem;
     }
 }
 
