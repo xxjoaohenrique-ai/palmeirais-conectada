@@ -72,22 +72,22 @@
 
 /* Tema Escuro */
 [data-theme="dark"] {
-    --bg-primary: #081b18;
-    --bg-secondary: #0d2a26;
-    --bg-card: #103734;
-    --text-primary: #edfdf7;
-    --text-secondary: #cfece3;
-    --text-muted: #9fc7bb;
-    --gray-100: #143b36;
-    --gray-200: #1d4d47;
-    --gray-700: #e6f8f2;
-    --gray-800: #f2fffb;
+    --bg-primary: #051d1a;
+    --bg-secondary: #0a2925;
+    --bg-card: rgba(14, 39, 37, 0.9);
+    --text-primary: #ecfdf5;
+    --text-secondary: #d4efe7;
+    --text-muted: #9bc8c0;
+    --gray-100: #143f3d;
+    --gray-200: #1d4d4a;
+    --gray-700: #ebfff9;
+    --gray-800: #f0fff9;
     --gray-900: #f7fffd;
-    --primary: #32c38b;
-    --primary-dark: #219a6d;
-    --secondary: #1f6f9d;
-    --shadow: 0 8px 24px rgba(3, 18, 16, 0.6);
-    --shadow-lg: 0 18px 44px rgba(3, 18, 16, 0.72);
+    --primary: #3dd6ae;
+    --primary-dark: #1fb98a;
+    --secondary: #4db8ff;
+    --shadow: 0 14px 32px rgba(1, 12, 11, 0.52);
+    --shadow-lg: 0 22px 46px rgba(1, 12, 11, 0.66);
 }
 
 /* Reset */
@@ -1064,8 +1064,8 @@ select.form-control {
     padding: calc(var(--navbar-height) + 2rem) 1.5rem 2rem;
     min-height: 100vh;
     background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.10), transparent 32%),
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.10), transparent 32%),
         var(--bg-secondary);
 }
 
@@ -1078,13 +1078,101 @@ select.form-control {
     gap: 1rem;
     padding: 1.5rem 1.75rem;
     border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: var(--radius-xl);
-    background: linear-gradient(135deg, rgba(255,255,255,0.88), rgba(248,250,252,0.78));
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    border-radius: 1.4rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(239,246,255,0.76));
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255,255,255,0.65);
 }
 
 [data-theme="dark"] .dashboard-header {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 50, 46, 0.75));
+    background: linear-gradient(135deg, rgba(8, 30, 29, 0.92), rgba(11, 51, 45, 0.78));
+    border-color: rgba(122, 219, 196, 0.2);
+    box-shadow: 0 18px 40px rgba(2, 16, 15, 0.4);
+}
+
+[data-theme="dark"] .dashboard-card {
+    background: linear-gradient(135deg, rgba(14, 39, 37, 0.96), rgba(14, 50, 49, 0.9));
+    border: 1px solid rgba(118, 217, 193, 0.18);
+    box-shadow: 0 16px 30px rgba(2, 16, 15, 0.42);
+}
+
+[data-theme="dark"] .filters-bar {
+    background: linear-gradient(135deg, rgba(12, 34, 32, 0.9), rgba(9, 38, 36, 0.78));
+    border-color: rgba(122, 219, 196, 0.18);
+    box-shadow: 0 12px 26px rgba(2, 16, 15, 0.32);
+}
+
+[data-theme="dark"] .search-box input,
+[data-theme="dark"] .filter-select,
+[data-theme="dark"] .pagination button {
+    background: rgba(17, 48, 46, 0.92);
+    border-color: rgba(120, 211, 195, 0.18);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table-container {
+    background: linear-gradient(180deg, rgba(10, 31, 30, 0.96), rgba(12, 42, 38, 0.9));
+    border-color: rgba(122, 219, 196, 0.15);
+    box-shadow: 0 18px 42px rgba(2, 14, 13, 0.42);
+}
+
+[data-theme="dark"] .table-header {
+    background: linear-gradient(135deg, rgba(13, 44, 41, 0.8), rgba(14, 58, 53, 0.72));
+    border-color: rgba(122, 219, 196, 0.12);
+}
+
+[data-theme="dark"] .complaints-table th {
+    background: rgba(41, 72, 69, 0.48);
+    color: #dffaf2;
+}
+
+[data-theme="dark"] .complaints-table tbody tr:hover {
+    background: linear-gradient(90deg, rgba(61, 214, 174, 0.08), rgba(77, 184, 255, 0.05));
+}
+
+[data-theme="dark"] .btn-icon.view {
+    background: rgba(61, 214, 174, 0.1);
+    color: #7ae7c5;
+}
+
+[data-theme="dark"] .btn-icon.edit {
+    background: rgba(255, 196, 64, 0.08);
+    color: #ffd977;
+}
+
+[data-theme="dark"] .btn-icon.delete {
+    background: rgba(255, 107, 107, 0.09);
+    color: #ff8d8d;
+}
+
+[data-theme="dark"] .pagination button.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-color: rgba(122, 219, 196, 0.28);
+    color: #062d27;
+    font-weight: 800;
+}
+
+[data-theme="dark"] .dashboard-title,
+[data-theme="dark"] .table-header h3,
+[data-theme="dark"] .complaints-table td,
+[data-theme="dark"] .dashboard-card-info h3,
+[data-theme="dark"] .dashboard-card-info p,
+[data-theme="dark"] .my-complaint-title,
+[data-theme="dark"] .my-complaint-description,
+[data-theme="dark"] .details-title,
+[data-theme="dark"] .details-info-item strong {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dashboard-header > span,
+[data-theme="dark"] #countLabel {
+    background: rgba(61, 214, 174, 0.09);
+    color: #c9f6eb;
+}
+
+[data-theme="dark"] .modal {
+    background: linear-gradient(180deg, rgba(8, 30, 29, 0.98), rgba(12, 38, 34, 0.98));
+    border: 1px solid rgba(122, 219, 196, 0.18);
+    box-shadow: 0 24px 50px rgba(1, 10, 10, 0.56);
 }
 
 .dashboard-title {
@@ -1120,10 +1208,10 @@ select.form-control {
 .dashboard-card {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--bg-card), rgba(255,255,255,0.88));
+    background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(248,250,252,0.82));
     padding: 1.4rem 1.2rem;
-    border-radius: var(--radius-xl);
-    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06);
+    border-radius: 1.4rem;
+    box-shadow: 0 18px 34px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.6);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -1138,6 +1226,7 @@ select.form-control {
     width: 100%;
     height: 4px;
     background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    box-shadow: 0 0 18px rgba(59, 130, 246, 0.25);
 }
 
 .dashboard-card:hover {
@@ -1195,9 +1284,9 @@ select.form-control {
     flex-wrap: wrap;
     padding: 1rem 1.15rem;
     border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: var(--radius-xl);
-    background: rgba(255,255,255,0.7);
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
+    border-radius: 1.3rem;
+    background: rgba(255,255,255,0.72);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 [data-theme="dark"] .filters-bar {
@@ -1256,8 +1345,8 @@ select.form-control {
 /* Tabela */
 .table-container {
     background: linear-gradient(180deg, var(--bg-card), rgba(248,250,252,0.9));
-    border-radius: var(--radius-xl);
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    border-radius: 1.45rem;
+    box-shadow: 0 20px 38px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.5);
     overflow: hidden;
     border: 1px solid rgba(148, 163, 184, 0.18);
 }
@@ -1268,7 +1357,7 @@ select.form-control {
     justify-content: space-between;
     padding: 1.5rem 1.5rem 1.2rem;
     border-bottom: 1px solid var(--gray-200);
-    background: linear-gradient(135deg, rgba(37,99,235,0.04), rgba(16,185,129,0.06));
+    background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(16,185,129,0.08));
 }
 
 .table-header h3 {
@@ -1383,9 +1472,10 @@ select.form-control {
     border: 2px solid var(--gray-200);
     background: var(--bg-card);
     color: var(--text-secondary);
-    border-radius: var(--radius);
+    border-radius: 0.85rem;
     cursor: pointer;
     transition: var(--transition-fast);
+    box-shadow: 0 8px 18px rgba(15,23,42,0.04);
 }
 
 .pagination button:hover:not(:disabled) {
