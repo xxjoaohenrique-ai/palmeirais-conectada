@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /cadastro.html
+Disallow: /login.html
+Disallow: /denuncia.html
+Disallow: /detalhes.html
+Disallow: /minhas-denuncias.html
+
+Sitemap: https://palmeirais-conectada.pages.dev/sitemap.xml
