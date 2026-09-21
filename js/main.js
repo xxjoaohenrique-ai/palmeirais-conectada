@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Carregar denúncias recentes
     loadRecentComplaints();
+
+    // Sincronizar dados em tempo real
+    setupRealtimeDashboard();
 });
 
 // ===============================================
@@ -397,20 +400,87 @@ function initializeScrollAnimations() {
 // ESTATÍSTICAS
 // ===============================================
 
-function loadStats() {
-    const denuncias = getDenuncias();
-    const users = JSON.parse(localStorage.getItem('cidadeLimpa_users')) || [];
+async function getMergedComplaints() {
+    const localComplaints = getDenuncias();
+    let supabaseComplaints = [];
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetComplaints) {
+        try {
+            supabaseComplaints = await window.supabaseGetComplaints();
+        } catch (error) {
+            console.warn('Não foi possível sincronizar denúncias do Supabase:', error);
+        }
+    }
+
+    const merged = mergeComplaints(localComplaints, supabaseComplaints);
+    if (merged.length > 0) {
+        saveDenuncias(merged);
+    }
+    return merged;
+}
+
+async function getAllUsersForStats() {
+    const localUsers = safeParseStorage('cidadeLimpa_users', []);
+    const mergedUsers = new Map();
+
+    localUsers.forEach((user) => {
+        if (!user || !user.email) return;
+        const cleanUser = sanitizeUser(user);
+        mergedUsers.set(String(cleanUser.email).toLowerCase(), cleanUser);
+    });
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetProfiles) {
+        try {
+            const profiles = await window.supabaseGetProfiles();
+            profiles.forEach((profile) => {
+                if (!profile?.email) return;
+                const normalized = sanitizeUser({
+                    id: profile.id || profile.user_id,
+                    nome: profile.nome || profile.name || profile.email?.split('@')[0] || 'Usuário',
+                    email: profile.email,
+                    senhaHash: '',
+                    isAdmin: Boolean(profile.is_admin || profile.isAdmin),
+                    dataCadastro: profile.created_at || new Date().toISOString()
+                });
+                mergedUsers.set(String(normalized.email).toLowerCase(), normalized);
+            });
+        } catch (error) {
+            console.warn('Não foi possível sincronizar usuários do Supabase:', error);
+        }
+    }
+
+    return [...mergedUsers.values()].filter(user => !user.isAdmin);
+}
+
+async function loadStats() {
+    const denuncias = await getMergedComplaints();
+    const users = await getAllUsersForStats();
     
     const totalDenuncias = denuncias.length;
     const resolvidas = denuncias.filter(d => d.status === 'resolvido').length;
     const emAnalise = denuncias.filter(d => d.status === 'em-analise').length;
-    const totalUsuarios = users.filter(u => !u.isAdmin).length;
+    const totalUsuarios = users.length;
     
-    // Animar contadores
     animateCounter('totalDenuncias', totalDenuncias);
     animateCounter('denunciasResolvidas', resolvidas);
     animateCounter('totalUsuarios', totalUsuarios);
     animateCounter('emAnalise', emAnalise);
+}
+
+function setupRealtimeDashboard() {
+    if (!(window.isSupabaseConfigured && window.isSupabaseConfigured()) || !window.supabaseSubscribeToComplaints) {
+        return;
+    }
+
+    if (window.__cidadeLimpaComplaintChannel) return;
+
+    window.__cidadeLimpaComplaintChannel = window.supabaseSubscribeToComplaints(() => {
+        loadStats();
+        loadRecentComplaints();
+        if (typeof window.loadAdminDashboard === 'function') {
+            window.loadAdminDashboard();
+        }
+    });
 }
 
 function animateCounter(elementId, target) {
@@ -434,11 +504,11 @@ function animateCounter(elementId, target) {
 // DENÚNCIAS RECENTES
 // ===============================================
 
-function loadRecentComplaints() {
+async function loadRecentComplaints() {
     const container = document.getElementById('recentComplaints');
     if (!container) return;
-    
-    const denuncias = getDenuncias();
+
+    const denuncias = await getMergedComplaints();
     const recentDenuncias = denuncias.slice(0, 6);
     
     if (recentDenuncias.length === 0) {
@@ -487,7 +557,6 @@ function loadRecentComplaints() {
         </div>
     `).join('');
     
-    // Reinicializar animações
     initializeScrollAnimations();
 }
 

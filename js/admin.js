@@ -30,9 +30,22 @@ async function loadAdminDashboard() {
 
     allDenuncias = mergeComplaints(localDenuncias, supabaseDenuncias);
     filteredDenuncias = [...allDenuncias];
+    saveDenuncias(allDenuncias);
     
     updateAdminStats();
     renderDenunciasTable();
+}
+
+function setupRealtimeAdminDashboard() {
+    if (!(window.isSupabaseConfigured && window.isSupabaseConfigured()) || !window.supabaseSubscribeToComplaints) {
+        return;
+    }
+
+    if (window.__cidadeLimpaAdminChannel) return;
+
+    window.__cidadeLimpaAdminChannel = window.supabaseSubscribeToComplaints(() => {
+        loadAdminDashboard();
+    });
 }
 
 // ===============================================

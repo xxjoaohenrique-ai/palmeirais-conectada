@@ -125,6 +125,39 @@
         return data || [];
     }
 
+    async function getProfiles() {
+        const supabase = getSupabaseClient();
+        if (!supabase) return [];
+
+        const { data, error } = await supabase.from('profiles').select('*');
+        if (error) {
+            console.warn('Não foi possível consultar perfis no Supabase:', error.message);
+            return [];
+        }
+
+        return data || [];
+    }
+
+    function subscribeToComplaints(callback) {
+        const supabase = getSupabaseClient();
+        if (!supabase || typeof callback !== 'function') return null;
+
+        const channel = supabase.channel('complaints-live-updates');
+        channel.on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'denuncias' },
+            (payload) => callback(payload)
+        );
+
+        channel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+                console.info('Assinatura de denúncias ativa no Supabase.');
+            }
+        });
+
+        return channel;
+    }
+
     window.supabaseConfig = config;
     window.isSupabaseConfigured = function () {
         return !!getSupabaseClient();
@@ -137,4 +170,6 @@
     window.supabaseGetComplaints = getComplaints;
     window.supabaseCreateComplaint = createComplaint;
     window.supabaseGetComplaintsByUser = getComplaintsByUser;
+    window.supabaseGetProfiles = getProfiles;
+    window.supabaseSubscribeToComplaints = subscribeToComplaints;
 })();
