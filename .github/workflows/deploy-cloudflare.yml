@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+﻿name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -31,9 +31,9 @@ jobs:
             fi
           done
 
-      - name: Deploy static site
+      - name: Deploy static site with Wrangler
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }}
+          command: pages deploy . --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --commit-dirty=true
