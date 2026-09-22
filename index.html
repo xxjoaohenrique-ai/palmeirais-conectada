@@ -13,14 +13,15 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
+    <link rel="stylesheet" href="css/reference-ui.css">
 </head>
-<body>
+<body class="page-home">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <i class="fas fa-city"></i>
-                <span>Palmeirais Conectada</span>
+                <img class="brand-mark" src="icons/city-line.svg" alt="" aria-hidden="true">
+                <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
             <button class="nav-toggle" id="navToggle">
@@ -46,12 +47,11 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1 class="hero-title animate-fade-in">
-                <i class="fas fa-city"></i>
-                Palmeirais Conectada
-            </h1>
+            <p class="hero-eyebrow">Uma cidade mais participativa</p>
+            <h1 class="hero-title animate-fade-in"><span>Palmeirais</span><span>Conectada</span></h1>
+            <p class="hero-headline">Sua voz pela cidade.</p>
             <p class="hero-subtitle animate-fade-in-delay">
-                Sua voz pela cidade. Denuncie problemas urbanos e ajude a melhorar nossa comunidade.
+                Registre e acompanhe denúncias sobre problemas urbanos. Juntos por um Palmeirais mais transparente, inclusivo e preparado para o futuro.
             </p>
             <div class="hero-buttons animate-fade-in-delay-2">
                 <a href="cadastro.html" class="btn btn-primary btn-lg" id="heroBtn">
@@ -64,6 +64,24 @@
         </div>
 
     </section>
+
+    <section class="feature-strip" aria-label="Acesso rápido">
+        <div class="feature-strip-inner">
+            <a class="feature-card" href="denuncia.html">
+                <span class="feature-icon"><i class="fas fa-file-alt" aria-hidden="true"></i></span>
+                <span><h2>Serviços Online</h2><p>Registre problemas urbanos e acompanhe suas solicitações de forma simples e segura.</p><span class="feature-cta">Acessar Serviços <i class="fas fa-arrow-right" aria-hidden="true"></i></span></span>
+            </a>
+            <a class="feature-card" href="cadastro.html">
+                <span class="feature-icon"><i class="fas fa-users" aria-hidden="true"></i></span>
+                <span><h2>Participação Cidadã</h2><p>Faça parte da comunidade e ajude a construir uma Palmeirais melhor para todos.</p><span class="feature-cta">Quero Participar <i class="fas fa-arrow-right" aria-hidden="true"></i></span></span>
+            </a>
+            <a class="feature-card" href="minhas-denuncias.html">
+                <span class="feature-icon"><i class="fas fa-list-alt" aria-hidden="true"></i></span>
+                <span><h2>Minhas Denúncias</h2><p>Acompanhe o andamento das ocorrências que você registrou na cidade.</p><span class="feature-cta">Acompanhar <i class="fas fa-arrow-right" aria-hidden="true"></i></span></span>
+            </a>
+        </div>
+    </section>
+    <p class="photo-credit">Foto de referência: <a href="https://palmeiraisviva.blogspot.com/2011/11/escrevi-pra-voce.html" target="_blank" rel="noopener noreferrer">Palmeirais Viva</a>.</p>
 
     <!-- Stats Section -->
     <section class="stats">
