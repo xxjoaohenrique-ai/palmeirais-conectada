@@ -87,6 +87,16 @@
         return supabase.auth.signOut();
     }
 
+    async function getServerAdminStatus(supabase, userId) {
+        const { data, error } = await supabase.from('profiles')
+            .select('is_admin').eq('id', userId).maybeSingle();
+        if (error) {
+            console.warn('Não foi possível verificar autorização administrativa:', error.message);
+            return false;
+        }
+        return data?.is_admin === true;
+    }
+
     async function getSessionUser() {
         const supabase = getSupabaseClient();
         if (!supabase) return null;
@@ -98,8 +108,7 @@
             id: session.user.id,
             nome: session.user.user_metadata?.nome || session.user.email?.split('@')[0] || 'Usuário',
             email: session.user.email,
-            isAdmin: Boolean(session.user.user_metadata?.is_admin)
-                || session.user.email === 'admin@palmeirais.pi.gov.br'
+            isAdmin: await getServerAdminStatus(supabase, session.user.id)
         };
     }
 
@@ -110,7 +119,7 @@
         const { data, error } = await supabase.from('denuncias').select('*').order('created_at', { ascending: false });
         if (error) {
             console.warn('Não foi possível consultar denúncias no Supabase:', error.message);
-            return [];
+            throw error;
         }
 
         return data || [];
@@ -135,6 +144,28 @@
         };
 
         return supabase.from('denuncias').insert([normalizedComplaint]);
+    }
+
+    async function updateComplaintStatus(id, status) {
+        const supabase = getSupabaseClient();
+        if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
+        if (!['pendente', 'em-analise', 'resolvido'].includes(status)) {
+            return { data: null, error: new Error('Status inválido.') };
+        }
+        const { data, error } = await supabase.from('denuncias')
+            .update({ status, updated_at: new Date().toISOString() })
+            .eq('id', id).select('id, status').maybeSingle();
+        if (!error && !data) return { data: null, error: new Error('Denúncia não encontrada ou acesso negado.') };
+        return { data, error };
+    }
+
+    async function deleteComplaint(id) {
+        const supabase = getSupabaseClient();
+        if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
+        const { data, error } = await supabase.from('denuncias')
+            .delete().eq('id', id).select('id').maybeSingle();
+        if (!error && !data) return { data: null, error: new Error('Denúncia não encontrada ou acesso negado.') };
+        return { data, error };
     }
 
     async function getComplaintsByUser(userId) {
@@ -203,6 +234,8 @@
     window.supabaseGetComplaints = getComplaints;
     window.supabaseCreateComplaint = createComplaint;
     window.supabaseGetComplaintsByUser = getComplaintsByUser;
+    window.supabaseUpdateComplaintStatus = updateComplaintStatus;
+    window.supabaseDeleteComplaint = deleteComplaint;
     window.supabaseGetProfiles = getProfiles;
     window.supabaseSubscribeToComplaints = subscribeToComplaints;
 })();
