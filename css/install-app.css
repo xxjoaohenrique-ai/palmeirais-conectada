@@ -1,0 +1,36 @@
+/* Only the homepage install action and its instructions modal. */
+#installAppButton {
+  cursor: pointer;
+  background: rgba(7,35,42,.65);
+  color: #effff9;
+  border: 1px solid rgba(81,224,178,.8);
+  border-radius: 9px;
+  transition: transform .2s ease,background-color .2s ease,border-color .2s ease;
+}
+#installAppButton:hover { background: rgba(14,117,91,.5); }
+#installAppButton:focus-visible,
+.pwa-install-close:focus-visible,
+.pwa-install-done:focus-visible { outline: 2px solid #42dfab; outline-offset: 3px; }
+#installAppButton[hidden], .pwa-install-overlay[hidden] { display:none !important; }
+.pwa-install-overlay {
+  position:fixed; inset:0; z-index:3000; display:grid; place-items:center;
+  padding:18px; background:rgba(2,17,22,.76); backdrop-filter:blur(8px);
+}
+.pwa-install-dialog {
+  position:relative; width:min(100%,430px); max-height:calc(100dvh - 36px); overflow:auto;
+  padding:28px 25px; border-radius:19px; border:1px solid rgba(66,223,171,.6);
+  background:#0a2b33; color:#fff; box-shadow:0 25px 60px rgba(0,0,0,.45);
+}
+.pwa-install-dialog h2 { color:#fff; font-size:1.45rem; line-height:1.2; margin:0 0 13px; }
+.pwa-install-dialog p { color:#d7ece7; font-size:1rem; line-height:1.6; margin:0 0 22px; }
+.pwa-install-symbol {color:#42dfab; font-size:2rem; margin-bottom:12px;}
+.pwa-install-close {
+  position:absolute; right:12px; top:10px; border:0; color:#effff9;
+  background:transparent; font-size:1.7rem; min-width:44px; min-height:44px; cursor:pointer;
+}
+.pwa-install-done {
+  display:block; width:100%; min-height:45px; border:0; border-radius:9px;
+  color:#fff; background:#0ba67a; font:inherit; font-weight:700; cursor:pointer;
+}
+@media(max-width:768px) {#installAppButton { width:100%; min-height:50px; }}
+@media(prefers-reduced-motion:reduce) {#installAppButton {transition:none !important;}}
