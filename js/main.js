@@ -482,17 +482,15 @@ function setupRealtimeDashboard() {
 
     if (window.__cidadeLimpaComplaintChannel) return;
 
-    window.__cidadeLimpaComplaintChannel = window.supabaseSubscribeToComplaints(() => {
-        loadStats();
-        loadRecentComplaints();
-        if (typeof window.loadAdminDashboard === 'function') {
-            window.loadAdminDashboard();
-        }
-    }, handleRealtimeStatus);
+    window.__cidadeLimpaComplaintChannel = window.supabaseSubscribeToComplaints(refreshComplaintViews, handleRealtimeStatus);
+    startComplaintRefreshFallback();
 }
 
 function handleRealtimeStatus(status) {
-    if (status === 'SUBSCRIBED') return;
+    if (status === 'SUBSCRIBED') {
+        window.__cidadeLimpaRealtimeWarningShown = false;
+        return;
+    }
 
     if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(status)) {
         if (window.__cidadeLimpaRealtimeWarningShown) return;
@@ -500,6 +498,22 @@ function handleRealtimeStatus(status) {
         window.__cidadeLimpaRealtimeWarningShown = true;
         showToast('Atualizações em tempo real indisponíveis. Recarregue a página para atualizar.', 'warning');
     }
+}
+
+function refreshComplaintViews() {
+    loadStats();
+    loadRecentComplaints();
+    if (typeof window.loadAdminDashboard === 'function') {
+        window.loadAdminDashboard();
+    }
+}
+
+function startComplaintRefreshFallback() {
+    if (window.__cidadeLimpaComplaintRefreshTimer) return;
+
+    window.__cidadeLimpaComplaintRefreshTimer = window.setInterval(() => {
+        refreshComplaintViews();
+    }, 15000);
 }
 
 function animateCounter(elementId, target) {

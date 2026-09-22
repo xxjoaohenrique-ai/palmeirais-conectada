@@ -677,6 +677,18 @@ main, section, header, footer, nav, article, aside, .container, .dashboard, .for
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    position: relative;
+    transition: var(--transition);
+}
+
+.complaint-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    opacity: 0;
     transition: var(--transition);
 }
 
@@ -685,10 +697,23 @@ main, section, header, footer, nav, article, aside, .container, .dashboard, .for
     box-shadow: var(--shadow-lg);
 }
 
+.complaint-card:hover::before {
+    opacity: 1;
+}
+
 .complaint-image {
     height: 180px;
     background: var(--gray-200);
     overflow: hidden;
+    position: relative;
+}
+
+.complaint-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(15, 23, 42, 0.18));
+    pointer-events: none;
 }
 
 .complaint-image img {
@@ -1461,6 +1486,20 @@ select.form-control {
 
 .complaints-table tbody tr:hover {
     background: linear-gradient(90deg, rgba(37,99,235,0.04), rgba(16,185,129,0.03));
+}
+
+.complaints-table tbody tr:last-child {
+    border-bottom: 0;
+}
+
+.complaints-table td strong {
+    color: var(--text-primary);
+}
+
+.table-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .complaints-table td {

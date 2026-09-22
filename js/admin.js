@@ -46,6 +46,10 @@ function setupRealtimeAdminDashboard() {
     window.__cidadeLimpaAdminChannel = window.supabaseSubscribeToComplaints(() => {
         loadAdminDashboard();
     }, window.handleRealtimeStatus);
+
+    if (window.startComplaintRefreshFallback) {
+        window.startComplaintRefreshFallback();
+    }
 }
 
 // ===============================================
