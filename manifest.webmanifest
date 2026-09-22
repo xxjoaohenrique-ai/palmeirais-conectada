@@ -1,0 +1,19 @@
+{
+  "name": "Palmeirais Conectada",
+  "short_name": "Palmeirais",
+  "description": "Registre e acompanhe denúncias urbanas em Palmeirais.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#155e75",
+  "icons": [
+    {
+      "src": "./icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
