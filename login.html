@@ -14,14 +14,15 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
+    <link rel="stylesheet" href="css/reference-ui.css">
 </head>
-<body>
+<body class="page-login">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <i class="fas fa-city"></i>
-                <span>Palmeirais Conectada</span>
+                <img class="brand-mark" src="icons/city-line.svg" alt="" aria-hidden="true">
+                <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
             <button class="nav-toggle" id="navToggle">
@@ -44,7 +45,7 @@
     <section class="form-container">
         <div class="form-card">
             <div class="form-header">
-                <i class="fas fa-user-circle"></i>
+                <span class="auth-avatar"><i class="fas fa-user" aria-hidden="true"></i></span>
                 <h1>Entrar</h1>
                 <p>Acesse sua conta para fazer denúncias</p>
             </div>
@@ -52,7 +53,7 @@
             <div id="loginError" style="display: none;" role="alert" aria-live="polite"></div>
             
             <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
+                <div class="form-group login-field">
                     <label for="email">
                         <i class="fas fa-envelope"></i> E-mail
                     </label>
@@ -63,13 +64,14 @@
                         placeholder="seu@email.com"
                         required
                     >
+                    <i class="fas fa-envelope field-decor" aria-hidden="true"></i>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group login-field">
                     <label for="senha">
                         <i class="fas fa-lock"></i> Senha
                     </label>
-                    <div style="position: relative;">
+                    <div class="password-input" style="position: relative;">
                         <input 
                             type="password" 
                             id="senha" 
@@ -77,6 +79,7 @@
                             placeholder="Sua senha"
                             required
                         >
+                        <i class="fas fa-lock field-decor" aria-hidden="true"></i>
                         <button 
                             type="button" 
                             onclick="togglePasswordVisibility('senha', this)"
@@ -88,7 +91,7 @@
                 </div>
                 
                 <button type="submit" class="btn btn-primary btn-block btn-lg">
-                    <i class="fas fa-sign-in-alt"></i> Entrar
+                    Entrar <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
 
@@ -140,6 +143,8 @@
 
         </div>
     </section>
+
+    <p class="photo-credit">Foto de referência: <a href="https://palmeiraisviva.blogspot.com/2011/11/escrevi-pra-voce.html" target="_blank" rel="noopener noreferrer">Palmeirais Viva</a>.</p>
 
     <!-- Footer -->
     <footer class="footer">

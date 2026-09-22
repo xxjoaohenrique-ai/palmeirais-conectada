@@ -14,14 +14,15 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
+    <link rel="stylesheet" href="css/reference-ui.css">
 </head>
-<body>
+<body class="page-report">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <i class="fas fa-city"></i>
-                <span>Palmeirais Conectada</span>
+                <img class="brand-mark" src="icons/city-line.svg" alt="" aria-hidden="true">
+                <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
             <button class="nav-toggle" id="navToggle">
@@ -47,9 +48,10 @@
     <section class="form-container">
         <div class="form-card wide">
             <div class="form-header">
-                <i class="fas fa-bullhorn"></i>
-                <h1>Nova Denúncia</h1>
-                <p>Preencha os dados para registrar sua denúncia</p>
+                <i class="fas fa-bullhorn report-header-icon" aria-hidden="true"></i>
+                <div class="report-header-copy"><h1>Nova Denúncia</h1>
+                <p>Preencha os dados para registrar sua denúncia.</p></div>
+                <span class="report-motto">Palmeirais<br>mais limpa,<br>mais segura,<br>mais forte.</span>
             </div>
             
             <div id="denunciaError" style="display: none;"></div>
@@ -64,7 +66,7 @@
                         type="text" 
                         id="titulo" 
                         class="form-control" 
-                        placeholder="Ex: Lixo acumulado na Rua das Flores"
+                        placeholder="Ex: Iluminação pública apagada"
                         maxlength="100"
                         required
                     >
@@ -89,13 +91,13 @@
                     <label for="endereco">
                         <i class="fas fa-map-marker-alt"></i> Endereço / Localização
                     </label>
-                    <input 
+                    <div class="report-location"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><input 
                         type="text" 
                         id="endereco" 
                         class="form-control" 
-                        placeholder="Ex: Rua das Flores, 123 - Centro"
+                        placeholder="Ex: Praça Central, Rua Antônio Lopes, Nº 123"
                         required
-                    >
+                    ></div>
                 </div>
                 
                 <div class="form-group">
@@ -117,7 +119,7 @@
                     </label>
                     <div class="image-upload" onclick="document.getElementById('foto').click()">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Clique para selecionar uma imagem</p>
+                        <p>Clique para enviar uma foto</p>
                         <span>JPG, PNG ou GIF - Máximo 5MB</span>
                         <input 
                             type="file" 
@@ -135,7 +137,7 @@
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <div class="report-actions" style="display: flex; gap: 1rem; margin-top: 2rem;">
                     <a href="index.html" class="btn btn-outline" style="flex: 1;">
                         <i class="fas fa-arrow-left"></i> Voltar
                     </a>
@@ -146,6 +148,8 @@
             </form>
         </div>
     </section>
+
+    <p class="photo-credit">Foto de referência: <a href="https://palmeiraisviva.blogspot.com/2011/11/escrevi-pra-voce.html" target="_blank" rel="noopener noreferrer">Palmeirais Viva</a>.</p>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
