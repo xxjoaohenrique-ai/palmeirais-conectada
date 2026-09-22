@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Palmeirais Conectada">
+  <rect width="512" height="512" rx="112" fill="#155e75"/>
+  <circle cx="400" cy="116" r="38" fill="#f2b84b"/>
+  <path d="M96 362V225l86-60 80 60v137H96zm184 0V152l80-55 58 44v221H280z" fill="#fff"/>
+  <path d="M127 251h32v36h-32zm0 57h32v36h-32zm66-57h32v36h-32zm0 57h32v36h-32zm116-117h30v37h-30zm0 59h30v37h-30zm60-59h22v37h-22zm0 59h22v37h-22z" fill="#155e75"/>
+  <path d="M75 372h362" stroke="#e26d4f" stroke-width="24" stroke-linecap="round"/>
+</svg>
