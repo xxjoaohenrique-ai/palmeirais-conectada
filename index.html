@@ -14,6 +14,7 @@
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
     <link rel="stylesheet" href="css/reference-ui.css">
+    <link rel="stylesheet" href="css/categorias.css">
 </head>
 <body class="page-home">
     <!-- Navbar -->
@@ -116,57 +117,59 @@
     </section>
 
     <!-- Categories Section -->
-    <section class="categories">
+    <section class="categories" id="categorias" aria-labelledby="categoriasTitulo">
         <div class="container">
-            <h2 class="section-title">
-                <i class="fas fa-tags"></i>
-                Categorias de Denúncia
-            </h2>
-            <p class="section-subtitle">Selecione o tipo de problema que deseja reportar</p>
-            
+            <nav class="category-breadcrumb" aria-label="Você está aqui">
+                <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i> Página inicial</a>
+                <i class="fas fa-chevron-right" aria-hidden="true"></i><span>Denúncias</span>
+                <i class="fas fa-chevron-right" aria-hidden="true"></i><span aria-current="location">Categorias</span>
+            </nav>
+            <div class="category-header">
+                <h2 class="section-title" id="categoriasTitulo"><i class="fas fa-tags" aria-hidden="true"></i> Categorias de <em>Denúncia</em></h2>
+                <p class="section-subtitle">Selecione o tipo de problema que deseja reportar e ajude a construir uma cidade melhor.</p>
+            </div>
+            <form id="categorySearch" class="category-search" role="search" aria-label="Buscar categoria de denúncia">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input id="categorySearchInput" type="search" aria-label="Buscar categoria" placeholder="Buscar categoria..." autocomplete="off">
+                <button type="submit">Buscar</button>
+            </form>
             <div class="categories-grid">
-                <div class="category-card animate-on-scroll">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
-                        <i class="fas fa-trash"></i>
-                    </div>
-                    <h3>Lixo Acumulado</h3>
-                    <p>Descarte irregular de lixo em vias públicas</p>
-                </div>
-                <div class="category-card animate-on-scroll">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                        <i class="fas fa-dumpster"></i>
-                    </div>
-                    <h3>Entulho</h3>
-                    <p>Restos de construção e materiais descartados</p>
-                </div>
-                <div class="category-card animate-on-scroll">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <h3>Esgoto Vazando</h3>
-                    <p>Vazamentos e problemas de saneamento</p>
-                </div>
-                <div class="category-card animate-on-scroll">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3>Iluminação Pública</h3>
-                    <p>Postes queimados ou com defeito</p>
-                </div>
-                <div class="category-card animate-on-scroll">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        <i class="fas fa-road"></i>
-                    </div>
-                    <h3>Buracos nas Ruas</h3>
-                    <p>Pavimentação danificada e buracos</p>
-                </div>
-                <div class="category-card animate-on-scroll">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <h3>Terrenos Abandonados</h3>
-                    <p>Terrenos com mato alto e abandonados</p>
-                </div>
+                <article class="category-card animate-on-scroll">
+                    <div class="category-icon" aria-hidden="true"><i class="fas fa-trash-alt"></i></div>
+                    <div class="category-copy"><h3>Lixo Acumulado</h3><p>Descarte irregular de lixo em vias públicas e terrenos.</p></div>
+                    <a class="category-cta" href="denuncia.html" aria-label="Reportar: Lixo Acumulado"><span>Reportar agora</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="category-card animate-on-scroll">
+                    <div class="category-icon" aria-hidden="true"><i class="fas fa-dumpster"></i></div>
+                    <div class="category-copy"><h3>Entulho</h3><p>Restos de construção e materiais descartados.</p></div>
+                    <a class="category-cta" href="denuncia.html" aria-label="Reportar: Entulho"><span>Reportar agora</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="category-card animate-on-scroll">
+                    <div class="category-icon" aria-hidden="true"><i class="fas fa-water"></i></div>
+                    <div class="category-copy"><h3>Esgoto Vazando</h3><p>Vazamentos e problemas de saneamento.</p></div>
+                    <a class="category-cta" href="denuncia.html" aria-label="Reportar: Esgoto Vazando"><span>Reportar agora</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="category-card animate-on-scroll">
+                    <div class="category-icon" aria-hidden="true"><i class="fas fa-lightbulb"></i></div>
+                    <div class="category-copy"><h3>Iluminação Pública</h3><p>Postes queimados ou com defeito na iluminação.</p></div>
+                    <a class="category-cta" href="denuncia.html" aria-label="Reportar: Iluminação Pública"><span>Reportar agora</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="category-card animate-on-scroll">
+                    <div class="category-icon" aria-hidden="true"><i class="fas fa-road"></i></div>
+                    <div class="category-copy"><h3>Buracos nas Ruas</h3><p>Pavimentação danificada e buracos em vias públicas.</p></div>
+                    <a class="category-cta" href="denuncia.html" aria-label="Reportar: Buracos nas Ruas"><span>Reportar agora</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="category-card animate-on-scroll">
+                    <div class="category-icon" aria-hidden="true"><i class="fas fa-home"></i></div>
+                    <div class="category-copy"><h3>Terrenos Abandonados</h3><p>Terrenos com mato alto, lixo e abandono.</p></div>
+                    <a class="category-cta" href="denuncia.html" aria-label="Reportar: Terrenos Abandonados"><span>Reportar agora</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+            </div>
+            <p id="categoryEmpty" class="category-empty" role="status" hidden>Nenhuma categoria encontrada. Tente outro termo.</p>
+            <div class="category-benefits" aria-label="Informações sobre denúncias">
+                <div class="category-benefit"><i class="fas fa-shield-alt" aria-hidden="true"></i><div><strong>Sua denúncia é importante</strong><p>Ajude a melhorar nossa cidade</p></div></div>
+                <div class="category-benefit"><i class="fas fa-clipboard-check" aria-hidden="true"></i><div><strong>Acompanhe sua denúncia</strong><p>Consulte o andamento na sua conta</p></div></div>
+                <div class="category-benefit"><i class="fas fa-leaf" aria-hidden="true"></i><div><strong>Uma cidade mais limpa</strong><p>É responsabilidade de todos</p></div></div>
             </div>
         </div>
     </section>
@@ -311,6 +314,7 @@
         }
       });
     </script>    <script src="js/mobile-app.js" defer></script>
+    <script src="js/categorias.js" defer></script>
 </body>
 </html>
 
