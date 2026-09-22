@@ -1,0 +1,93 @@
+/* Mobile-only app shell. This file does not change the desktop layout or system logic. */
+.mobile-app-nav { display: none; }
+
+@media (max-width: 768px) {
+  :root { --mobile-app-bar-height: 68px; }
+  html { scroll-padding-top: calc(var(--navbar-height) + env(safe-area-inset-top, 0px) + 12px); }
+  body {
+    min-width: 320px;
+    padding-bottom: calc(var(--mobile-app-bar-height) + env(safe-area-inset-bottom, 0px));
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .navbar { top: env(safe-area-inset-top, 0px); }
+  .nav-container { padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px)); }
+  .nav-logo { flex: 1 1 auto; width: 0; max-width: none; min-width: 0; gap: .45rem; font-size: clamp(.98rem, 4.2vw, 1.2rem); }
+  .nav-logo span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-logo i { font-size: 1.3rem; flex-shrink: 0; }
+  .theme-toggle, .nav-toggle { flex-shrink: 0; min-width: 44px; min-height: 44px; }
+  .nav-menu {
+    top: calc(var(--navbar-height) + env(safe-area-inset-top, 0px) + 8px);
+    max-height: calc(100dvh - var(--navbar-height) - var(--mobile-app-bar-height) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-app-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: start;
+    min-height: calc(var(--mobile-app-bar-height) + env(safe-area-inset-bottom, 0px));
+    padding: 5px max(6px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(6px, env(safe-area-inset-left, 0px));
+    background: var(--bg-card);
+    border-top: 1px solid var(--gray-200);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, .08);
+    z-index: 1200;
+  }
+  .mobile-app-nav a, .mobile-app-nav button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    min-height: 58px;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    background: transparent;
+    font: inherit;
+    font-size: .69rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .mobile-app-nav a i, .mobile-app-nav button i { font-size: 1.17rem; line-height: 1.35; }
+  .mobile-app-nav a span, .mobile-app-nav button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .mobile-app-nav .active { background: var(--gray-100); color: var(--primary); }
+  .mobile-app-nav .primary-action { color: var(--primary); }
+  .mobile-app-nav :is(a, button):focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+  .hero { min-height: 0; padding-top: calc(var(--navbar-height) + 2.5rem); padding-bottom: 2.5rem; }
+  .hero-content, .container, .dashboard, .form-card, .dashboard-header, .footer { min-width: 0; }
+  .dashboard { padding-bottom: 2rem; }
+  .form-container { min-height: 0; padding-top: calc(var(--navbar-height) + 1.25rem); padding-bottom: 2rem; }
+  .form-card { width: 100%; }
+  .form-control, input, textarea, select { font-size: max(16px, 1rem); }
+  .dashboard-cards { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .dashboard-card { min-width: 0; }
+  .dashboard-card-info { min-width: 0; overflow-wrap: anywhere; }
+  .table-container { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .modal-overlay { padding: 12px; }
+  .modal { max-height: calc(100dvh - 24px - var(--mobile-app-bar-height) - env(safe-area-inset-bottom, 0px)); }
+  .chatbot-toggle { bottom: calc(11rem + env(safe-area-inset-bottom, 0px)); }
+  .chatbot-panel { bottom: calc(14.5rem + env(safe-area-inset-bottom, 0px)); max-height: min(55dvh, 32rem); }
+  [vw] { bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+@media (max-width: 359px) {
+  .mobile-app-nav a, .mobile-app-nav button { font-size: .64rem; }
+  .nav-logo { font-size: .9rem; }
+  .dashboard-cards { gap: .55rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-app-nav *, .mobile-app-nav *::before, .mobile-app-nav *::after { transition: none !important; animation: none !important; }
+}
