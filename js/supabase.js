@@ -120,11 +120,21 @@
         const supabase = getSupabaseClient();
         if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
 
-        const { id, ...complaintWithoutId } = complaint || {};
-        return supabase.from('denuncias').insert([{
-            ...complaintWithoutId,
-            created_at: new Date().toISOString()
-        }]);
+        const normalizedComplaint = {
+            id: complaint?.id || (window.crypto?.randomUUID?.() || generateId()),
+            titulo: complaint?.titulo || complaint?.title || '',
+            categoria: complaint?.categoria || complaint?.category || '',
+            endereco: complaint?.endereco || complaint?.address || '',
+            descricao: complaint?.descricao || complaint?.description || '',
+            foto: complaint?.foto || complaint?.imagem || complaint?.image_url || '',
+            status: complaint?.status || 'pendente',
+            user_id: complaint?.userId || complaint?.user_id || complaint?.userID || null,
+            user_name: complaint?.userName || complaint?.user_name || null,
+            user_email: complaint?.userEmail || complaint?.user_email || null,
+            created_at: complaint?.created_at || complaint?.data || new Date().toISOString()
+        };
+
+        return supabase.from('denuncias').insert([normalizedComplaint]);
     }
 
     async function getComplaintsByUser(userId) {
