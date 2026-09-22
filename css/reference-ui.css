@@ -364,3 +364,143 @@ body.page-login .auth-avatar { animation:reference-glow 4s ease-in-out infinite;
  body.page-home .feature-card,body.page-home .feature-icon,body.page-home .hero-buttons .btn,
  body.page-login .btn-primary,body.page-report .btn-primary { transition:none !important; }
 }
+/* ---------------- RESPONSIVE ACROSS DEVICES ----------------
+  Display-only refinements for small phones, tablets, laptops and wide monitors.
+  Existing authentication, form handlers and administration are unchanged.
+-------------------------------------------------------------- */
+body.page-home, body.page-login, body.page-report {
+  --navbar-height: 76px;
+}
+body.page-home .nav-container,
+body.page-login .nav-container,
+body.page-report .nav-container { min-width: 0; }
+body.page-home .hero-content { min-width: 0; }
+body.page-login .form-card,
+body.page-report .form-card.wide { width: min(100%, 850px); }
+
+/* Tablet portrait/landscape and small notebook: show the full navigation
+   without forcing a horizontal scroll across the entire page. */
+@media (min-width: 769px) and (max-width: 1199px) {
+  body.page-home .nav-container,
+  body.page-login .nav-container,
+  body.page-report .nav-container { padding-inline: clamp(12px, 2.5vw, 30px); gap: 8px; }
+
+  body.page-home .nav-logo,
+  body.page-login .nav-logo,
+  body.page-report .nav-logo { flex: 0 1 auto; min-width: 0; gap: 8px; font-size: clamp(.98rem, 1.6vw, 1.25rem); }
+
+  body.page-home .nav-logo .brand-mark,
+  body.page-login .nav-logo .brand-mark,
+  body.page-report .nav-logo .brand-mark { width: 49px; height: 46px; }
+
+  body.page-home .brand-wordmark small,
+  body.page-login .brand-wordmark small,
+  body.page-report .brand-wordmark small { font-size: .43rem; letter-spacing: .13em; }
+
+  body.page-home .nav-menu,
+  body.page-login .nav-menu,
+  body.page-report .nav-menu {
+    flex: 1 1 auto; min-width: 0; justify-content: flex-end; gap: 0;
+  }
+  body.page-home .nav-link,
+  body.page-login .nav-link,
+  body.page-report .nav-link { padding: 10px clamp(5px, .65vw, 10px); font-size: clamp(.79rem, 1.12vw, .95rem); }
+
+  body.page-home .theme-toggle,
+  body.page-login .theme-toggle,
+  body.page-report .theme-toggle { width: 42px; height: 42px; }
+
+  body.page-home .hero {
+    padding-inline: clamp(24px, 5vw, 60px);
+    min-height: min(680px, 82svh);
+  }
+  body.page-home .hero-title { font-size: clamp(3.65rem, 7.2vw, 6rem); }
+  body.page-home .feature-strip { padding-inline: clamp(20px, 4vw, 52px); }
+  body.page-home .feature-strip-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  body.page-home .feature-card:last-child { grid-column: 1 / -1; }
+  body.page-login .form-container,
+  body.page-report .form-container { background-position: 60% center; }
+}
+
+/* Medium tablets get shorter nav labels while preserving every existing route. */
+@media (min-width: 769px) and (max-width: 900px) {
+  body.page-home .nav-container,
+  body.page-login .nav-container,
+  body.page-report .nav-container { gap: 5px; }
+  body.page-home .brand-wordmark small,
+  body.page-login .brand-wordmark small,
+  body.page-report .brand-wordmark small { display: none; }
+  body.page-home .nav-link,
+  body.page-login .nav-link,
+  body.page-report .nav-link { padding-inline: 5px; font-size: .78rem; }
+  body.page-home .nav-logo,
+  body.page-login .nav-logo,
+  body.page-report .nav-logo { font-size: 1rem; }
+}
+
+/* Wide layouts keep the reference screenshot's generous spacing. */
+@media (min-width: 1600px) {
+  body.page-home .hero { min-height: 690px; }
+  body.page-home .hero-content { max-width: 780px; }
+  body.page-login .form-card { max-width: 520px; }
+  body.page-report .form-card.wide { max-width: 850px; }
+}
+
+/* Touch areas, wrapping and safe viewport on phones. */
+@media (max-width: 768px) {
+  body.page-home .nav-logo,
+  body.page-login .nav-logo,
+  body.page-report .nav-logo { width: 0; }
+  body.page-home .hero, body.page-login .form-container,
+  body.page-report .form-container { background-position: 58% center; }
+  body.page-home .hero { min-height: auto; padding-bottom: 48px; }
+  body.page-home .feature-card { width: 100%; }
+  body.page-home .feature-card > div { min-width: 0; }
+  body.page-home .feature-card h2,
+  body.page-home .feature-card p { overflow-wrap: anywhere; }
+  body.page-login .form-card, body.page-report .form-card.wide { max-width: 100%; }
+  body.page-login .form-card .btn-primary,
+  body.page-report .form-card .btn-primary { min-height: 48px; }
+  body.page-report .report-actions .btn-outline { min-height: 44px; }
+  body.page-report .form-header { flex-wrap: nowrap; }
+  body.page-report textarea.form-control { max-width: 100%; }
+  body.page-home .mobile-app-nav,
+  body.page-login .mobile-app-nav,
+  body.page-report .mobile-app-nav {
+    background: rgba(5, 29, 39, .97);
+    border-top-color: rgba(66,223,171,.33);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+  body.page-home .mobile-app-nav :is(a,button),
+  body.page-login .mobile-app-nav :is(a,button),
+  body.page-report .mobile-app-nav :is(a,button) { color: rgba(237,255,249,.78); }
+  body.page-home .mobile-app-nav .active,
+  body.page-login .mobile-app-nav .active,
+  body.page-report .mobile-app-nav .active { background:rgba(42,221,165,.13); color:#63f5c3; }
+  body.page-home .mobile-app-nav .primary-action,
+  body.page-login .mobile-app-nav .primary-action,
+  body.page-report .mobile-app-nav .primary-action { color:#63f5c3; }
+}
+
+@media (max-width: 420px) {
+  body.page-home .hero { padding-inline: 17px; padding-top: calc(var(--navbar-height) + 34px); }
+  body.page-home .hero-title { font-size: clamp(2.85rem, 11vw, 3.9rem); letter-spacing: -.055em; }
+  body.page-home .hero-headline { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  body.page-home .hero-eyebrow { letter-spacing: .12em; }
+  body.page-home .hero-buttons { width: 100%; }
+  body.page-login .form-card { padding-inline: 16px; }
+  body.page-report .form-card.wide { padding-inline: 14px; }
+  body.page-report .form-header { gap: 10px; }
+  body.page-report .report-header-icon { font-size: 2.1rem; }
+  body.page-report .form-header h1 { font-size: 1.55rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-home .nav-logo .brand-mark,
+  body.page-login .nav-logo .brand-mark,
+  body.page-report .nav-logo .brand-mark,
+  body.page-home .nav-link::after,
+  body.page-login .nav-link::after,
+  body.page-report .nav-link::after { transition: none !important; }
+}
