@@ -463,14 +463,16 @@ async function loadStats() {
     const users = await getAllUsersForStats();
     
     const totalDenuncias = denuncias.length;
-    const resolvidas = denuncias.filter(d => d.status === 'resolvido').length;
+    const pendentes = denuncias.filter(d => d.status === 'pendente').length;
     const emAnalise = denuncias.filter(d => d.status === 'em-analise').length;
+    const resolvidas = denuncias.filter(d => d.status === 'resolvido').length;
     const totalUsuarios = users.length;
     
     animateCounter('totalDenuncias', totalDenuncias);
+    animateCounter('pendentes', pendentes);
+    animateCounter('emAnalise', emAnalise);
     animateCounter('denunciasResolvidas', resolvidas);
     animateCounter('totalUsuarios', totalUsuarios);
-    animateCounter('emAnalise', emAnalise);
 }
 
 function setupRealtimeDashboard() {
