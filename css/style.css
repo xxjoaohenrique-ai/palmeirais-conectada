@@ -3177,3 +3177,44 @@ h1, h2, h3, h4, .nav-logo {
 [data-theme="dark"] .loading-overlay {
     background: rgba(15, 23, 42, 0.9);
 }
+
+/* Chatbot de ajuda: apresentação acessível e adaptável, sem alterar layout do restante. */
+.chatbot-header { padding: 1rem; }
+.chatbot-header h3 { font-size: 1rem; line-height: 1.3; }
+.chatbot-header p { font-size: .76rem; line-height: 1.4; }
+.chatbot-close, .chatbot-send { min-height: 44px; min-width: 44px; display: inline-grid; place-items: center; }
+.chatbot-close:focus-visible, .chatbot-send:focus-visible,
+.chatbot-actions :is(a, button):focus-visible, .chatbot-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+.chatbot-body { display: flex; flex-direction: column; }
+.chatbot-messages { min-height: min(180px, 27dvh); scrollbar-width: thin; }
+.chatbot-message { overflow-wrap: anywhere; white-space: pre-line; }
+.chatbot-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .7rem; }
+.chatbot-actions :is(a, button) {
+    display: inline-flex; align-items: center; justify-content: center;
+    text-decoration: none; color: var(--primary); border: 1px solid currentColor;
+    background: transparent; border-radius: .7rem; padding: .4rem .65rem;
+    min-height: 36px; font: inherit; font-weight: 650; font-size: .76rem;
+    line-height: 1.25; cursor: pointer;
+}
+.chatbot-actions :is(a, button):hover { background: var(--bg-secondary); }
+.chatbot-notice {
+    color: var(--text-muted); font-size: .69rem; line-height: 1.4; margin-top: .6rem;
+}
+.chatbot-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+@media (max-width: 768px) {
+    .chatbot-panel { width: min(400px, calc(100vw - 1.5rem)); }
+    .chatbot-messages { min-height: min(150px, 23dvh); }
+    .chatbot-input { min-width: 0; font-size: 16px; }
+}
+@media (max-width: 420px) {
+    .chatbot-panel { right: .5rem; width: calc(100vw - 1rem); }
+    .chatbot-header { padding: .75rem; }
+    .chatbot-body { padding: .8rem; }
+    .chatbot-message { max-width: 96%; }
+}

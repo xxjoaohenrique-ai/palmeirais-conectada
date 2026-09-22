@@ -823,6 +823,122 @@ async function logout() {
 // CHATBOT DE AJUDA
 // ===============================================
 
+// Assistente local: orientações reais do sistema, sem chamadas externas nem acesso a denúncias pessoais.
+// O contexto fica apenas na memória da aba e é descartado ao fechar/recarregar a página.
+const chatbotMemory = { lastIntent: null };
+
+function normalizeChatbotText(value) {
+    return String(value || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function classifyChatbotIntent(normalized) {
+    const patterns = [
+        ['emergency', 100, /\b(emergencia|incendio|fogo|risco de vida|acidente grave|socorro)\b/],
+        ['recovery', 90, /\b(esqueci|perdi|recuperar|redefinir|resetar|trocar|alterar)\b.*\b(senha|acesso)\b|\b(senha|acesso)\b.*\b(esqueci|perdi|recuperar|redefinir|resetar|trocar|alterar)\b/],
+        ['photo', 87, /\b(foto|imagem|upload|anexo|arquivo|camera|fotografia)\b/],
+        ['privacy', 85, /\b(anonim|anonima|anonimo|privacidade|dados pessoais|identidade|sigilo)\b/],
+        ['deadline', 83, /\b(prazo|quanto tempo|demora|quando vai|quando sera|previsao)\b/],
+        ['delete', 82, /\b(excluir|apagar|remover|cancelar)\b.*\b(denuncia|ocorrencia|registro)\b|\b(denuncia|ocorrencia|registro)\b.*\b(excluir|apagar|remover|cancelar)\b/],
+        ['edit', 81, /\b(editar|corrigir|mudar|alterar)\b.*\b(denuncia|endereco|descricao|ocorrencia)\b/],
+        ['login', 80, /\b(login|logar|entrar|acessar|acesso|autenticacao|senha incorreta|email incorreto)\b/],
+        ['register', 79, /\b(cadastro|cadastrar|cadastra|criar conta|nova conta|registrar conta)\b/],
+        ['status', 77, /\b(status|andamento|acompanhar|pendente|resolvido|em analise|protocolo|minhas denuncias|minha denuncia|foi aceita)\b/],
+        ['location', 76, /\b(endereco|localizacao|localizar|local|mapa|rua|bairro|gps)\b/],
+        ['category', 75, /\b(lixo|entulho|esgoto|iluminacao|poste|lampada|buraco|pavimentacao|terreno|mato alto)\b/],
+        ['report', 65, /\b(denuncia|denunciar|denuncias|ocorrencia|registrar problema|relatar|enviar denuncia|reportar)\b/],
+        ['contact', 58, /\b(contato|atendente|humano|prefeitura|telefone|email|e mail|suporte|falar com alguem)\b/],
+        ['cost', 55, /\b(custa|custo|pagar|preco|gratuito|gratis|taxa)\b/],
+        ['install', 53, /\b(instalar|aplicativo|app|iphone|android|tela inicial)\b/],
+        ['thanks', 45, /\b(obrigado|obrigada|valeu|agradeco)\b/],
+        ['greeting', 40, /^(oi|ola|bom dia|boa tarde|boa noite|e ai|ajuda|menu|comecar)$/]
+    ];
+    let best = null;
+    for (const [intent, weight, pattern] of patterns) {
+        if (pattern.test(normalized) && (!best || weight > best.weight)) best = { intent, weight };
+    }
+    if (best) return best.intent;
+    // Perguntas curtas podem continuar o assunto anterior sem guardar informações pessoais.
+    if (chatbotMemory.lastIntent && /^(como|onde|e como|e onde|nao deu|nao consegui|continua|e isso|e depois|o que faco|por que|porque|me explica|qual o proximo passo)\b/.test(normalized)) {
+        return chatbotMemory.lastIntent;
+    }
+    return 'unknown';
+}
+
+function makeChatbotReply(text, actions, intent) {
+    if (intent && intent !== 'unknown' && intent !== 'greeting' && intent !== 'thanks') chatbotMemory.lastIntent = intent;
+    return { text, actions: actions || [] };
+}
+
+function getChatbotResponse(message) {
+    const text = normalizeChatbotText(message);
+    const intent = classifyChatbotIntent(text);
+    const loggedIn = typeof getCurrentUser === 'function' && Boolean(getCurrentUser());
+    const help = (body, actions) => makeChatbotReply(body, actions, intent);
+    const link = (label, href) => ({ label, href });
+    const ask = (label, prompt) => ({ label, prompt });
+    const reportLink = link('Nova denúncia', 'denuncia.html');
+    const trackLink = link('Minhas denúncias', 'minhas-denuncias.html');
+    const loginLink = link('Entrar', 'login.html');
+
+    switch (intent) {
+        case 'emergency':
+            return help('Se houver perigo imediato, procure o serviço público de emergência apropriado. Este chat não atende emergências e não envia alertas às autoridades.', [ask('Como registrar depois?', 'Como registrar uma denúncia?')]);
+        case 'recovery':
+            return help('Na página Entrar, selecione “Esqueci minha senha”, informe o e-mail cadastrado e siga o link recebido. Confira também a pasta de spam. Nunca envie sua senha neste chat.', [loginLink, ask('Ainda não consigo entrar', 'Não consigo entrar na conta')]);
+        case 'photo':
+            return help('Em Nova Denúncia, toque na área “Foto da Ocorrência” e escolha uma imagem. O formulário aceita uma foto de até 5 MB; o campo é opcional. Se falhar, tente um arquivo menor, confira a conexão e envie novamente. Não coloque documentos pessoais na foto.', [reportLink, ask('Como preencher a denúncia?', 'Como registrar uma denúncia?')]);
+        case 'privacy':
+            return help('O envio usa uma conta cadastrada; não posso garantir anonimato ou sigilo de identidade. Evite dados pessoais desnecessários na descrição e na foto. Para saber como seus dados são tratados, procure o responsável pelo serviço.', [link('Cadastro', 'cadastro.html'), ask('Como falar com alguém?', 'Quero contato com a prefeitura')]);
+        case 'deadline':
+            return help('Não consigo consultar prazos reais nem prometer uma data de solução. Acompanhe a situação em Minhas Denúncias e abra os detalhes da ocorrência para ver o histórico disponível.', [trackLink, ask('O que significa pendente?', 'O que significa status pendente?')]);
+        case 'delete':
+        case 'edit':
+            return help('Este chatbot não modifica nem exclui ocorrências. Confira a página Minhas Denúncias e os detalhes do registro; se não houver essa opção, entre em contato com o responsável pelo serviço. Não envie senha ou dados pessoais aqui.', [trackLink, ask('Falar com suporte', 'Quero contato com a prefeitura')]);
+        case 'login':
+            return help(loggedIn
+                ? 'Sua sessão parece estar ativa neste navegador. Para enviar uma nova ocorrência, abra Nova Denúncia. Se outra conta for necessária, use a opção Sair do menu.'
+                : 'Abra Entrar e informe o e-mail e a senha cadastrados. Se aparecer um erro, confira o e-mail, a conexão e se há espaços extras. Se esqueceu a senha, use “Esqueci minha senha”.', [loginLink, ask('Esqueci minha senha', 'Esqueci minha senha')]);
+        case 'register':
+            return help('Na página de cadastro, informe nome, e-mail, senha e confirmação da senha. Depois entre na sua conta para registrar ocorrências. Se seu e-mail já estiver cadastrado, tente entrar ou recuperar sua senha.', [link('Criar conta', 'cadastro.html'), loginLink]);
+        case 'status':
+            return help(loggedIn
+                ? 'Abra Minhas Denúncias e selecione a ocorrência. “Pendente” indica registro aguardando análise, “Em Análise” indica avaliação em andamento, e “Resolvido” indica que a ocorrência foi marcada como resolvida. Não consigo ver o status específico da sua conta por este chat.'
+                : 'Faça login e abra Minhas Denúncias para acompanhar suas ocorrências. Pendente, Em Análise e Resolvido são as situações exibidas pelo sistema; este chat não consulta seus registros.', [loggedIn ? trackLink : loginLink, ask('Entender os status', 'O que significa status pendente?')]);
+        case 'location':
+            return help('No campo Endereço / Localização, informe rua, número ou ponto de referência e bairro, com detalhes suficientes para localizar o problema. Evite incluir seu endereço pessoal quando ele não for o local da ocorrência.', [reportLink]);
+        case 'category': {
+            let selected = '';
+            if (/\b(lixo)\b/.test(text)) selected = 'Lixo Acumulado';
+            else if (/\b(entulho)\b/.test(text)) selected = 'Entulho';
+            else if (/\b(esgoto)\b/.test(text)) selected = 'Esgoto Vazando';
+            else if (/\b(iluminacao|poste|lampada)\b/.test(text)) selected = 'Iluminação Pública';
+            else if (/\b(buraco|pavimentacao)\b/.test(text)) selected = 'Buracos nas Ruas';
+            else if (/\b(terreno|mato alto)\b/.test(text)) selected = 'Terrenos Abandonados';
+            return help(selected
+                ? 'Para esse problema, selecione a categoria “' + selected + '” em Nova Denúncia. Descreva o local e o que aconteceu, e anexe uma foto se tiver.'
+                : 'As categorias disponíveis são: Lixo Acumulado, Entulho, Esgoto Vazando, Iluminação Pública, Buracos nas Ruas e Terrenos Abandonados.', [reportLink, ask('Como preencher?', 'Como registrar uma denúncia?')]);
+        }
+        case 'report':
+            return help(loggedIn
+                ? 'Abra Nova Denúncia. Preencha título, categoria, endereço e descrição detalhada; a foto é opcional. Revise os dados e toque em Enviar Denúncia. Depois acompanhe em Minhas Denúncias.'
+                : 'Para enviar uma denúncia, primeiro entre na sua conta ou cadastre-se. Depois abra Nova Denúncia, preencha título, categoria, endereço e descrição; a foto é opcional.', [loggedIn ? reportLink : loginLink, trackLink]);
+        case 'contact':
+            return help('Este chat oferece orientação automática e não transfere a conversa para um atendente. Para assuntos que precisam de uma pessoa, use os contatos publicados no rodapé do site ou procure o órgão responsável. Não informe dados sensíveis aqui.', [link('Voltar ao início', 'index.html')]);
+        case 'cost':
+            return help('O cadastro e o registro de denúncias nesta plataforma não apresentam etapa de pagamento. Não envie dinheiro nem dados bancários solicitados por mensagens que aleguem ser deste chatbot.', [link('Criar conta', 'cadastro.html')]);
+        case 'install':
+            return help('No Android, abra o site no navegador e procure “Instalar aplicativo” ou “Adicionar à tela inicial”. No iPhone, abra no Safari e use Compartilhar → Adicionar à Tela de Início. A opção pode variar conforme o aparelho e o navegador.', [link('Página inicial', 'index.html')]);
+        case 'thanks':
+            return help('Por nada! Posso ajudar você a registrar ou acompanhar uma denúncia.', [ask('Registrar denúncia', 'Como registrar uma denúncia?'), ask('Acompanhar', 'Como acompanho minha denúncia?')]);
+        case 'greeting':
+            return help('Olá! Sou o assistente automático da Palmeirais Conectada. Posso orientar sobre login, cadastro, denúncias, fotos e acompanhamento. Sobre qual assunto você precisa de ajuda?', [ask('Fazer denúncia', 'Como registrar uma denúncia?'), ask('Acompanhar', 'Como acompanho minha denúncia?'), ask('Problema no login', 'Não consigo entrar na conta')]);
+        default:
+            return help('Quero entender melhor para orientar você. Sua dúvida é sobre entrar na conta, fazer uma denúncia, enviar uma foto ou acompanhar uma ocorrência? Não consigo consultar contas ou encaminhar mensagens a atendentes.', [ask('Entrar na conta', 'Não consigo entrar na conta'), ask('Fazer denúncia', 'Como registrar uma denúncia?'), ask('Acompanhar', 'Como acompanho minha denúncia?')]);
+    }
+}
+
 function createChatbotElements() {
     if (document.getElementById('chatbotToggle')) return;
 
@@ -831,120 +947,105 @@ function createChatbotElements() {
     toggleButton.className = 'chatbot-toggle';
     toggleButton.type = 'button';
     toggleButton.setAttribute('aria-label', 'Abrir assistente de ajuda');
+    toggleButton.setAttribute('aria-controls', 'chatbotPanel');
     toggleButton.setAttribute('aria-expanded', 'false');
-    toggleButton.innerHTML = '<i class="fas fa-comments"></i>';
+    toggleButton.innerHTML = '<i class="fas fa-comments" aria-hidden="true"></i>';
 
-    const panel = document.createElement('div');
+    const panel = document.createElement('section');
     panel.id = 'chatbotPanel';
     panel.className = 'chatbot-panel';
-    panel.innerHTML = `
-        <div class="chatbot-header">
-            <div>
-                <h3>Ajuda</h3>
-                <p>Chatbot de suporte rápido</p>
-            </div>
-            <button id="chatbotClose" class="chatbot-close" type="button"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="chatbot-body">
-            <div id="chatbotMessages" class="chatbot-messages"></div>
-            <form id="chatbotForm" class="chatbot-input-group">
-                <input id="chatbotInput" type="text" class="chatbot-input" placeholder="Escreva sua dúvida..." autocomplete="off" required />
-                <button type="submit" class="chatbot-send"><i class="fas fa-paper-plane"></i></button>
-            </form>
-        </div>
-    `;
+    panel.setAttribute('aria-label', 'Assistente de ajuda da Palmeirais Conectada');
+    panel.innerHTML =
+        '<div class="chatbot-header"><div><h3>Ajuda da Palmeirais Conectada</h3><p>Orientação automática • não é atendimento humano</p></div>' +
+        '<button id="chatbotClose" class="chatbot-close" type="button" aria-label="Fechar ajuda"><i class="fas fa-times" aria-hidden="true"></i></button></div>' +
+        '<div class="chatbot-body"><div id="chatbotMessages" class="chatbot-messages" role="log" aria-live="polite" aria-relevant="additions"></div>' +
+        '<form id="chatbotForm" class="chatbot-input-group"><label class="chatbot-sr-only" for="chatbotInput">Escreva sua dúvida</label>' +
+        '<input id="chatbotInput" type="text" class="chatbot-input" maxlength="500" placeholder="Escreva sua dúvida..." autocomplete="off" required />' +
+        '<button type="submit" class="chatbot-send" aria-label="Enviar mensagem"><i class="fas fa-paper-plane" aria-hidden="true"></i></button></form>' +
+        '<p class="chatbot-notice">Não compartilhe senhas, documentos ou dados pessoais neste chat.</p></div>';
 
     document.body.appendChild(toggleButton);
     document.body.appendChild(panel);
 }
 
-function initChatbot() {
-    createChatbotElements();
-
-    const toggle = document.getElementById('chatbotToggle');
-    const close = document.getElementById('chatbotClose');
-    const form = document.getElementById('chatbotForm');
-    const messages = document.getElementById('chatbotMessages');
-    const panel = document.getElementById('chatbotPanel');
-
-    if (!toggle || !close || !form || !messages || !panel) return;
-
-    toggle.addEventListener('click', () => {
-        const isActive = panel.classList.toggle('active');
-        toggle.setAttribute('aria-expanded', String(isActive));
-        if (isActive && messages.childElementCount === 0) {
-            addChatbotMessage('Olá! Sou o assistente de ajuda. Posso orientar sobre cadastro, denúncias e status.', 'bot');
-        }
-    });
-
-    close.addEventListener('click', () => {
-        panel.classList.remove('active');
-        toggle.setAttribute('aria-expanded', 'false');
-    });
-
-    form.addEventListener('submit', handleChatbotSubmit);
-}
-
-function handleChatbotSubmit(event) {
-    event.preventDefault();
-    const input = document.getElementById('chatbotInput');
-    const messages = document.getElementById('chatbotMessages');
-    if (!input || !messages) return;
-
-    const text = input.value.trim();
-    if (!text) return;
-
-    addChatbotMessage(text, 'user');
-    input.value = '';
-
-    setTimeout(() => {
-        addChatbotMessage(getChatbotResponse(text), 'bot');
-    }, 400);
-}
-
-function addChatbotMessage(text, sender) {
+function addChatbotMessage(text, sender, actions) {
     const messages = document.getElementById('chatbotMessages');
     if (!messages) return;
 
     const messageElement = document.createElement('div');
-    messageElement.className = `chatbot-message ${sender}`;
+    messageElement.className = 'chatbot-message ' + sender;
     const messageText = document.createElement('div');
     messageText.className = 'message-text';
     messageText.textContent = text;
     messageElement.appendChild(messageText);
 
+    if (sender === 'bot' && actions && actions.length) {
+        const buttonRow = document.createElement('div');
+        buttonRow.className = 'chatbot-actions';
+        for (const action of actions.slice(0, 3)) {
+            if (action.href && /^(index|login|cadastro|denuncia|minhas-denuncias)\.html$/.test(action.href)) {
+                const a = document.createElement('a');
+                a.href = action.href;
+                a.textContent = action.label;
+                buttonRow.appendChild(a);
+            } else if (action.prompt) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = action.label;
+                btn.addEventListener('click', function () { sendChatbotText(action.prompt); });
+                buttonRow.appendChild(btn);
+            }
+        }
+        messageElement.appendChild(buttonRow);
+    }
+
     messages.appendChild(messageElement);
+    while (messages.childElementCount > 40) messages.firstElementChild.remove();
     messages.scrollTop = messages.scrollHeight;
 }
 
-function getChatbotResponse(text) {
-    const normalized = text.toLowerCase();
+function sendChatbotText(text) {
+    const input = document.getElementById('chatbotInput');
+    if (!text || !text.trim()) return;
+    addChatbotMessage(text.trim(), 'user');
+    if (input) { input.value = ''; input.focus(); }
+    const response = getChatbotResponse(text);
+    addChatbotMessage(response.text, 'bot', response.actions);
+}
 
-    if (normalized.includes('não consigo') || normalized.includes('problema') || normalized.includes('erro')) {
-        return 'Qual problema você está enfrentando? Posso ajudar com login, envio de denúncia e acompanhamento de status.';
-    }
+function handleChatbotSubmit(event) {
+    event.preventDefault();
+    const input = document.getElementById('chatbotInput');
+    if (input) sendChatbotText(input.value);
+}
 
-    if (normalized.includes('login') || normalized.includes('entrar') || normalized.includes('acessar')) {
-        return 'Para acessar, vá em Entrar e use seu email e senha cadastrados. Se ainda não tem conta, clique em Cadastrar.';
-    }
+function initChatbot() {
+    createChatbotElements();
+    const toggle = document.getElementById('chatbotToggle');
+    const close = document.getElementById('chatbotClose');
+    const form = document.getElementById('chatbotForm');
+    const messages = document.getElementById('chatbotMessages');
+    const panel = document.getElementById('chatbotPanel');
+    const input = document.getElementById('chatbotInput');
+    if (!toggle || !close || !form || !messages || !panel) return;
 
-    if (normalized.includes('cadastro') || normalized.includes('cadastrar')) {
-        return 'Para se cadastrar, acesse a página de cadastro e informe nome, email e senha. Depois faça login para enviar denúncias.';
-    }
-
-    if (normalized.includes('denúncia') || normalized.includes('denuncia') || normalized.includes('registrar')) {
-        return 'Para registrar uma denúncia, acesse Nova Denúncia, preencha título, categoria, endereço e descrição, e envie uma foto se possível.';
-    }
-
-    if (normalized.includes('status') || normalized.includes('acompanhar')) {
-        return 'Você pode acompanhar suas denúncias na página Minhas Denúncias após fazer login.';
-    }
-
-    if (normalized.includes('foto') || normalized.includes('imagem')) {
-        return 'Adicione uma foto do problema no formulário de denúncia para ajudar a equipe a reconhecer melhor a ocorrência.';
-    }
-
-    return 'Desculpe, não consegui ajudar com isso agora. Encaminhando para um atendente. Você pode enviar um email para prefeitura@palmeirais.pi.gov.br.';
+    const closePanel = () => {
+        panel.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+    };
+    toggle.addEventListener('click', () => {
+        const isActive = panel.classList.toggle('active');
+        toggle.setAttribute('aria-expanded', String(isActive));
+        if (isActive && messages.childElementCount === 0) {
+            const welcome = getChatbotResponse('olá');
+            addChatbotMessage(welcome.text, 'bot', welcome.actions);
+        }
+        if (isActive && input) input.focus();
+    });
+    close.addEventListener('click', closePanel);
+    panel.addEventListener('keydown', event => { if (event.key === 'Escape') closePanel(); });
+    form.addEventListener('submit', handleChatbotSubmit);
 }
 
 // ===============================================
