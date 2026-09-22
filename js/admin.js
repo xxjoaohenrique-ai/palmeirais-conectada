@@ -17,18 +17,18 @@ const itemsPerPage = 10;
 // ===============================================
 
 async function loadAdminDashboard() {
-    const localDenuncias = getDenuncias();
-    let supabaseDenuncias = [];
-
     if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetComplaints) {
         try {
-            supabaseDenuncias = await window.supabaseGetComplaints();
+            // Banco remoto é a fonte oficial: registros excluídos não podem voltar do cache local.
+            allDenuncias = (await window.supabaseGetComplaints()).map(normalizeComplaint);
         } catch (error) {
-            console.warn('Não foi possível carregar denúncias do Supabase:', error);
+            console.error('Não foi possível consultar denúncias:', error);
+            showToast('Erro ao carregar denúncias do servidor. Tente novamente.', 'error');
+            return;
         }
+    } else {
+        allDenuncias = getDenuncias();
     }
-
-    allDenuncias = mergeComplaints(localDenuncias, supabaseDenuncias);
     filteredDenuncias = [...allDenuncias];
     saveDenuncias(allDenuncias);
     
@@ -279,22 +279,31 @@ function openStatusModal(id, currentStatus) {
     openModal('statusModal');
 }
 
-function saveStatus() {
+async function saveStatus() {
     const id = document.getElementById('modalDenunciaId').value;
     const novoStatus = document.getElementById('novoStatus').value;
-    
-    const denuncias = getDenuncias();
-    const index = denuncias.findIndex(d => d.id === id);
-    
-    if (index !== -1) {
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            const { error } = await window.supabaseUpdateComplaintStatus(id, novoStatus);
+            if (error) throw error;
+        } catch (error) {
+            console.error('Erro ao alterar status no Supabase:', error);
+            showToast('Não foi possível salvar o status no servidor.', 'error');
+            return;
+        }
+    } else {
+        const denuncias = getDenuncias();
+        const index = denuncias.findIndex(d => d.id === id);
+        if (index === -1) return;
         denuncias[index].status = novoStatus;
         denuncias[index].dataAtualizacao = new Date().toISOString();
         saveDenuncias(denuncias);
-        
-        showToast('Status atualizado com sucesso!', 'success');
-        closeModal('statusModal');
-        loadAdminDashboard();
     }
+
+    showToast('Status atualizado com sucesso!', 'success');
+    closeModal('statusModal');
+    await loadAdminDashboard();
 }
 
 // ===============================================
@@ -306,16 +315,25 @@ function openDeleteModal(id) {
     openModal('deleteModal');
 }
 
-function confirmDelete() {
+async function confirmDelete() {
     const id = document.getElementById('deleteDenunciaId').value;
-    
-    let denuncias = getDenuncias();
-    denuncias = denuncias.filter(d => d.id !== id);
-    saveDenuncias(denuncias);
-    
+
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            const { error } = await window.supabaseDeleteComplaint(id);
+            if (error) throw error;
+        } catch (error) {
+            console.error('Erro ao excluir denúncia no Supabase:', error);
+            showToast('Não foi possível excluir a denúncia no servidor.', 'error');
+            return;
+        }
+    }
+
+    // Remover também do cache local, depois que a exclusão remota foi confirmada.
+    saveDenuncias(getDenuncias().filter(d => d.id !== id));
     showToast('Denúncia excluída com sucesso!', 'success');
     closeModal('deleteModal');
-    loadAdminDashboard();
+    await loadAdminDashboard();
 }
 
 // ===============================================
