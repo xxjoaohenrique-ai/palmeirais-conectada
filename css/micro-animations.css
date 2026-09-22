@@ -1,0 +1,110 @@
+/* Palmeirais Conectada — microinterações leves.
+   CSS independente: não altera estados, IDs, eventos JS, envios ou autenticação.
+   Sem animações contínuas novas; com suporte a movimento reduzido. */
+
+/* Entradas curtas só em elementos estáticos. Conteúdo nunca começa invisível. */
+@keyframes pc-soft-arrive {
+  from { opacity: .78; transform: translate3d(0, 9px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes pc-soft-reveal {
+  from { opacity: .8; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Evita disputar transform/opacity de .animate-on-scroll e animações existentes. */
+  .stats .section-title,
+  .categories .category-header,
+  .recent-complaints .section-title,
+  .how-it-works .section-title,
+  .dashboard-header,
+  .details-header,
+  .form-header:not(.page-login .form-header):not(.page-report .form-header) {
+    animation: pc-soft-arrive .46s ease-out both;
+  }
+  #categorias .category-breadcrumb,
+  #categorias .category-search,
+  #categorias .category-benefits {
+    animation: pc-soft-reveal .48s ease-out both;
+  }
+}
+
+/* Links e botões: reação ao toque e ao mouse, sem mudar funções de clique. */
+.btn, .nav-link, .category-cta, .chatbot-send, .chatbot-actions :is(a, button) {
+  transition-property: background-color, border-color, color, box-shadow, filter, transform;
+  transition-duration: .2s;
+  transition-timing-function: ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:not(:disabled):hover,
+  .chatbot-send:not(:disabled):hover {
+    filter: brightness(1.055);
+  }
+  .stats .stat-card:hover,
+  .steps-grid .step-card:hover,
+  .complaints-grid .complaint-card:hover,
+  .dashboard-cards .dashboard-card:hover {
+    box-shadow: 0 16px 34px rgba(0, 14, 18, .15);
+  }
+  .category-card:hover .category-cta i {
+    transform: translateX(4px);
+  }
+}
+/* :active dura apenas enquanto pressionado; não impede navegação. */
+@media (pointer: coarse) {
+  .btn:not(:disabled):active,
+  .category-cta:active,
+  .chatbot-actions :is(a, button):active {
+    filter: brightness(.97);
+  }
+}
+
+/* Foco visível para teclado e formulários sem alterar foco por JS. */
+:is(.btn, .nav-link, .category-cta, .chatbot-actions a, .chatbot-actions button):focus-visible {
+  outline: 2px solid #41dbaa;
+  outline-offset: 3px;
+}
+:is(.form-control, .chatbot-input):focus-visible {
+  outline: 2px solid #41dbaa;
+  outline-offset: 1px;
+}
+
+/* Cards ganham movimento só em dispositivos de mouse;
+   mantém transform/visibilidade gerenciados por animações já existentes. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .stats .stat-icon,
+  .steps-grid .step-icon,
+  .categories-grid .category-icon {
+    transition: transform .25s ease-out, filter .25s ease-out;
+  }
+  .stats .stat-card:hover .stat-icon,
+  .steps-grid .step-card:hover .step-icon {
+    transform: translateY(-3px);
+  }
+  .categories-grid .category-card:hover .category-icon {
+    filter: brightness(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stats .section-title,
+  .categories .category-header,
+  .recent-complaints .section-title,
+  .how-it-works .section-title,
+  .dashboard-header,
+  .details-header,
+  .form-header,
+  #categorias .category-breadcrumb,
+  #categorias .category-search,
+  #categorias .category-benefits {
+    animation: none !important;
+  }
+  .stats .stat-icon,
+  .steps-grid .step-icon,
+  .categories-grid .category-icon,
+  .category-cta i {
+    transition: none !important;
+    transform: none !important;
+  }
+}
