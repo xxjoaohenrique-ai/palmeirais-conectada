@@ -13,4 +13,13 @@ O workflow `.github/workflows/deploy-cloudflare.yml` publica o site no Cloudflar
    - `CLOUDFLARE_PROJECT_NAME`: nome do projeto no Cloudflare Pages.
 5. Faça um novo `push` na branch `main` ou execute o workflow manualmente em `Actions > Deploy to Cloudflare Pages > Run workflow`.
 
+## Variaveis do Supabase
+
+Como este projeto e um site estatico, as variaveis precisam estar no GitHub Actions para serem gravadas no arquivo publico durante o deploy. No mesmo menu `Settings > Secrets and variables > Actions`, adicione:
+
+- `SUPABASE_URL`: URL do projeto Supabase.
+- `SUPABASE_ANON_KEY`: chave publica (publishable/anon) do projeto Supabase.
+
+Variaveis criadas somente no painel do Cloudflare Pages nao ficam disponiveis para JavaScript estatico no navegador.
+
 Depois disso, cada alteracao enviada para `main` sera publicada automaticamente.

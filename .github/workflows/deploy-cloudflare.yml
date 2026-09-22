@@ -16,6 +16,8 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME || vars.CLOUDFLARE_PROJECT_NAME }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL || vars.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || vars.SUPABASE_ANON_KEY }}
 
     steps:
       - name: Checkout
@@ -24,12 +26,20 @@ jobs:
       - name: Validate Cloudflare configuration
         shell: bash
         run: |
-          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PROJECT_NAME; do
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PROJECT_NAME SUPABASE_URL SUPABASE_ANON_KEY; do
             if [ -z "${!name}" ]; then
               echo "::error::Missing required value for $name. Add it in Settings > Secrets and variables > Actions or set repository variables."
               exit 1
             fi
           done
+
+      - name: Generate Supabase frontend configuration
+        shell: bash
+        run: |
+          cat > js/supabase-config.js <<EOF
+          window.SUPABASE_URL = '${SUPABASE_URL}';
+          window.SUPABASE_ANON_KEY = '${SUPABASE_ANON_KEY}';
+          EOF
 
       - name: Deploy static site with Wrangler
         uses: cloudflare/wrangler-action@v3

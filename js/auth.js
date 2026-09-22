@@ -114,6 +114,116 @@ async function handleLogin(event) {
     }, 1000);
 }
 
+async function handleForgotPassword(event) {
+    event.preventDefault();
+
+    const emailInput = document.getElementById('forgotEmail');
+    const errorDiv = document.getElementById('forgotError');
+    const email = emailInput.value.trim().toLowerCase();
+    const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
+
+    if (!validateEmail(email)) {
+        showError(errorDiv, 'Digite um e-mail válido.');
+        return;
+    }
+
+    if (!(window.isSupabaseConfigured && window.isSupabaseConfigured()) || !window.supabaseSendPasswordReset) {
+        showError(errorDiv, 'A recuperação de senha está indisponível no momento.');
+        return;
+    }
+
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalLabel = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+    }
+
+    try {
+        const redirectTo = `${window.location.origin}${window.location.pathname}?reset=1`;
+        const { error } = await window.supabaseSendPasswordReset(email, redirectTo);
+        if (error) {
+            showError(errorDiv, error.message || 'Não foi possível enviar o link de recuperação.');
+            return;
+        }
+
+        showToast('Confira seu e-mail para alterar a senha.', 'success');
+        emailInput.value = '';
+    } catch (error) {
+        showError(errorDiv, 'Não foi possível enviar o link de recuperação.');
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = submitButton.dataset.originalLabel || 'Enviar link';
+        }
+    }
+}
+
+async function handlePasswordUpdate(event) {
+    event.preventDefault();
+
+    const password = document.getElementById('novaSenha').value;
+    const confirmation = document.getElementById('confirmarNovaSenha').value;
+    const errorDiv = document.getElementById('resetError');
+    const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
+
+    if (password.length < 6) {
+        showError(errorDiv, 'A nova senha deve ter pelo menos 6 caracteres.');
+        return;
+    }
+
+    if (password !== confirmation) {
+        showError(errorDiv, 'As senhas não coincidem.');
+        return;
+    }
+
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalLabel = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+    }
+
+    try {
+        const { error } = await window.supabaseUpdatePassword(password);
+        if (error) {
+            showError(errorDiv, error.message || 'Não foi possível alterar a senha.');
+            return;
+        }
+
+        window.history.replaceState({}, document.title, window.location.pathname);
+        showToast('Senha alterada com sucesso. Faça login com a nova senha.', 'success');
+        document.getElementById('resetPasswordPanel').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('novaSenha').value = '';
+        document.getElementById('confirmarNovaSenha').value = '';
+    } catch (error) {
+        showError(errorDiv, 'O link de recuperação expirou. Solicite um novo link.');
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = submitButton.dataset.originalLabel || 'Salvar nova senha';
+        }
+    }
+}
+
+function showForgotPasswordForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('forgotPasswordPanel').style.display = 'block';
+}
+
+function showLoginForm() {
+    document.getElementById('forgotPasswordPanel').style.display = 'none';
+    document.getElementById('resetPasswordPanel').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+}
+
+function initializePasswordRecovery() {
+    if (window.location.search.includes('reset=1') || window.location.hash.includes('type=recovery')) {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('forgotPasswordPanel').style.display = 'none';
+        document.getElementById('resetPasswordPanel').style.display = 'block';
+    }
+}
+
 // ===============================================
 // CADASTRO
 // ===============================================

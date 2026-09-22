@@ -176,8 +176,7 @@ async function syncComplaintToSupabase(complaint) {
     try {
         const normalized = normalizeComplaint(complaint);
 
-        await window.supabaseCreateComplaint({
-            id: normalized.id,
+        const { data, error } = await window.supabaseCreateComplaint({
             titulo: normalized.titulo,
             categoria: normalized.categoria,
             endereco: normalized.endereco,
@@ -189,8 +188,15 @@ async function syncComplaintToSupabase(complaint) {
             user_email: normalized.userEmail,
             created_at: normalized.data
         });
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
     } catch (error) {
         console.warn('Não foi possível sincronizar denúncia com o Supabase:', error);
+        throw error;
     }
 }
 
@@ -468,6 +474,8 @@ async function loadStats() {
 }
 
 function setupRealtimeDashboard() {
+    if (document.getElementById('denunciasTableBody')) return;
+
     if (!(window.isSupabaseConfigured && window.isSupabaseConfigured()) || !window.supabaseSubscribeToComplaints) {
         return;
     }
@@ -480,7 +488,18 @@ function setupRealtimeDashboard() {
         if (typeof window.loadAdminDashboard === 'function') {
             window.loadAdminDashboard();
         }
-    });
+    }, handleRealtimeStatus);
+}
+
+function handleRealtimeStatus(status) {
+    if (status === 'SUBSCRIBED') return;
+
+    if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(status)) {
+        if (window.__cidadeLimpaRealtimeWarningShown) return;
+
+        window.__cidadeLimpaRealtimeWarningShown = true;
+        showToast('Atualizações em tempo real indisponíveis. Recarregue a página para atualizar.', 'warning');
+    }
 }
 
 function animateCounter(elementId, target) {

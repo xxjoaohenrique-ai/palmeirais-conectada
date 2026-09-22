@@ -86,6 +86,45 @@
                 </button>
             </form>
 
+            <div id="forgotPasswordPanel" style="display: none;">
+                <div id="forgotError" style="display: none;" role="alert" aria-live="polite"></div>
+                <p class="auth-note">Informe seu e-mail e enviaremos um link para criar uma nova senha.</p>
+                <form onsubmit="handleForgotPassword(event)">
+                    <div class="form-group">
+                        <label for="forgotEmail"><i class="fas fa-envelope"></i> E-mail</label>
+                        <input type="email" id="forgotEmail" class="form-control" placeholder="seu@email.com" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-paper-plane"></i> Enviar link
+                    </button>
+                </form>
+                <button type="button" class="btn btn-outline btn-block mt-2" onclick="showLoginForm()">
+                    <i class="fas fa-arrow-left"></i> Voltar para o login
+                </button>
+            </div>
+
+            <div id="resetPasswordPanel" style="display: none;">
+                <div id="resetError" style="display: none;" role="alert" aria-live="polite"></div>
+                <p class="auth-note">Crie uma nova senha para acessar sua conta.</p>
+                <form onsubmit="handlePasswordUpdate(event)">
+                    <div class="form-group">
+                        <label for="novaSenha"><i class="fas fa-lock"></i> Nova senha</label>
+                        <input type="password" id="novaSenha" class="form-control" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmarNovaSenha"><i class="fas fa-lock"></i> Confirmar nova senha</label>
+                        <input type="password" id="confirmarNovaSenha" class="form-control" minlength="6" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-check"></i> Salvar nova senha
+                    </button>
+                </form>
+            </div>
+
+            <p id="forgotPasswordLink" class="auth-note" style="text-align: center;">
+                <a href="#" onclick="showForgotPasswordForm(); return false;">Esqueci minha senha</a>
+            </p>
+
             <p class="auth-note"><i class="fas fa-shield-halved"></i> Entre com a senha da conta cadastrada no Supabase.</p>
             
             <div class="form-footer">
@@ -112,6 +151,7 @@
     <script src="js/auth.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            initializePasswordRecovery();
             const currentUser = getCurrentUser();
             if (currentUser) {
                 window.location.href = currentUser.isAdmin ? 'admin.html' : 'index.html';

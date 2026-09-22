@@ -63,6 +63,20 @@
         return supabase.auth.signInWithPassword({ email, password });
     }
 
+    async function sendPasswordReset(email, redirectTo) {
+        const supabase = getSupabaseClient();
+        if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
+
+        return supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    }
+
+    async function updatePassword(password) {
+        const supabase = getSupabaseClient();
+        if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
+
+        return supabase.auth.updateUser({ password });
+    }
+
     async function signOut() {
         const supabase = getSupabaseClient();
         if (!supabase) return { error: null };
@@ -106,8 +120,9 @@
         const supabase = getSupabaseClient();
         if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
 
+        const { id, ...complaintWithoutId } = complaint || {};
         return supabase.from('denuncias').insert([{
-            ...complaint,
+            ...complaintWithoutId,
             created_at: new Date().toISOString()
         }]);
     }
@@ -138,7 +153,7 @@
         return data || [];
     }
 
-    function subscribeToComplaints(callback) {
+    function subscribeToComplaints(callback, onStatusChange) {
         const supabase = getSupabaseClient();
         if (!supabase || typeof callback !== 'function') return null;
 
@@ -152,6 +167,12 @@
         channel.subscribe((status) => {
             if (status === 'SUBSCRIBED') {
                 console.info('Assinatura de denúncias ativa no Supabase.');
+            } else {
+                console.warn(`Status do Realtime de denúncias: ${status}`);
+            }
+
+            if (typeof onStatusChange === 'function') {
+                onStatusChange(status);
             }
         });
 
@@ -165,6 +186,8 @@
     window.getSupabaseClient = getSupabaseClient;
     window.supabaseSignUp = signUp;
     window.supabaseSignIn = signIn;
+    window.supabaseSendPasswordReset = sendPasswordReset;
+    window.supabaseUpdatePassword = updatePassword;
     window.supabaseSignOut = signOut;
     window.supabaseGetSessionUser = getSessionUser;
     window.supabaseGetComplaints = getComplaints;

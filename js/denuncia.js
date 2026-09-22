@@ -61,7 +61,7 @@ function removeImage() {
 // CRIAR DENÚNCIA
 // ===============================================
 
-function handleDenuncia(event) {
+async function handleDenuncia(event) {
     event.preventDefault();
     
     const currentUser = getCurrentUser();
@@ -108,11 +108,20 @@ function handleDenuncia(event) {
         dataAtualizacao: new Date().toISOString()
     };
     
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+        try {
+            await syncComplaintToSupabase(novaDenuncia);
+        } catch (error) {
+            console.error('Falha ao gravar denúncia no Supabase:', error);
+            showError(errorDiv, 'Não foi possível gravar a denúncia no servidor. Tente novamente.');
+            return;
+        }
+    }
+
     // Salvar
     const denuncias = getDenuncias();
     denuncias.unshift(normalizeComplaint(novaDenuncia));
     saveDenuncias(denuncias);
-    syncComplaintToSupabase(novaDenuncia).catch(() => {});
     
     // Mostrar sucesso
     showToast('Denúncia registrada com sucesso! Está pendente de análise.', 'success');
