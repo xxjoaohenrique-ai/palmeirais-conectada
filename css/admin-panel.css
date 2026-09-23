@@ -356,6 +356,12 @@ html[data-admin-theme="light"] body.admin-page {
 .admin-page .complaints-table .complaint-category { display: inline-flex; align-items: center; gap: 10px; }
 .admin-page .complaints-table .complaint-category i { font-size: 1rem; color: var(--admin-accent); }
 .admin-page .status-badge { font-size: .74rem; white-space: nowrap; border-radius: 8px; }
+.admin-page .status-badge.pendente { background: rgba(199,139,10,.23); color: #f4ca67; }
+.admin-page .status-badge.em-analise { background: rgba(40,109,190,.25); color: #9ac9ff; }
+.admin-page .status-badge.resolvido { background: rgba(24,147,88,.26); color: #80e6ad; }
+html[data-admin-theme="light"] .admin-page .status-badge.pendente { color: #815600; }
+html[data-admin-theme="light"] .admin-page .status-badge.em-analise { color: #164b8e; }
+html[data-admin-theme="light"] .admin-page .status-badge.resolvido { color: #075d3b; }
 .admin-page .table-actions { flex-wrap: nowrap; }
 .admin-page .btn-icon,
 [data-theme="dark"] .admin-page .btn-icon.view,
@@ -429,6 +435,7 @@ html[data-admin-theme="light"] body.admin-page {
   .admin-page #dashboard, .admin-page #denuncias, .admin-page #relatorios, .admin-page #usuarios, .admin-page #configuracoes { scroll-margin-top: 145px; }
 }
 @media (max-width: 768px) {
+  body.admin-page { padding-bottom: calc(var(--mobile-app-bar-height, 68px) + env(safe-area-inset-bottom, 0px)); }
   .admin-page .admin-topbar .nav-logo { max-width: min(100%, 360px); white-space: nowrap; }
   .admin-page .admin-topbar .nav-logo span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .admin-page .admin-topbar .nav-menu {
