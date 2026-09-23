@@ -16,17 +16,18 @@
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
     <link rel="stylesheet" href="css/micro-animations.css">
+    <link rel="stylesheet" href="css/minhas-denuncias.css">
 </head>
-<body>
+<body class="page-my-complaints">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <i class="fas fa-city"></i>
-                <span>Palmeirais Conectada</span>
+                <img class="brand-mark" src="icons/city-line.svg" alt="" aria-hidden="true">
+                <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMenu">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -49,18 +50,22 @@
     <section class="dashboard">
         <div class="container">
             <div class="dashboard-header">
-                <h1 class="dashboard-title">
-                    <i class="fas fa-list-alt"></i>
-                    Minhas Denúncias
-                </h1>
-                <a href="denuncia.html" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Nova Denúncia
+                <div class="dashboard-heading">
+                    <span class="dashboard-heading-icon" aria-hidden="true"><i class="fas fa-list-alt"></i></span>
+                    <div class="dashboard-heading-copy">
+                        <p class="dashboard-eyebrow">Acompanhe suas solicitações</p>
+                        <h1 class="dashboard-title">Minhas Denúncias</h1>
+                        <p class="dashboard-subtitle">Aqui você pode visualizar e acompanhar todas as denúncias que enviou.</p>
+                    </div>
+                </div>
+                <a href="denuncia.html" class="btn btn-primary dashboard-new">
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i> Nova Denúncia
                 </a>
             </div>
             
             <!-- Cards de Status -->
-            <div class="dashboard-cards" style="grid-template-columns: repeat(3, 1fr);">
-                <div class="dashboard-card">
+            <div class="dashboard-cards" aria-label="Resumo das minhas denúncias">
+                <div class="dashboard-card dashboard-card-pending">
                     <div class="dashboard-card-icon yellow">
                         <i class="fas fa-clock"></i>
                     </div>
@@ -69,7 +74,7 @@
                         <p>Pendentes</p>
                     </div>
                 </div>
-                <div class="dashboard-card">
+                <div class="dashboard-card dashboard-card-analysis">
                     <div class="dashboard-card-icon blue">
                         <i class="fas fa-search"></i>
                     </div>
@@ -78,7 +83,7 @@
                         <p>Em Análise</p>
                     </div>
                 </div>
-                <div class="dashboard-card">
+                <div class="dashboard-card dashboard-card-resolved">
                     <div class="dashboard-card-icon green">
                         <i class="fas fa-check-circle"></i>
                     </div>
@@ -92,14 +97,16 @@
             <!-- Filtros -->
             <div class="filters-bar">
                 <div class="search-box">
-                    <i class="fas fa-search"></i>
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <label class="sr-only" for="searchInput">Buscar denúncias</label>
                     <input 
-                        type="text" 
                         id="searchInput" 
+                        type="search" 
                         placeholder="Buscar denúncias..."
                         onkeyup="handleSearch()"
                     >
                 </div>
+                <label class="sr-only" for="statusFilter">Filtrar por status</label>
                 <select class="filter-select" id="statusFilter" onchange="handleFilter()">
                     <option value="todos">Todos os Status</option>
                     <option value="pendente">Pendente</option>
@@ -109,7 +116,7 @@
             </div>
             
             <!-- Grid de Denúncias -->
-            <div class="my-complaints-grid" id="minhasDenunciasGrid">
+            <div class="my-complaints-grid" id="minhasDenunciasGrid" aria-live="polite">
                 <!-- Carregado via JavaScript -->
             </div>
         </div>
