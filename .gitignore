@@ -22,3 +22,11 @@ coverage/
 node_modules
 .next/
 .DS_Store
+
+# Android release secrets and generated artifacts
+**/*.keystore
+**/*.jks
+**/*.p12
+**/local.properties
+*.apk
+*.aab

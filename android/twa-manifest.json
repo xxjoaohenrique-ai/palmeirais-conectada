@@ -1,0 +1,38 @@
+{
+  "packageId": "app.palmeiraisconectada.mobile",
+  "host": "palmeirais-conectada.pages.dev",
+  "name": "Palmeirais Conectada",
+  "launcherName": "Palmeirais",
+  "display": "standalone",
+  "themeColor": "#155e75",
+  "themeColorDark": "#071e29",
+  "navigationColor": "#071e29",
+  "navigationColorDark": "#071e29",
+  "backgroundColor": "#071e29",
+  "enableNotifications": false,
+  "startUrl": "/index.html",
+  "iconUrl": "https://palmeirais-conectada.pages.dev/icons/app-icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./release.jks",
+    "alias": "palmeirais"
+  },
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://palmeirais-conectada.pages.dev/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "minSdkVersion": 23,
+  "orientation": "any",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": []
+}
