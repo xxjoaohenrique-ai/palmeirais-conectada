@@ -24,6 +24,9 @@ jobs:
   android-test:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,8 +45,9 @@ jobs:
       - name: Install Android API 36 using runner SDK
         run: |
           test -n "$ANDROID_HOME"
-          command -v sdkmanager
-          sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0'
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | head -n 1)
+          test -n "$SDKMANAGER"
+          "$SDKMANAGER" --install 'platforms;android-36' 'build-tools;36.0.0'
 
       - name: Install Bubblewrap and noninteractive configuration
         run: |
