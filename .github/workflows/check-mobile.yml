@@ -1,0 +1,30 @@
+name: Validate mobile PWA
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/play-store-safari-app
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check sw.js
+          node --check js/mobile-app.js
+          node --check js/install-app.js
+          node --check scripts/check-pwa.mjs
+      - name: Validate installed app assets and metadata
+        run: node scripts/check-pwa.mjs
