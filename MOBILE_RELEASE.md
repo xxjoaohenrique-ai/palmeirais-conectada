@@ -63,3 +63,23 @@ Contas pessoais da Play Console criadas após 13/11/2023 em geral precisam de te
 - Preparar a ficha, política de privacidade, testes e envio à Play Console.
 
 **Este PR não publica a loja, não gera um AAB assinado e não altera o banco ou permissões do Supabase.** A branch `main` continua sendo a única publicada automaticamente pelo workflow atual.
+
+
+## 6. Builds Android disponíveis neste repositório
+
+- **APK de teste**: o workflow [Build Android test APK (TWA)](https://github.com/xxjoaohenrique-ai/palmeirais-conectada/actions/workflows/android-test.yml) usa uma assinatura descartável, gerada no próprio runner, e publica somente um APK de teste em **Artifacts**. Baixe o ZIP e extraia o APK. Esse certificado muda a cada execução; **não use esse APK como versão definitiva** e, se um novo APK de teste não instalar sobre o anterior, desinstale a versão de teste antiga. Sem o Digital Asset Links da assinatura usada, o Android pode mostrar a barra do navegador em vez de abrir em tela cheia.
+- **AAB definitivo**: o workflow [Build signed Play Store AAB (manual)](https://github.com/xxjoaohenrique-ai/palmeirais-conectada/actions/workflows/android-release.yml) só roda manualmente, exige os quatro secrets abaixo e publica o AAB assinado como artifact. **Não envia nem publica automaticamente na Play Store**. No GitHub, abra Actions → Build signed Play Store AAB (manual) → Run workflow (branch main).
+- As duas compilações exigem um site HTTPS acessível com `icons/app-icon-512.png`, e verificam `targetSdkVersion 36`.
+
+Configure em **Settings → Secrets and variables → Actions** do repositório:
+
+| Secret | Valor |
+| --- | --- |
+| `PLAY_UPLOAD_KEYSTORE_BASE64` | Conteúdo Base64 do seu arquivo `.jks` de upload, sem quebras de linha. |
+| `PLAY_UPLOAD_KEYSTORE_PASSWORD` | Senha do arquivo de assinatura. |
+| `PLAY_UPLOAD_KEY_PASSWORD` | Senha da chave dentro do arquivo. |
+| `PLAY_UPLOAD_KEY_ALIAS` | Alias da chave de assinatura. |
+
+No computador, depois de criar seu keystore protegido, obtenha Base64 com `base64 -w 0 release.jks` em Linux, ou `[Convert]::ToBase64String([IO.File]::ReadAllBytes("release.jks"))` no PowerShell. Cole o resultado **somente** nos Secrets do GitHub, nunca em mensagens ou arquivos do repositório. Guarde backup privado do `.jks` e senhas. A impressão digital da assinatura final distribuída pelo Google Play vem em **Play Console → Integridade do app → Assinatura do app** e deve ser acrescentada ao Digital Asset Links. O nome do pacote é `app.palmeiraisconectada.mobile` até ser registrado e deve ser confirmado antes da primeira publicação.
+
+O workflow Android não alterará arquivos HTML, autenticação, armazenamento do Supabase nem o banco de dados.
