@@ -28,7 +28,7 @@ function previewImage(input) {
         }
         
         // Validar tipo
-        if (!file.type.startsWith('image/')) {
+        if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
             showToast('Por favor, selecione apenas arquivos de imagem.', 'error');
             input.value = '';
             return;
@@ -64,7 +64,7 @@ function removeImage() {
 async function handleDenuncia(event) {
     event.preventDefault();
     
-    const currentUser = getCurrentUser();
+    const currentUser = await restoreSupabaseSession();
     if (!currentUser) {
         showToast('Você precisa estar logado para fazer uma denúncia.', 'error');
         return;
@@ -118,10 +118,7 @@ async function handleDenuncia(event) {
         }
     }
 
-    // Salvar
-    const denuncias = getDenuncias();
-    denuncias.unshift(normalizeComplaint(novaDenuncia));
-    saveDenuncias(denuncias);
+    // Sem cópia persistente: denúncias privadas permanecem no Supabase.
     
     // Mostrar sucesso
     showToast('Denúncia registrada com sucesso! Está pendente de análise.', 'success');
@@ -161,7 +158,7 @@ function showError(element, message) {
         element.innerHTML = `
             <div class="alert alert-error">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>${message}</span>
+                <span>${escapeHtml(message)}</span>
             </div>
         `;
         element.style.display = 'block';
@@ -180,15 +177,21 @@ function showError(element, message) {
 // CARREGAR MINHAS DENÚNCIAS
 // ===============================================
 
-function loadMinhasDenuncias() {
-    const currentUser = getCurrentUser();
+async function loadMinhasDenuncias() {
+    const currentUser = await restoreSupabaseSession();
     if (!currentUser) return;
     
     const container = document.getElementById('minhasDenunciasGrid');
     if (!container) return;
     
-    const denuncias = getDenuncias();
-    const minhasDenuncias = denuncias.filter(d => d.userId === currentUser.id);
+    let minhasDenuncias = [];
+    try {
+        minhasDenuncias = (await window.supabaseGetComplaintsByUser(currentUser.id)).map(normalizeComplaint);
+        saveDenuncias(minhasDenuncias); // cache somente nesta página/conta
+    } catch (error) {
+        showToast('Não foi possível carregar suas denúncias.', 'error');
+        return;
+    }
     
     if (minhasDenuncias.length === 0) {
         container.innerHTML = `
