@@ -16,144 +16,129 @@
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
     <link rel="stylesheet" href="css/micro-animations.css">
+    <link rel="stylesheet" href="css/admin-panel.css">
 </head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
+<body class="admin-page">
+    <!-- Somente esta página usa o layout administrativo. Todos os IDs funcionais foram preservados. -->
+    <nav class="navbar admin-topbar" aria-label="Navegação principal">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <i class="fas fa-city"></i>
-                <span>Palmeirais Conectada</span>
+            <a class="nav-logo" href="index.html" aria-label="Palmeirais Conectada, início">
+                <i class="fas fa-city" aria-hidden="true"></i>
+                <span>Palmeirais <b>Conectada</b></span>
             </a>
-            
-            <button class="nav-toggle" id="navToggle">
-                <i class="fas fa-bars"></i>
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">
+                <i class="fas fa-bars" aria-hidden="true"></i>
             </button>
-            
             <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="admin.html" class="nav-link active"><i class="fas fa-cog"></i> Painel Admin</a></li>
-                <li><a href="#" class="nav-link btn-nav-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home" aria-hidden="true"></i> Início</a></li>
+                <li><a href="admin.html" class="nav-link active"><i class="fas fa-chart-bar" aria-hidden="true"></i> Painel Admin</a></li>
+                <li><a href="#" class="nav-link btn-nav-outline" onclick="logout(); return false;"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sair</a></li>
             </ul>
-            
-            <button class="theme-toggle" id="themeToggle" title="Alternar tema">
-                <i class="fas fa-moon"></i>
+            <button class="theme-toggle" id="adminThemeToggle" type="button" title="Alternar tema do painel" aria-label="Alternar tema do painel">
+                <i class="fas fa-sun" aria-hidden="true"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Dashboard Admin -->
-    <section class="dashboard">
-        <div class="container">
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">
-                    <i class="fas fa-tachometer-alt"></i>
-                    Painel Administrativo
-                </h1>
-                <span style="color: var(--text-secondary);">
-                    <i class="fas fa-user-shield"></i>
-                    Administrador
-                </span>
+    <div class="admin-shell">
+        <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu administrativo">
+            <nav class="admin-side-nav" aria-label="Seções do painel">
+                <a href="#dashboard" class="admin-side-link active" aria-current="page"><i class="fas fa-th-large" aria-hidden="true"></i><span>Dashboard</span></a>
+                <a href="#denuncias" class="admin-side-link"><i class="fas fa-file-alt" aria-hidden="true"></i><span>Denúncias</span></a>
+                <a href="#relatorios" class="admin-side-link"><i class="fas fa-chart-bar" aria-hidden="true"></i><span>Relatórios</span></a>
+                <a href="#usuarios" class="admin-side-link"><i class="fas fa-users" aria-hidden="true"></i><span>Usuários</span></a>
+                <a href="#configuracoes" class="admin-side-link"><i class="fas fa-cog" aria-hidden="true"></i><span>Configurações</span></a>
+            </nav>
+            <div class="admin-side-footer">
+                <strong>Palmeirais Conectada</strong>
+                <p>Cidadania para uma<br>cidade melhor.</p>
+                <small>v1.0.0</small>
             </div>
-            
-            <!-- Cards Informativos -->
-            <div class="dashboard-cards">
-                <div class="dashboard-card">
-                    <div class="dashboard-card-icon blue">
-                        <i class="fas fa-file-alt"></i>
+        </aside>
+        <main class="dashboard admin-content" id="dashboard">
+            <div class="container">
+                <header class="dashboard-header">
+                    <div>
+                        <h1 class="dashboard-title">Painel Administrativo</h1>
+                        <p class="admin-subtitle">Acompanhe e gerencie as denúncias da sua cidade.</p>
                     </div>
-                    <div class="dashboard-card-info">
-                        <h3 id="totalDenuncias">0</h3>
-                        <p>Total de Denúncias</p>
+                    <div class="admin-profile" aria-label="Administrador conectado">
+                        <span class="admin-avatar" id="adminAvatar" aria-hidden="true">AD</span>
+                        <span><strong id="adminDisplayName">Administrador</strong><small>Acesso administrativo</small></span>
                     </div>
+                </header>
+
+                <div class="dashboard-cards" aria-label="Resumo das denúncias">
+                    <article class="dashboard-card">
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon blue"><i class="fas fa-file-alt" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="totalDenuncias">0</h3><p>Total de denúncias</p></div></div>
+                        <p class="admin-card-foot"><i class="fas fa-database" aria-hidden="true"></i> Registradas no sistema</p>
+                    </article>
+                    <article class="dashboard-card">
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon yellow"><i class="fas fa-clock" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="pendentes">0</h3><p>Pendentes</p></div></div>
+                        <p class="admin-card-foot"><i class="fas fa-hourglass-half" aria-hidden="true"></i> Aguardando atendimento</p>
+                    </article>
+                    <article class="dashboard-card">
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon red"><i class="fas fa-search" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="emAnalise">0</h3><p>Em análise</p></div></div>
+                        <p class="admin-card-foot"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Em acompanhamento</p>
+                    </article>
+                    <article class="dashboard-card">
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon green"><i class="fas fa-check-circle" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="resolvidos">0</h3><p>Resolvidos</p></div></div>
+                        <p class="admin-card-foot"><i class="fas fa-check" aria-hidden="true"></i> Atendimentos concluídos</p>
+                    </article>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-icon yellow">
-                        <i class="fas fa-clock"></i>
+
+                <section id="denuncias" class="admin-complaints-section" aria-labelledby="adminComplaintHeading">
+                    <div class="filters-bar" role="search" aria-label="Filtrar denúncias">
+                        <label class="search-box" for="searchInput"><i class="fas fa-search" aria-hidden="true"></i><input type="search" id="searchInput" placeholder="Buscar denúncias..." aria-label="Buscar denúncias" oninput="handleAdminSearch()"></label>
+                        <select class="filter-select" id="categoryFilter" aria-label="Filtrar por categoria" onchange="handleAdminFilter()">
+                            <option value="todas">Todas as categorias</option>
+                            <option value="Lixo Acumulado">Lixo Acumulado</option>
+                            <option value="Entulho">Entulho</option>
+                            <option value="Esgoto Vazando">Esgoto Vazando</option>
+                            <option value="Iluminação Pública">Iluminação Pública</option>
+                            <option value="Buracos nas Ruas">Buracos nas Ruas</option>
+                            <option value="Terrenos Abandonados">Terrenos Abandonados</option>
+                        </select>
+                        <select class="filter-select" id="statusFilter" aria-label="Filtrar por status" onchange="handleAdminFilter()">
+                            <option value="todos">Todos os status</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="em-analise">Em Análise</option>
+                            <option value="resolvido">Resolvido</option>
+                        </select>
+                        <button type="button" class="admin-filter-btn" id="adminFilterButton"><i class="fas fa-filter" aria-hidden="true"></i> Filtrar</button>
                     </div>
-                    <div class="dashboard-card-info">
-                        <h3 id="pendentes">0</h3>
-                        <p>Pendentes</p>
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h2 id="adminComplaintHeading"><i class="fas fa-list" aria-hidden="true"></i> Lista de Denúncias</h2>
+                            <span id="countLabel" aria-live="polite">0 denúncias</span>
+                        </div>
+                        <div class="admin-table-scroll" role="region" aria-label="Tabela de denúncias" tabindex="0">
+                            <table class="complaints-table">
+                                <thead><tr><th>Título</th><th>Categoria</th><th>Endereço / Bairro</th><th>Cidadão</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead>
+                                <tbody id="denunciasTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="admin-table-footer">
+                            <span id="adminPageSummary" aria-live="polite"></span>
+                            <div class="pagination" id="pagination" aria-label="Paginação das denúncias"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-icon red">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="dashboard-card-info">
-                        <h3 id="emAnalise">0</h3>
-                        <p>Em Análise</p>
-                    </div>
-                </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-icon green">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="dashboard-card-info">
-                        <h3 id="resolvidos">0</h3>
-                        <p>Resolvidos</p>
-                    </div>
-                </div>
+                </section>
+
+                <section class="admin-extra-panel" id="relatorios" aria-labelledby="adminReportsTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminReportsTitle"><i class="fas fa-chart-bar" aria-hidden="true"></i> Relatórios</h2><p>Distribuição das denúncias por categoria, com base nos registros carregados.</p></div><button class="admin-filter-btn" type="button" id="adminExportCsv"><i class="fas fa-file-csv" aria-hidden="true"></i> Exportar CSV</button></div>
+                    <div id="adminCategoriesSummary" class="admin-report-grid" aria-live="polite"></div>
+                </section>
+                <section class="admin-extra-panel" id="usuarios" aria-labelledby="adminUsersTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminUsersTitle"><i class="fas fa-users" aria-hidden="true"></i> Cidadãos com denúncias</h2><p>Somente autores presentes nas denúncias carregadas; não é uma lista de todas as contas cadastradas.</p></div></div>
+                    <div id="adminReportersSummary" class="admin-report-grid" aria-live="polite"></div>
+                </section>
+                <section class="admin-extra-panel" id="configuracoes" aria-labelledby="adminSettingsTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminSettingsTitle"><i class="fas fa-cog" aria-hidden="true"></i> Configurações do painel</h2><p>Personalize somente a aparência da área administrativa.</p></div><button type="button" class="admin-filter-btn" id="adminThemeSetting"><i class="fas fa-adjust" aria-hidden="true"></i> Alternar tema</button></div>
+                </section>
             </div>
-            
-            <!-- Filtros -->
-            <div class="filters-bar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        placeholder="Buscar denúncias..."
-                        onkeyup="handleAdminSearch()"
-                    >
-                </div>
-                <select class="filter-select" id="categoryFilter" onchange="handleAdminFilter()">
-                    <option value="todas">Todas as Categorias</option>
-                    <option value="Lixo Acumulado">Lixo Acumulado</option>
-                    <option value="Entulho">Entulho</option>
-                    <option value="Esgoto Vazando">Esgoto Vazando</option>
-                    <option value="Iluminação Pública">Iluminação Pública</option>
-                    <option value="Buracos nas Ruas">Buracos nas Ruas</option>
-                    <option value="Terrenos Abandonados">Terrenos Abandonados</option>
-                </select>
-                <select class="filter-select" id="statusFilter" onchange="handleAdminFilter()">
-                    <option value="todos">Todos os Status</option>
-                    <option value="pendente">Pendente</option>
-                    <option value="em-analise">Em Análise</option>
-                    <option value="resolvido">Resolvido</option>
-                </select>
-            </div>
-            
-            <!-- Tabela de Denúncias -->
-            <div class="table-container">
-                <div class="table-header">
-                    <h3><i class="fas fa-list"></i> Lista de Denúncias</h3>
-                    <span id="countLabel" style="color: var(--text-muted);">0 denúncias</span>
-                </div>
-                <table class="complaints-table">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th>Categoria</th>
-                            <th>Endereço</th>
-                            <th>Usuário</th>
-                            <th>Data</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="denunciasTableBody">
-                        <!-- Carregado via JavaScript -->
-                    </tbody>
-                </table>
-                
-                <!-- Paginação -->
-                <div class="pagination" id="pagination">
-                    <!-- Carregado via JavaScript -->
-                </div>
-            </div>
-        </div>
-    </section>
+        </main>
+    </div>
 
     <!-- Modal Alterar Status -->
     <div class="modal-overlay" id="statusModal">
@@ -221,6 +206,7 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
+    <script src="js/admin-layout.js"></script>
     <script>
         // Verificar se é admin
         document.addEventListener('DOMContentLoaded', async function() {
