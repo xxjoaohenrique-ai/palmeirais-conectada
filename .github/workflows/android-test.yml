@@ -47,7 +47,9 @@ jobs:
           test -n "$ANDROID_HOME"
           SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | head -n 1)
           test -n "$SDKMANAGER"
-          "$SDKMANAGER" --install 'platforms;android-36' 'build-tools;36.0.0'
+          "$SDKMANAGER" --install 'platforms;android-36' 'build-tools;36.0.0' 'build-tools;34.0.0'
+          # Bubblewrap 1.22 expects an SDK-root bin/ directory.
+          if [ ! -e "$ANDROID_HOME/bin" ]; then sudo ln -s "$(dirname "$SDKMANAGER")" "$ANDROID_HOME/bin"; fi
 
       - name: Install Bubblewrap and noninteractive configuration
         run: |
