@@ -33,17 +33,19 @@ jobs:
             fi
           done
 
-      - name: Generate Supabase frontend configuration
-        shell: bash
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test and prepare public assets
         run: |
-          cat > js/supabase-config.js <<EOF
-          window.SUPABASE_URL = '${SUPABASE_URL}';
-          window.SUPABASE_ANON_KEY = '${SUPABASE_ANON_KEY}';
-          EOF
+          npm test
+          npm run build
 
       - name: Deploy static site with Wrangler
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --commit-dirty=true
+          command: pages deploy dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --commit-dirty=true

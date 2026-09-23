@@ -8,6 +8,8 @@
 // ===============================================
 
 let selectedImage = null;
+let submittingComplaint = false;
+let imageReadVersion = 0;
 
 // ===============================================
 // PREVIEW DE IMAGEM
@@ -16,44 +18,48 @@ let selectedImage = null;
 function previewImage(input) {
     const preview = document.getElementById('imagePreview');
     const previewImg = document.getElementById('previewImg');
-    
+
+    removeImage(false);
+    const version = imageReadVersion;
     if (input.files && input.files[0]) {
         const file = input.files[0];
-        
+
         // Validar tamanho (5MB)
         if (file.size > 5 * 1024 * 1024) {
             showToast('A imagem deve ter no máximo 5MB.', 'error');
             input.value = '';
             return;
         }
-        
+
         // Validar tipo
         if (!file.type.startsWith('image/')) {
             showToast('Por favor, selecione apenas arquivos de imagem.', 'error');
             input.value = '';
             return;
         }
-        
+
         const reader = new FileReader();
-        
+
         reader.onload = function(e) {
+            if (version !== imageReadVersion) return;
             previewImg.src = e.target.result;
             preview.classList.add('active');
             selectedImage = e.target.result;
         };
-        
+
         reader.readAsDataURL(file);
     }
 }
 
-function removeImage() {
+function removeImage(clearInput = true) {
+    imageReadVersion++;
     const preview = document.getElementById('imagePreview');
     const previewImg = document.getElementById('previewImg');
     const input = document.getElementById('foto');
-    
+
     preview.classList.remove('active');
     previewImg.src = '';
-    input.value = '';
+    if (clearInput) input.value = '';
     selectedImage = null;
 }
 
@@ -63,77 +69,90 @@ function removeImage() {
 
 async function handleDenuncia(event) {
     event.preventDefault();
-    
+    if (submittingComplaint) return;
+
     const currentUser = getCurrentUser();
     if (!currentUser) {
         showToast('Você precisa estar logado para fazer uma denúncia.', 'error');
         return;
     }
-    
+
     const titulo = document.getElementById('titulo').value.trim();
     const categoria = document.getElementById('categoria').value;
     const endereco = document.getElementById('endereco').value.trim();
     const descricao = document.getElementById('descricao').value.trim();
     const errorDiv = document.getElementById('denunciaError');
-    
+
     // Validações
     if (!titulo || !categoria || !endereco || !descricao) {
         showError(errorDiv, 'Por favor, preencha todos os campos obrigatórios.');
         return;
     }
-    
+
     if (titulo.length < 10) {
         showError(errorDiv, 'O título deve ter pelo menos 10 caracteres.');
         return;
     }
-    
+
     if (descricao.length < 20) {
         showError(errorDiv, 'A descrição deve ter pelo menos 20 caracteres.');
         return;
     }
-    
-    // Criar denúncia
-    const novaDenuncia = {
-        id: generateId(),
-        titulo: titulo,
-        categoria: categoria,
-        endereco: endereco,
-        descricao: descricao,
-        foto: selectedImage || getDefaultImage(categoria),
-        status: 'pendente',
-        userId: currentUser.id,
-        userName: currentUser.nome,
-        userEmail: currentUser.email,
-        data: new Date().toISOString(),
-        dataAtualizacao: new Date().toISOString()
-    };
-    
-    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
-        try {
-            await syncComplaintToSupabase(novaDenuncia);
-        } catch (error) {
-            console.error('Falha ao gravar denúncia no Supabase:', error);
-            showError(errorDiv, 'Não foi possível gravar a denúncia no servidor. Tente novamente.');
-            return;
-        }
-    }
 
-    // Salvar
-    const denuncias = getDenuncias();
-    denuncias.unshift(normalizeComplaint(novaDenuncia));
-    saveDenuncias(denuncias);
-    
-    // Mostrar sucesso
-    showToast('Denúncia registrada com sucesso! Está pendente de análise.', 'success');
-    
-    // Limpar formulário
-    document.getElementById('denunciaForm').reset();
-    removeImage();
-    
-    // Redirecionar
-    setTimeout(() => {
-        window.location.href = 'minhas-denuncias.html';
-    }, 1500);
+    if (!(window.isSupabaseConfigured && window.isSupabaseConfigured())) {
+        showError(errorDiv, 'O serviço de denúncias está indisponível. Tente novamente em instantes.');
+        return;
+    }
+    submittingComplaint = true;
+    const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
+    try {
+        // Criar denúncia
+        const novaDenuncia = {
+            id: generateId(),
+            titulo: titulo,
+            categoria: categoria,
+            endereco: endereco,
+            descricao: descricao,
+            foto: selectedImage || getDefaultImage(categoria),
+            status: 'pendente',
+            userId: currentUser.id,
+            userName: currentUser.nome,
+            userEmail: currentUser.email,
+            data: new Date().toISOString(),
+            dataAtualizacao: new Date().toISOString()
+        };
+
+        if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+            try {
+                await syncComplaintToSupabase(novaDenuncia);
+            } catch (error) {
+                console.error('Falha ao gravar denúncia no Supabase:', error);
+                showError(errorDiv, 'Não foi possível gravar a denúncia no servidor. Tente novamente.');
+                return;
+            }
+        }
+
+        // Salvar
+        const denuncias = getDenuncias();
+        denuncias.unshift(normalizeComplaint(novaDenuncia));
+        saveDenuncias(denuncias);
+
+        // Mostrar sucesso
+        showToast('Denúncia registrada com sucesso! Está pendente de análise.', 'success');
+
+        // Limpar formulário
+        document.getElementById('denunciaForm').reset();
+        removeImage();
+
+        // Redirecionar
+        setTimeout(() => {
+            window.location.href = 'minhas-denuncias.html';
+        }, 1500);
+    } finally {
+        submittingComplaint = false;
+        if (submitButton) submitButton.disabled = false;
+    }
 }
 
 // ===============================================
@@ -161,14 +180,14 @@ function showError(element, message) {
         element.innerHTML = `
             <div class="alert alert-error">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>${message}</span>
+                <span>${escapeHtml(message)}</span>
             </div>
         `;
         element.style.display = 'block';
-        
+
         // Scroll para o erro
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
+
         // Remover após 5 segundos
         setTimeout(() => {
             element.style.display = 'none';
@@ -180,16 +199,23 @@ function showError(element, message) {
 // CARREGAR MINHAS DENÚNCIAS
 // ===============================================
 
-function loadMinhasDenuncias() {
+async function loadMinhasDenuncias() {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
-    
+
     const container = document.getElementById('minhasDenunciasGrid');
     if (!container) return;
-    
-    const denuncias = getDenuncias();
+
+    let denuncias;
+    try { denuncias = await getMergedComplaints(); }
+    catch (error) {
+        container.innerHTML = '<div class="no-complaints" role="alert"><p>Não foi possível carregar suas denúncias. Tente novamente em instantes.</p></div>';
+        return;
+    }
+    if (typeof window.updateStatusCounts === 'function') window.updateStatusCounts();
+    if (typeof window.handleSearch === 'function') { window.handleSearch(); return; }
     const minhasDenuncias = denuncias.filter(d => d.userId === currentUser.id);
-    
+
     if (minhasDenuncias.length === 0) {
         container.innerHTML = `
             <div class="no-complaints" style="grid-column: 1 / -1;">
@@ -202,7 +228,7 @@ function loadMinhasDenuncias() {
         `;
         return;
     }
-    
+
     container.innerHTML = minhasDenuncias.map(denuncia => `
         <div class="my-complaint-card">
             <div class="my-complaint-image">
@@ -232,7 +258,7 @@ function loadMinhasDenuncias() {
                     </span>
                 </div>
                 <div class="my-complaint-actions">
-                    <a href="detalhes.html?id=${escapeHtml(denuncia.id)}" class="btn btn-primary btn-sm">
+                    <a href="detalhes.html?id=${encodeURIComponent(denuncia.id)}" class="btn btn-primary btn-sm">
                         <i class="fas fa-eye"></i> Ver Detalhes
                     </a>
                 </div>
@@ -248,12 +274,12 @@ function loadMinhasDenuncias() {
 function searchDenuncias(query) {
     const currentUser = getCurrentUser();
     if (!currentUser) return [];
-    
+
     const denuncias = getDenuncias();
     const minhasDenuncias = denuncias.filter(d => d.userId === currentUser.id);
-    
+
     if (!query) return minhasDenuncias;
-    
+
     const searchTerm = query.toLowerCase();
     return minhasDenuncias.filter(d => 
         d.titulo.toLowerCase().includes(searchTerm) ||
@@ -266,12 +292,12 @@ function searchDenuncias(query) {
 function filterDenunciasByStatus(status) {
     const currentUser = getCurrentUser();
     if (!currentUser) return [];
-    
+
     const denuncias = getDenuncias();
     const minhasDenuncias = denuncias.filter(d => d.userId === currentUser.id);
-    
+
     if (!status || status === 'todos') return minhasDenuncias;
-    
+
     return minhasDenuncias.filter(d => d.status === status);
 }
 

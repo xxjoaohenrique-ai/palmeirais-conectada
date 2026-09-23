@@ -27,7 +27,7 @@
                 <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -84,7 +84,7 @@
                         <i class="fas fa-lock field-decor" aria-hidden="true"></i>
                         <button 
                             type="button" 
-                            onclick="togglePasswordVisibility('senha', this)"
+                            aria-label="Mostrar senha" aria-pressed="false" onclick="togglePasswordVisibility('senha', this)"
                             style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);"
                         >
                             <i class="fas fa-eye"></i>
@@ -136,7 +136,7 @@
                 <a href="#" onclick="showForgotPasswordForm(); return false;">Esqueci minha senha</a>
             </p>
 
-            <p class="auth-note"><i class="fas fa-shield-halved"></i> Entre com a senha da conta cadastrada no Supabase.</p>
+            <p class="auth-note"><i class="fas fa-shield-halved"></i> Entre com o e-mail e a senha da sua conta.</p>
             
             <div class="form-footer">
                 <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
@@ -162,8 +162,9 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initializePasswordRecovery();
+        document.addEventListener('DOMContentLoaded', async function() {
+            await restoreSupabaseSession();
+            if (initializePasswordRecovery()) return;
             const currentUser = getCurrentUser();
             if (currentUser) {
                 window.location.href = currentUser.isAdmin ? 'admin.html' : 'index.html';
@@ -190,4 +191,3 @@
     </script>    <script src="js/mobile-app.js" defer></script>
 </body>
 </html>
-

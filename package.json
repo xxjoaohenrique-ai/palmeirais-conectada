@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "npx serve -l 3000",
-    "start": "npx serve -l 3000"
+    "start": "npx serve -l 3000",
+    "test": "node --test tests/*.test.cjs",
+    "build": "node scripts/build.cjs"
   },
   "devDependencies": {
     "@types/react": "^19.2.15",

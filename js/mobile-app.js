@@ -8,7 +8,8 @@
     nav.setAttribute('aria-label', 'Navegação do aplicativo');
     document.body.appendChild(nav);
 
-    const currentPage = location.pathname.split('/').pop() || 'index.html';
+    const pageName = location.pathname.split('/').pop() || 'index.html';
+    const currentPage = pageName.includes('.') ? pageName : pageName + '.html';
     const menuToggle = document.getElementById('navToggle');
     const menu = document.getElementById('navMenu');
 
@@ -27,7 +28,9 @@
       return a;
     }
 
+    let menuObserver;
     function render(user) {
+      if (menuObserver) menuObserver.disconnect();
       nav.replaceChildren();
       nav.appendChild(link('index.html', 'fa-home', 'Início'));
       if (user) {
@@ -56,10 +59,10 @@
       });
       nav.appendChild(more);
       if (menu) {
-        const observer = new MutationObserver(function () {
+        menuObserver = new MutationObserver(function () {
           more.setAttribute('aria-expanded', String(menu.classList.contains('active')));
         });
-        observer.observe(menu, { attributes: true, attributeFilter: ['class'] });
+        menuObserver.observe(menu, { attributes: true, attributeFilter: ['class'] });
       }
     }
 
@@ -68,7 +71,7 @@
       catch (_) { return null; }
     };
     render(getUser());
-    if (!getUser() && typeof window.restoreSupabaseSession === 'function') {
+    if (typeof window.restoreSupabaseSession === 'function') {
       Promise.resolve(window.restoreSupabaseSession())
         .then(function () { render(getUser()); })
         .catch(function () { /* Keep public navigation if the session cannot be restored. */ });

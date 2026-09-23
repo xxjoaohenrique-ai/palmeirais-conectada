@@ -26,7 +26,7 @@
                 <span>Palmeirais Conectada</span>
             </a>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -132,7 +132,8 @@
     <script src="js/denuncia.js"></script>
     <script>
         // Verificar login
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            await restoreSupabaseSession();
             if (!requireLogin()) return;
             
             // Atualizar navbar
@@ -142,8 +143,7 @@
             }
             
             // Carregar denúncias
-            loadMinhasDenuncias();
-            updateStatusCounts();
+            await loadMinhasDenuncias();
         });
         
         // Atualizar contadores de status
@@ -198,7 +198,7 @@
             container.innerHTML = denuncias.map(denuncia => `
                 <div class="my-complaint-card">
                     <div class="my-complaint-image">
-                        <img src="${denuncia.foto}" alt="${denuncia.titulo}">
+                        <img src="${escapeHtml(denuncia.foto)}" alt="${escapeHtml(denuncia.titulo)}">
                         <div class="my-complaint-status">
                             <span class="status-badge ${denuncia.status}">
                                 <i class="${getStatusIcon(denuncia.status)}"></i>
@@ -209,14 +209,14 @@
                     <div class="my-complaint-content">
                         <span class="my-complaint-category">
                             <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                            ${denuncia.categoria}
+                            ${escapeHtml(denuncia.categoria)}
                         </span>
-                        <h3 class="my-complaint-title">${denuncia.titulo}</h3>
-                        <p class="my-complaint-description">${denuncia.descricao}</p>
+                        <h3 class="my-complaint-title">${escapeHtml(denuncia.titulo)}</h3>
+                        <p class="my-complaint-description">${escapeHtml(denuncia.descricao)}</p>
                         <div class="my-complaint-meta">
                             <span>
                                 <i class="fas fa-map-marker-alt"></i>
-                                ${denuncia.endereco}
+                                ${escapeHtml(denuncia.endereco)}
                             </span>
                             <span>
                                 <i class="fas fa-calendar"></i>
@@ -226,7 +226,7 @@
                         <div class="my-complaint-meta" style="margin-top: 0.5rem; border-top: 1px solid rgba(21,94,117,0.08); padding-top: 0.5rem;">
                             <span>
                                 <i class="fas fa-user"></i>
-                                ${denuncia.userName || 'Usuário'}
+                                ${escapeHtml(denuncia.userName || 'Usuário')}
                             </span>
                             <span>
                                 <i class="fas fa-clipboard-check"></i>
@@ -234,7 +234,7 @@
                             </span>
                         </div>
                         <div class="my-complaint-actions">
-                            <a href="detalhes.html?id=${denuncia.id}" class="btn btn-primary btn-sm">
+                            <a href="detalhes.html?id=${encodeURIComponent(denuncia.id)}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-eye"></i> Ver Detalhes
                             </a>
                         </div>
@@ -263,4 +263,3 @@
     </script>    <script src="js/mobile-app.js" defer></script>
 </body>
 </html>
-

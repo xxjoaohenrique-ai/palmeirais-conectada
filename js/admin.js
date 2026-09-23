@@ -27,13 +27,12 @@ async function loadAdminDashboard() {
             return;
         }
     } else {
-        allDenuncias = getDenuncias();
+        showToast('O serviço de denúncias está indisponível.', 'error');
+        return;
     }
-    filteredDenuncias = [...allDenuncias];
     saveDenuncias(allDenuncias);
-    
     updateAdminStats();
-    renderDenunciasTable();
+    applyFilters(document.getElementById('searchInput')?.value.toLowerCase() || '', false);
 }
 
 function setupRealtimeAdminDashboard() {
@@ -99,7 +98,7 @@ function handleAdminFilter() {
     applyFilters(query);
 }
 
-function applyFilters(query = '') {
+function applyFilters(query = '', resetPage = true) {
     const categoryFilter = document.getElementById('categoryFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
     
@@ -122,7 +121,7 @@ function applyFilters(query = '') {
         return matchesSearch && matchesCategory && matchesStatus;
     });
     
-    currentPage = 1;
+    currentPage = resetPage ? 1 : Math.min(currentPage, Math.max(1, Math.ceil(filteredDenuncias.length / itemsPerPage)));
     renderDenunciasTable();
 }
 
@@ -162,26 +161,26 @@ function renderDenunciasTable() {
             <td>
                 <div style="max-width: 200px;">
                     <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${denuncia.titulo}
+                        ${escapeHtml(denuncia.titulo)}
                     </strong>
                 </div>
             </td>
             <td>
                 <span class="complaint-category" style="white-space: nowrap;">
                     <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                    ${denuncia.categoria}
+                    ${escapeHtml(denuncia.categoria)}
                 </span>
             </td>
             <td>
                 <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
                     <i class="fas fa-map-marker-alt"></i>
-                    ${truncateText(denuncia.endereco, 25)}
+                    ${escapeHtml(truncateText(denuncia.endereco, 25))}
                 </span>
             </td>
             <td>
                 <span style="display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-user" style="color: var(--primary);"></i>
-                    ${denuncia.userName}
+                    ${escapeHtml(denuncia.userName)}
                 </span>
             </td>
             <td>
@@ -197,13 +196,13 @@ function renderDenunciasTable() {
             </td>
             <td>
                 <div class="table-actions">
-                    <a href="detalhes.html?id=${denuncia.id}" class="btn-icon view" title="Ver detalhes">
+                    <a href="detalhes.html?id=${encodeURIComponent(denuncia.id)}" class="btn-icon view" title="Ver detalhes">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <button class="btn-icon edit" title="Alterar status" onclick="openStatusModal('${denuncia.id}', '${denuncia.status}')">
+                    <button class="btn-icon edit" title="Alterar status" data-id="${escapeHtml(denuncia.id)}" data-status="${escapeHtml(denuncia.status)}" onclick="openStatusModal(this.dataset.id, this.dataset.status)">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon delete" title="Excluir" onclick="openDeleteModal('${denuncia.id}')">
+                    <button class="btn-icon delete" title="Excluir" data-id="${escapeHtml(denuncia.id)}" onclick="openDeleteModal(this.dataset.id)">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

@@ -23,3 +23,11 @@ Como este projeto e um site estatico, as variaveis precisam estar no GitHub Acti
 Variaveis criadas somente no painel do Cloudflare Pages nao ficam disponiveis para JavaScript estatico no navegador.
 
 Depois disso, cada alteracao enviada para `main` sera publicada automaticamente.
+
+## Verificação das correções
+
+- `npm test`: executa os testes de regressão com Node.js 22 ou superior, sem dependências adicionais.
+- `npm run build`: prepara somente os arquivos públicos em `dist/`. Os testes, caches e arquivos internos do repositório não são publicados.
+- O workflow de pull requests executa os testes e o build antes da revisão.
+
+A autenticação e o envio de denúncias exigem o Supabase disponível. Não há criação automática de administrador nem cadastro local: essas operações não devem parecer concluídas quando o servidor está indisponível. Administradores continuam sendo definidos por `profiles.is_admin`, protegido pelas políticas e pelo trigger existentes no banco.

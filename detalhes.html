@@ -26,7 +26,7 @@
                 <span>Palmeirais Conectada</span>
             </a>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -71,7 +71,8 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            await restoreSupabaseSession();
             // Atualizar navbar
             updateUIForLoggedUser();
             
@@ -79,7 +80,7 @@
             loadDenunciaDetails();
         });
         
-        function loadDenunciaDetails() {
+        async function loadDenunciaDetails() {
             const container = document.getElementById('detailsContainer');
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
@@ -98,7 +99,12 @@
                 return;
             }
             
-            const denuncias = getDenuncias();
+            let denuncias;
+            try { denuncias = await getMergedComplaints(); }
+            catch (error) {
+                container.innerHTML = '<div class="details-card" role="alert"><p>Não foi possível carregar esta denúncia. Tente novamente em instantes.</p></div>';
+                return;
+            }
             const denuncia = denuncias.find(d => d.id === id);
             
             if (!denuncia) {
@@ -122,7 +128,7 @@
             container.innerHTML = `
                 <div class="details-card">
                     <div class="details-image">
-                        <img src="${denuncia.foto}" alt="${denuncia.titulo}">
+                        <img src="${escapeHtml(denuncia.foto)}" alt="${escapeHtml(denuncia.titulo)}">
                         <div class="details-status">
                             <span class="status-badge ${denuncia.status}">
                                 <i class="${getStatusIcon(denuncia.status)}"></i>
@@ -135,21 +141,21 @@
                         <div class="details-header">
                             <span class="details-category">
                                 <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                                ${denuncia.categoria}
+                                ${escapeHtml(denuncia.categoria)}
                             </span>
                             <span style="color: var(--text-muted); font-size: 0.875rem;">
-                                #${denuncia.id.substring(0, 8)}
+                                #${escapeHtml(denuncia.id.substring(0, 8))}
                             </span>
                         </div>
                         
-                        <h1 class="details-title">${denuncia.titulo}</h1>
+                        <h1 class="details-title">${escapeHtml(denuncia.titulo)}</h1>
                         
                         <div class="details-info">
                             <div class="details-info-item">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <div>
                                     <span>Localização</span>
-                                    <strong>${denuncia.endereco}</strong>
+                                    <strong>${escapeHtml(denuncia.endereco)}</strong>
                                 </div>
                             </div>
                             <div class="details-info-item">
@@ -163,7 +169,7 @@
                                 <i class="fas fa-user"></i>
                                 <div>
                                     <span>Denunciante</span>
-                                    <strong>${denuncia.userName}</strong>
+                                    <strong>${escapeHtml(denuncia.userName)}</strong>
                                 </div>
                             </div>
                             <div class="details-info-item">
@@ -177,7 +183,7 @@
                         
                         <div class="details-description">
                             <h3><i class="fas fa-align-left"></i> Descrição</h3>
-                            <p>${denuncia.descricao}</p>
+                            <p>${escapeHtml(denuncia.descricao)}</p>
                         </div>
                         
                         <div class="details-actions">
@@ -258,4 +264,3 @@
     </script>    <script src="js/mobile-app.js" defer></script>
 </body>
 </html>
-
