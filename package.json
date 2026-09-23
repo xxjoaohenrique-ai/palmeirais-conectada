@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "npx serve -l 3000",
-    "start": "npx serve -l 3000"
+    "start": "npx serve -l 3000",
+    "check:pwa": "node scripts/check-pwa.mjs"
   },
   "devDependencies": {
     "@types/react": "^19.2.15",
