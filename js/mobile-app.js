@@ -50,7 +50,10 @@
       const label = document.createElement('span');
       label.textContent = 'Menu';
       more.append(icon, label);
-      more.addEventListener('click', function () {
+      more.addEventListener('click', function (event) {
+        // Evita que o click no botão inferior chegue ao listener global,
+        // que interpretava o clique como fora do menu e o fechava imediatamente.
+        event.stopPropagation();
         if (menuToggle) menuToggle.click();
         more.setAttribute('aria-expanded', String(Boolean(menu && menu.classList.contains('active'))));
       });
