@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/categorias.css">
     <link rel="stylesheet" href="css/micro-animations.css">
     <link rel="stylesheet" href="css/install-app.css">
+    <link rel="stylesheet" href="css/home-refined.css">
 </head>
 <body class="page-home">
     <!-- Navbar -->
@@ -28,7 +29,7 @@
                 <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -51,18 +52,18 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <p class="hero-eyebrow">Uma cidade mais participativa</p>
+            <p class="hero-eyebrow">Sua cidade. Sua voz.</p>
             <h1 class="hero-title animate-fade-in"><span>Palmeirais</span><span>Conectada</span></h1>
-            <p class="hero-headline">Sua voz pela cidade.</p>
+            <p class="hero-headline">Transforme o lugar onde você vive.</p>
             <p class="hero-subtitle animate-fade-in-delay">
-                Registre e acompanhe denúncias sobre problemas urbanos. Juntos por um Palmeirais mais transparente, inclusivo e preparado para o futuro.
+                Viu um problema na cidade? Conte para a gente e acompanhe cada etapa da sua solicitação.
             </p>
             <div class="hero-buttons animate-fade-in-delay-2">
                 <a href="cadastro.html" class="btn btn-primary btn-lg" id="heroBtn">
                     <i class="fas fa-user-plus"></i> Cadastre-se Agora
                 </a>
-                <a href="sobre.html" class="btn btn-outline btn-lg">
-                    <i class="fas fa-info-circle"></i> Saiba Mais
+                <a href="#como-funciona" class="btn btn-outline btn-lg">
+                    <i class="fas fa-arrow-down"></i> Como funciona
                 </a>
                 <button type="button" id="installAppButton" class="btn btn-lg"><i class="fas fa-download" aria-hidden="true"></i> Instalar aplicativo</button>
             </div>
@@ -74,15 +75,15 @@
         <div class="feature-strip-inner">
             <a class="feature-card" href="denuncia.html">
                 <span class="feature-icon"><i class="fas fa-file-alt" aria-hidden="true"></i></span>
-                <div><h2>Serviços Online</h2><p>Registre problemas urbanos e acompanhe suas solicitações de forma simples e segura.</p><span class="feature-cta">Acessar Serviços <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>
+                <div><h2>Registrar problema</h2><p>Conte o que precisa de atenção na cidade.</p><span class="feature-cta">Fazer denúncia <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>
             </a>
             <a class="feature-card" href="cadastro.html">
                 <span class="feature-icon"><i class="fas fa-users" aria-hidden="true"></i></span>
-                <div><h2>Participação Cidadã</h2><p>Faça parte da comunidade e ajude a construir uma Palmeirais melhor para todos.</p><span class="feature-cta">Quero Participar <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>
+                <div><h2>Faça parte</h2><p>Crie sua conta e participe da mudança.</p><span class="feature-cta">Criar conta <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>
             </a>
             <a class="feature-card" href="minhas-denuncias.html">
                 <span class="feature-icon"><i class="fas fa-list-alt" aria-hidden="true"></i></span>
-                <div><h2>Minhas Denúncias</h2><p>Acompanhe o andamento das ocorrências que você registrou na cidade.</p><span class="feature-cta">Acompanhar <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>
+                <div><h2>Acompanhe</h2><p>Veja o andamento do que você enviou.</p><span class="feature-cta">Minhas denúncias <i class="fas fa-arrow-right" aria-hidden="true"></i></span></div>
             </a>
         </div>
     </section>
@@ -179,13 +180,13 @@
     </section>
 
     <!-- How It Works Section -->
-    <section class="how-it-works">
+    <section class="how-it-works" id="como-funciona">
         <div class="container">
             <h2 class="section-title">
                 <i class="fas fa-question-circle"></i>
-                Como Funciona?
+                Como funciona
             </h2>
-            <p class="section-subtitle">Em apenas 3 passos simples você pode ajudar sua cidade</p>
+            <p class="section-subtitle">Três passos para fazer sua voz chegar mais longe.</p>
             
             <div class="steps-grid">
                 <div class="step-card animate-on-scroll">
@@ -221,9 +222,9 @@
         <div class="container">
             <h2 class="section-title">
                 <i class="fas fa-clock"></i>
-                Denúncias Recentes
+                A cidade em movimento
             </h2>
-            <p class="section-subtitle">Acompanhe os problemas registrados pela comunidade, sem precisar entrar</p>
+            <p class="section-subtitle">Veja os registros recentes da comunidade.</p>
             
             <div class="complaints-grid" id="recentComplaints">
                 <!-- Denúncias serão carregadas via JavaScript -->
