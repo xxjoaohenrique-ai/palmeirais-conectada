@@ -28,5 +28,18 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
+  ],
+  "orientation": "any",
+  "shortcuts": [
+    {
+      "name": "Início",
+      "short_name": "Início",
+      "url": "./index.html"
+    },
+    {
+      "name": "Nova denúncia",
+      "short_name": "Denunciar",
+      "url": "./denuncia.html"
+    }
   ]
 }
