@@ -40,15 +40,16 @@
             }
         });
 
-        if (!error && data?.user) {
+        if (!error && data?.session && data?.user) {
             try {
-                await supabase.from('profiles').upsert({
+                const { error: profileError } = await supabase.from('profiles').upsert({
                     id: data.user.id,
                     nome: nome || '',
                     email: email,
                     is_admin: false,
                     created_at: new Date().toISOString()
-                }, { onConflict: 'id' });
+                }, { onConflict: 'id', ignoreDuplicates: true });
+                if (profileError) console.warn('Não foi possível sincronizar o perfil:', profileError.message);
             } catch (profileError) {
                 console.warn('Não foi possível sincronizar profile do usuário:', profileError);
             }
@@ -60,7 +61,24 @@
     async function signIn({ email, password }) {
         const supabase = getSupabaseClient();
         if (!supabase) return { data: null, error: new Error('Supabase não configurado.') };
-        return supabase.auth.signInWithPassword({ email, password });
+        const result = await supabase.auth.signInWithPassword({ email, password });
+        // Contas com confirmação de e-mail só podem criar o perfil após autenticar.
+        // ignoreDuplicates preserva o perfil e as permissões já definidos pelo servidor.
+        if (!result.error && result.data?.session && result.data?.user) {
+            const user = result.data.user;
+            try {
+                const { error } = await supabase.from('profiles').upsert({
+                    id: user.id,
+                    nome: user.user_metadata?.nome || '',
+                    email: user.email,
+                    is_admin: false
+                }, { onConflict: 'id', ignoreDuplicates: true });
+                if (error) console.warn('Não foi possível sincronizar o perfil:', error.message);
+            } catch (error) {
+                console.warn('Não foi possível sincronizar o perfil:', error);
+            }
+        }
+        return result;
     }
 
     async function sendPasswordReset(email, redirectTo) {
@@ -101,8 +119,9 @@
         const supabase = getSupabaseClient();
         if (!supabase) return null;
 
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session || !session.user) return null;
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data?.user) return null;
+        const session = { user: data.user };
 
         return {
             id: session.user.id,
