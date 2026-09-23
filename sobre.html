@@ -15,17 +15,18 @@
     <link rel="icon" type="image/svg+xml" href="icons/app-icon.svg">
     <link rel="stylesheet" href="css/mobile-app.css">
     <link rel="stylesheet" href="css/micro-animations.css">
+    <link rel="stylesheet" href="css/sobre-responsive.css">
 </head>
-<body>
+<body class="page-about">
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <i class="fas fa-city"></i>
-                <span>Palmeirais Conectada</span>
+                <img class="brand-mark" src="icons/city-line.svg" alt="" aria-hidden="true">
+                <span class="brand-wordmark">Palmeirais <strong>Conectada</strong><small>Cidade mais forte com a sua voz</small></span>
             </a>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMenu">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -91,12 +92,12 @@
             </div>
             
             <!-- Valores -->
-            <div class="about-card" style="margin-bottom: 4rem;">
+            <div class="about-card about-values">
                 <h2>
                     <i class="fas fa-heart"></i>
                     Nossos Valores
                 </h2>
-                <ul style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem;">
+                <ul class="about-values-list">
                     <li>
                         <i class="fas fa-check-circle"></i>
                         <strong>Transparência</strong> - Atuamos de forma clara e aberta
@@ -125,15 +126,15 @@
             </div>
             
             <!-- Categorias -->
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 1rem;">
+            <h2 class="about-section-title">
                 <i class="fas fa-tags" style="color: var(--primary);"></i>
                 O que você pode denunciar?
             </h2>
-            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+            <p class="about-section-intro">
                 Nossa plataforma aceita denúncias das seguintes categorias:
             </p>
             
-            <div class="categories-grid" style="margin-bottom: 4rem;">
+            <div class="categories-grid about-categories">
                 <div class="category-card">
                     <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
                         <i class="fas fa-trash"></i>
@@ -179,7 +180,7 @@
             </div>
             
             <!-- Equipe -->
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 2rem;">
+            <h2 class="about-section-title about-team-title">
                 <i class="fas fa-users" style="color: var(--primary);"></i>
                 Nossa Equipe
             </h2>
@@ -209,7 +210,7 @@
             </div>
             
             <!-- FAQ -->
-            <div class="about-card" style="margin-top: 4rem;">
+            <div class="about-card about-faq">
                 <h2>
                     <i class="fas fa-question-circle"></i>
                     Perguntas Frequentes
@@ -258,7 +259,7 @@
             </div>
             
             <!-- CTA -->
-            <div class="cta" style="margin-top: 4rem; border-radius: var(--radius-xl);">
+            <div class="cta about-cta">
                 <div class="cta-content">
                     <h2><i class="fas fa-bullhorn"></i> Pronto para fazer a diferença?</h2>
                     <p>Cadastre-se agora e ajude a construir uma cidade melhor para todos.</p>
