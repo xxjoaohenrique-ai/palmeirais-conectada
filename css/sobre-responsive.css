@@ -487,3 +487,262 @@ body.page-about .about-cta a:focus-visible {
   body.page-about .about-hero-actions a:hover,
   body.page-about .category-card:hover { transform: none; }
 }
+
+/* Seção "O que você pode denunciar?" – isolada da página Sobre. */
+body.page-about .about-report-topics {
+  --topic-border: #d7e8e4;
+  --topic-surface: #ffffff;
+  --topic-muted: #577079;
+  --topic-ink: #16313c;
+  --topic-soft: #f3f9f7;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  min-width: 0;
+  scroll-margin-top: calc(var(--navbar-height) + 24px);
+}
+[data-theme="dark"] body.page-about .about-report-topics {
+  --topic-border: #284e52;
+  --topic-surface: #102c34;
+  --topic-muted: #bdd3d1;
+  --topic-ink: #f2fbf9;
+  --topic-soft: #14383e;
+}
+body.page-about .about-topics-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 3rem);
+  margin-bottom: 1.55rem;
+}
+body.page-about .about-topics-heading-copy { min-width: 0; max-width: 750px; }
+body.page-about .about-topics-eyebrow {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+  color: #168a73;
+  font-size: .73rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+  line-height: 1.55;
+  margin-bottom: .65rem;
+}
+[data-theme="dark"] body.page-about .about-topics-eyebrow { color: #70d9b9; }
+body.page-about .about-topics-eyebrow span {
+  display: inline-block;
+  flex: 0 0 21px;
+  width: 21px;
+  height: 2px;
+  border-radius: 999px;
+  background: #d6a347;
+}
+body.page-about .about-topics-heading h2 {
+  color: var(--topic-ink);
+  font-size: clamp(1.85rem, 3.35vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -.05em;
+  line-height: 1.14;
+  margin: 0 0 .65rem;
+  text-wrap: balance;
+}
+body.page-about .about-topics-heading h2 span { color: #168a73; }
+[data-theme="dark"] body.page-about .about-topics-heading h2 span { color: #67dfb7; }
+body.page-about .about-topics-heading-copy > p:last-child {
+  color: var(--topic-muted);
+  font-size: clamp(.96rem, 1.3vw, 1.07rem);
+  line-height: 1.7;
+  margin: 0;
+}
+body.page-about .about-topics-counter {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: .7rem;
+  padding: .9rem 1.15rem;
+  border: 1px solid var(--topic-border);
+  border-radius: 15px;
+  color: var(--topic-ink);
+  background: var(--topic-surface);
+}
+body.page-about .about-topics-counter strong {
+  color: #159c82;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.06em;
+}
+[data-theme="dark"] body.page-about .about-topics-counter strong { color: #64deb9; }
+body.page-about .about-topics-counter span {
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+body.page-about .about-report-topics .about-categories {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(.85rem, 1.7vw, 1.3rem);
+  margin-bottom: 1.2rem;
+}
+body.page-about .about-report-topics .about-topic-card {
+  --topic-accent: #159c7b;
+  --topic-tint: #e2f7ec;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  min-width: 0;
+  min-height: 238px;
+  padding: clamp(1.2rem, 2.2vw, 1.8rem);
+  border: 1px solid var(--topic-border);
+  border-radius: 16px;
+  background: var(--topic-surface);
+  box-shadow: 0 7px 24px rgba(8, 45, 49, .035);
+  cursor: default;
+  text-align: left;
+  overflow: hidden;
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+body.page-about .about-report-topics .about-topic-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: var(--topic-accent);
+}
+body.page-about .about-report-topics .about-topic-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--topic-accent);
+  box-shadow: 0 12px 30px rgba(8, 45, 49, .095);
+}
+body.page-about .about-report-topics .about-topic-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .6rem;
+  width: 100%;
+  margin-bottom: 1.12rem;
+}
+body.page-about .about-report-topics .category-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  margin: 0;
+  border-radius: 12px;
+  font-size: 1.35rem;
+  color: var(--topic-accent);
+  background: var(--topic-tint);
+}
+body.page-about .about-topic-number {
+  color: var(--topic-muted);
+  opacity: .7;
+  font-weight: 750;
+  font-size: .82rem;
+  letter-spacing: .08em;
+  font-variant-numeric: tabular-nums;
+}
+body.page-about .about-report-topics .about-topic-card h3 {
+  color: var(--topic-ink);
+  font-size: clamp(1.07rem, 1.7vw, 1.25rem);
+  line-height: 1.3;
+  margin: 0 0 .55rem;
+  letter-spacing: -.015em;
+}
+body.page-about .about-report-topics .about-topic-card p {
+  color: var(--topic-muted);
+  font-size: .9rem;
+  line-height: 1.6;
+  margin: 0 0 1.4rem;
+}
+body.page-about .about-topic-label {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: auto;
+  color: var(--topic-accent);
+  font-size: .69rem;
+  font-weight: 800;
+  letter-spacing: .085em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+body.page-about .about-topic-debris { --topic-accent: #b37a21 !important; --topic-tint: #fff3da !important; }
+body.page-about .about-topic-sewage { --topic-accent: #2587bc !important; --topic-tint: #e2f3ff !important; }
+body.page-about .about-topic-light { --topic-accent: #a46f17 !important; --topic-tint: #fff4cd !important; }
+body.page-about .about-topic-road { --topic-accent: #b24e4e !important; --topic-tint: #ffebeb !important; }
+body.page-about .about-topic-land { --topic-accent: #8065b6 !important; --topic-tint: #f0e9ff !important; }
+[data-theme="dark"] body.page-about .about-topic-card {
+  --topic-tint: #204e45;
+  box-shadow: 0 9px 28px rgba(0, 7, 12, .13);
+}
+[data-theme="dark"] body.page-about .about-topic-debris { --topic-accent: #ebbf6f !important; --topic-tint: #453a28 !important; }
+[data-theme="dark"] body.page-about .about-topic-sewage { --topic-accent: #75c8fa !important; --topic-tint: #224357 !important; }
+[data-theme="dark"] body.page-about .about-topic-light { --topic-accent: #ffdd8b !important; --topic-tint: #4a3e25 !important; }
+[data-theme="dark"] body.page-about .about-topic-road { --topic-accent: #ff9999 !important; --topic-tint: #4a3038 !important; }
+[data-theme="dark"] body.page-about .about-topic-land { --topic-accent: #cbb2ff !important; --topic-tint: #393450 !important; }
+[data-theme="dark"] body.page-about .about-topic-waste { --topic-accent: #69e1b2; --topic-tint: #1d4e45; }
+body.page-about .about-topics-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.3rem;
+  padding: clamp(1.15rem, 2vw, 1.5rem) clamp(1.2rem, 2.4vw, 2rem);
+  border: 1px solid #2a555d;
+  border-radius: 15px;
+  background: linear-gradient(115deg, #0f3039, #135047);
+  color: #effef8;
+}
+body.page-about .about-topics-cta strong {
+  display: block;
+  margin-bottom: .15rem;
+  color: #effef8;
+  font-size: 1.05rem;
+}
+body.page-about .about-topics-cta p {
+  margin: 0;
+  color: #c4e4dd;
+  font-size: .9rem;
+  line-height: 1.55;
+}
+body.page-about .about-topics-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  flex: 0 0 auto;
+  min-height: 46px;
+  padding: .7rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #6ae4b8;
+  color: #092e2d;
+  font-size: .9rem;
+  font-weight: 800;
+  text-align: center;
+  transition: background .2s ease;
+}
+body.page-about .about-topics-link:hover { background: #9ff5d2; }
+body.page-about .about-topics-link:focus-visible { outline: 3px solid #efc16e; outline-offset: 4px; }
+@media (max-width: 900px) {
+  body.page-about .about-report-topics .about-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  body.page-about .about-topics-heading { align-items: flex-start; gap: .85rem; }
+  body.page-about .about-topics-counter { padding: .65rem .8rem; }
+  body.page-about .about-topics-counter strong { font-size: 1.65rem; }
+  body.page-about .about-topics-counter span { font-size: .68rem; }
+  body.page-about .about-topics-eyebrow { font-size: .66rem; letter-spacing: .07em; }
+  body.page-about .about-topics-heading h2 { font-size: clamp(1.65rem, 7vw, 2.2rem); }
+  body.page-about .about-report-topics .about-categories { grid-template-columns: minmax(0, 1fr); }
+  body.page-about .about-report-topics .about-topic-card { min-height: 210px; padding: 1.2rem; }
+  body.page-about .about-topics-cta { flex-direction: column; align-items: stretch; }
+  body.page-about .about-topics-link { width: 100%; }
+}
+@media (max-width: 395px) {
+  body.page-about .about-topics-heading { flex-direction: column; align-items: flex-start; }
+  body.page-about .about-topics-counter { align-self: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.page-about .about-report-topics .about-topic-card,
+  body.page-about .about-topics-link { transition: none; }
+  body.page-about .about-report-topics .about-topic-card:hover { transform: none; }
+}
