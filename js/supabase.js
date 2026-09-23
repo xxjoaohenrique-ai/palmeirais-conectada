@@ -40,20 +40,8 @@
             }
         });
 
-        if (!error && data?.user) {
-            try {
-                await supabase.from('profiles').upsert({
-                    id: data.user.id,
-                    nome: nome || '',
-                    email: email,
-                    is_admin: false,
-                    created_at: new Date().toISOString()
-                }, { onConflict: 'id' });
-            } catch (profileError) {
-                console.warn('Não foi possível sincronizar profile do usuário:', profileError);
-            }
-        }
-
+        // O gatilho privado em auth.users cria um perfil sem privilégios.
+        // Nenhuma permissão administrativa é definida pelo navegador.
         return { data, error };
     }
 
@@ -101,14 +89,14 @@
         const supabase = getSupabaseClient();
         if (!supabase) return null;
 
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session || !session.user) return null;
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) return null;
 
         return {
-            id: session.user.id,
-            nome: session.user.user_metadata?.nome || session.user.email?.split('@')[0] || 'Usuário',
-            email: session.user.email,
-            isAdmin: await getServerAdminStatus(supabase, session.user.id)
+            id: user.id,
+            nome: user.user_metadata?.nome || user.email?.split('@')[0] || 'Usuário',
+            email: user.email,
+            isAdmin: await getServerAdminStatus(supabase, user.id)
         };
     }
 
@@ -116,13 +104,38 @@
         const supabase = getSupabaseClient();
         if (!supabase) return [];
 
-        const { data, error } = await supabase.from('denuncias').select('*').order('created_at', { ascending: false });
+        // Somente dados liberados à visualização pública: nunca exponha emails ou fotos.
+        const { data, error } = await supabase.from('denuncias_publicas').select('id,categoria,status,created_at').order('created_at', { ascending: false });
         if (error) {
             console.warn('Não foi possível consultar denúncias no Supabase:', error.message);
             throw error;
         }
 
         return data || [];
+    }
+
+    async function getAdminComplaints() {
+        const supabase = getSupabaseClient();
+        if (!supabase) return [];
+        const { data, error } = await supabase.from('denuncias').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        return data || [];
+    }
+
+    async function getComplaintById(id) {
+        const supabase = getSupabaseClient();
+        if (!supabase || !id) return null;
+        const { data, error } = await supabase.from('denuncias').select('*').eq('id', id).maybeSingle();
+        if (error) throw error;
+        return data || null;
+    }
+
+    async function getPublicStats() {
+        const supabase = getSupabaseClient();
+        if (!supabase) return { total_usuarios: 0 };
+        const { data, error } = await supabase.from('estatisticas_publicas').select('total_usuarios').single();
+        if (error) throw error;
+        return data;
     }
 
     async function createComplaint(complaint) {
@@ -232,6 +245,9 @@
     window.supabaseSignOut = signOut;
     window.supabaseGetSessionUser = getSessionUser;
     window.supabaseGetComplaints = getComplaints;
+    window.supabaseGetAdminComplaints = getAdminComplaints;
+    window.supabaseGetComplaintById = getComplaintById;
+    window.supabaseGetPublicStats = getPublicStats;
     window.supabaseCreateComplaint = createComplaint;
     window.supabaseGetComplaintsByUser = getComplaintsByUser;
     window.supabaseUpdateComplaintStatus = updateComplaintStatus;

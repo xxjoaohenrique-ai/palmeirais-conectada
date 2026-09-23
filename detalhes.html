@@ -71,7 +71,8 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            await restoreSupabaseSession();
             // Atualizar navbar
             updateUIForLoggedUser();
             
@@ -79,7 +80,7 @@
             loadDenunciaDetails();
         });
         
-        function loadDenunciaDetails() {
+        async function loadDenunciaDetails() {
             const container = document.getElementById('detailsContainer');
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
@@ -98,8 +99,14 @@
                 return;
             }
             
-            const denuncias = getDenuncias();
-            const denuncia = denuncias.find(d => d.id === id);
+            let denuncia = null;
+            try {
+                // Supabase RLS autoriza somente o autor ou a administração.
+                const record = await window.supabaseGetComplaintById(id);
+                denuncia = record ? normalizeComplaint(record) : null;
+            } catch (error) {
+                console.warn('Detalhes indisponíveis.');
+            }
             
             if (!denuncia) {
                 container.innerHTML = `
@@ -118,11 +125,13 @@
             const currentUser = getCurrentUser();
             const isOwner = currentUser && currentUser.id === denuncia.userId;
             const isAdmin = currentUser && currentUser.isAdmin;
+            const safePhoto = /^(data:image\/(?:jpeg|png|webp|gif);base64,|https:\/\/|icons\/)/i.test(denuncia.foto)
+                ? denuncia.foto : 'icons/city-line.svg';
             
             container.innerHTML = `
                 <div class="details-card">
                     <div class="details-image">
-                        <img src="${denuncia.foto}" alt="${denuncia.titulo}">
+                        <img src="${escapeHtml(safePhoto)}" alt="${escapeHtml(denuncia.titulo)}">
                         <div class="details-status">
                             <span class="status-badge ${denuncia.status}">
                                 <i class="${getStatusIcon(denuncia.status)}"></i>
@@ -135,49 +144,49 @@
                         <div class="details-header">
                             <span class="details-category">
                                 <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                                ${denuncia.categoria}
+                                ${escapeHtml(denuncia.categoria)}
                             </span>
                             <span style="color: var(--text-muted); font-size: 0.875rem;">
-                                #${denuncia.id.substring(0, 8)}
+                                #${escapeHtml(denuncia.id.substring(0, 8))}
                             </span>
                         </div>
                         
-                        <h1 class="details-title">${denuncia.titulo}</h1>
+                        <h1 class="details-title">${escapeHtml(denuncia.titulo)}</h1>
                         
                         <div class="details-info">
                             <div class="details-info-item">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <div>
                                     <span>Localização</span>
-                                    <strong>${denuncia.endereco}</strong>
+                                    <strong>${escapeHtml(denuncia.endereco)}</strong>
                                 </div>
                             </div>
                             <div class="details-info-item">
                                 <i class="fas fa-calendar-alt"></i>
                                 <div>
                                     <span>Data do Registro</span>
-                                    <strong>${formatDateTime(denuncia.data)}</strong>
+                                    <strong>${escapeHtml(formatDateTime(denuncia.data))}</strong>
                                 </div>
                             </div>
                             <div class="details-info-item">
                                 <i class="fas fa-user"></i>
                                 <div>
                                     <span>Denunciante</span>
-                                    <strong>${denuncia.userName}</strong>
+                                    <strong>${escapeHtml(denuncia.userName)}</strong>
                                 </div>
                             </div>
                             <div class="details-info-item">
                                 <i class="fas fa-sync-alt"></i>
                                 <div>
                                     <span>Última Atualização</span>
-                                    <strong>${formatDateTime(denuncia.dataAtualizacao)}</strong>
+                                    <strong>${escapeHtml(formatDateTime(denuncia.dataAtualizacao))}</strong>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="details-description">
                             <h3><i class="fas fa-align-left"></i> Descrição</h3>
-                            <p>${denuncia.descricao}</p>
+                            <p>${escapeHtml(denuncia.descricao)}</p>
                         </div>
                         
                         <div class="details-actions">
@@ -205,7 +214,7 @@
                                     <div style="flex: 1;">
                                         <strong style="color: var(--text-primary);">Denúncia Registrada</strong>
                                         <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
-                                            ${formatDateTime(denuncia.data)}
+                                            ${escapeHtml(formatDateTime(denuncia.data))}
                                         </p>
                                     </div>
                                 </div>
@@ -226,7 +235,7 @@
                                         <div style="flex: 1;">
                                             <strong style="color: var(--text-primary);">Resolvido</strong>
                                             <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
-                                                ${formatDateTime(denuncia.dataAtualizacao)}
+                                                ${escapeHtml(formatDateTime(denuncia.dataAtualizacao))}
                                             </p>
                                         </div>
                                     </div>

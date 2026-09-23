@@ -7,10 +7,14 @@
 // INICIALIZAÇÃO
 // ===============================================
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar administrador padrão
-    initializeAdmin();
-    
+document.addEventListener('DOMContentLoaded', async function() {
+    await restoreSupabaseSession();
+    // Eliminar credenciais e relatórios antigos armazenados neste navegador.
+    localStorage.removeItem('cidadeLimpa_users');
+    localStorage.removeItem('cidadeLimpa_denuncias');
+    localStorage.removeItem('cidadeLimpa_currentUser');
+    sessionStorage.removeItem('cidadeLimpa_currentUser');
+
     // Inicializar tema
     initializeTheme();
     
@@ -47,96 +51,6 @@ function escapeHtml(value = '') {
         .replace(/'/g, '&#039;');
 }
 
-async function hashPassword(password) {
-    if (!password) return '';
-
-    const encoder = new TextEncoder();
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const keyMaterial = await crypto.subtle.importKey(
-        'raw',
-        encoder.encode(password),
-        'PBKDF2',
-        false,
-        ['deriveBits']
-    );
-
-    const derivedBits = await crypto.subtle.deriveBits({
-        name: 'PBKDF2',
-        salt,
-        iterations: 120000,
-        hash: 'SHA-256'
-    }, keyMaterial, 256);
-
-    const saltBase64 = btoa(String.fromCharCode(...salt));
-    const hashBase64 = btoa(String.fromCharCode(...new Uint8Array(derivedBits)));
-
-    return `${saltBase64}:${hashBase64}`;
-}
-
-async function verifyPassword(password, storedHash) {
-    if (!password || !storedHash) return false;
-
-    const [saltBase64, hashBase64] = String(storedHash).split(':');
-    if (!saltBase64 || !hashBase64) {
-        return false;
-    }
-
-    try {
-        const encoder = new TextEncoder();
-        const salt = Uint8Array.from(atob(saltBase64), char => char.charCodeAt(0));
-        const keyMaterial = await crypto.subtle.importKey(
-            'raw',
-            encoder.encode(password),
-            'PBKDF2',
-            false,
-            ['deriveBits']
-        );
-
-        const derivedBits = await crypto.subtle.deriveBits({
-            name: 'PBKDF2',
-            salt,
-            iterations: 120000,
-            hash: 'SHA-256'
-        }, keyMaterial, 256);
-
-        const expectedHash = btoa(String.fromCharCode(...new Uint8Array(derivedBits)));
-        return constantTimeEqual(expectedHash, hashBase64);
-    } catch (error) {
-        return false;
-    }
-}
-
-function constantTimeEqual(a, b) {
-    if (a.length !== b.length) return false;
-    let result = 0;
-    for (let i = 0; i < a.length; i++) {
-        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    }
-    return result === 0;
-}
-
-function safeParseStorage(key, fallback) {
-    try {
-        const value = localStorage.getItem(key);
-        return value ? JSON.parse(value) : fallback;
-    } catch (error) {
-        console.warn(`Conteúdo inválido em ${key}. Recarregando com fallback.`);
-        return fallback;
-    }
-}
-
-function sanitizeUser(user) {
-    if (!user) return null;
-    return {
-        id: user.id || generateId(),
-        nome: String(user.nome || '').trim(),
-        email: String(user.email || '').trim().toLowerCase(),
-        senhaHash: user.senhaHash || user.senha || '',
-        isAdmin: Boolean(user.isAdmin),
-        dataCadastro: user.dataCadastro || new Date().toISOString()
-    };
-}
-
 function normalizeComplaint(complaint = {}) {
     const item = { ...complaint };
     item.id = item.id || item.denuncia_id || generateId();
@@ -145,7 +59,7 @@ function normalizeComplaint(complaint = {}) {
     item.endereco = item.endereco || item.address || '';
     item.descricao = item.descricao || item.description || '';
     item.foto = item.foto || item.imagem || item.image_url || '';
-    item.status = item.status || 'pendente';
+    item.status = ['pendente', 'em-analise', 'resolvido'].includes(item.status) ? item.status : 'pendente';
     item.userId = item.userId || item.user_id || item.userID || '';
     item.user_id = item.userId;
     item.userName = item.userName || item.user_name || item.nome_usuario || 'Usuário';
@@ -155,86 +69,6 @@ function normalizeComplaint(complaint = {}) {
     item.created_at = item.data;
     return item;
 }
-
-function mergeComplaints(...sources) {
-    const merged = new Map();
-
-    sources.flat().forEach((complaint) => {
-        const normalized = normalizeComplaint(complaint);
-        if (!normalized.id) return;
-        merged.set(normalized.id, normalized);
-    });
-
-    return [...merged.values()].sort((a, b) => new Date(b.data) - new Date(a.data));
-}
-
-async function syncComplaintToSupabase(complaint) {
-    if (!(window.isSupabaseConfigured && window.isSupabaseConfigured()) || !window.supabaseCreateComplaint) {
-        return;
-    }
-
-    try {
-        const normalized = normalizeComplaint(complaint);
-
-        const { data, error } = await window.supabaseCreateComplaint({
-            titulo: normalized.titulo,
-            categoria: normalized.categoria,
-            endereco: normalized.endereco,
-            descricao: normalized.descricao,
-            foto: normalized.foto,
-            status: normalized.status,
-            user_id: normalized.userId,
-            user_name: normalized.userName,
-            user_email: normalized.userEmail,
-            created_at: normalized.data
-        });
-
-        if (error) {
-            throw error;
-        }
-
-        return data;
-    } catch (error) {
-        console.warn('Não foi possível sincronizar denúncia com o Supabase:', error);
-        throw error;
-    }
-}
-
-// ===============================================
-// ADMINISTRADOR PADRÃO
-// ===============================================
-
-async function initializeAdmin() {
-    let users = safeParseStorage('cidadeLimpa_users', []);
-    users = users.filter(u => u && u.email !== 'admin@cidade.com');
-
-    const adminExists = users.find(u => u && u.email === 'admin@palmeirais.pi.gov.br');
-    if (!adminExists) {
-        const adminPassword = 'Palmeirais@2026!Segura';
-        const admin = {
-            id: generateId(),
-            nome: 'Prefeitura Municipal de Palmeirais',
-            email: 'admin@palmeirais.pi.gov.br',
-            senhaHash: await hashPassword(adminPassword),
-            isAdmin: true,
-            dataCadastro: new Date().toISOString()
-        };
-        users.push(admin);
-    }
-
-    localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
-}
-
-// Função para resetar todos os dados (limpar cadastros)
-function resetAllData() {
-    localStorage.removeItem('cidadeLimpa_users');
-    localStorage.removeItem('cidadeLimpa_denuncias');
-    localStorage.removeItem('cidadeLimpa_currentUser');
-    initializeAdmin();
-}
-
-// Executar reset para limpar cadastros antigos
-// resetAllData(); // ← COMENTADO: Não deve resetar a cada página carregada
 
 // ===============================================
 // TEMA (DARK MODE)
@@ -407,66 +241,28 @@ function initializeScrollAnimations() {
 // ===============================================
 
 async function getMergedComplaints() {
-    const localComplaints = getDenuncias();
-    let supabaseComplaints = [];
-
-    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetComplaints) {
-        try {
-            supabaseComplaints = await window.supabaseGetComplaints();
-        } catch (error) {
-            console.warn('Não foi possível sincronizar denúncias do Supabase:', error);
-        }
+    // Apenas a visualização pública, sem dados pessoais.
+    if (!window.supabaseGetComplaints || !window.isSupabaseConfigured?.()) return [];
+    try { return (await window.supabaseGetComplaints()).map(normalizeComplaint); }
+    catch (error) {
+        console.warn('Resumo público indisponível.');
+        return [];
     }
-
-    const merged = mergeComplaints(localComplaints, supabaseComplaints);
-    if (merged.length > 0) {
-        saveDenuncias(merged);
-    }
-    return merged;
-}
-
-async function getAllUsersForStats() {
-    const localUsers = safeParseStorage('cidadeLimpa_users', []);
-    const mergedUsers = new Map();
-
-    localUsers.forEach((user) => {
-        if (!user || !user.email) return;
-        const cleanUser = sanitizeUser(user);
-        mergedUsers.set(String(cleanUser.email).toLowerCase(), cleanUser);
-    });
-
-    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetProfiles) {
-        try {
-            const profiles = await window.supabaseGetProfiles();
-            profiles.forEach((profile) => {
-                if (!profile?.email) return;
-                const normalized = sanitizeUser({
-                    id: profile.id || profile.user_id,
-                    nome: profile.nome || profile.name || profile.email?.split('@')[0] || 'Usuário',
-                    email: profile.email,
-                    senhaHash: '',
-                    isAdmin: Boolean(profile.is_admin || profile.isAdmin),
-                    dataCadastro: profile.created_at || new Date().toISOString()
-                });
-                mergedUsers.set(String(normalized.email).toLowerCase(), normalized);
-            });
-        } catch (error) {
-            console.warn('Não foi possível sincronizar usuários do Supabase:', error);
-        }
-    }
-
-    return [...mergedUsers.values()].filter(user => !user.isAdmin);
 }
 
 async function loadStats() {
     const denuncias = await getMergedComplaints();
-    const users = await getAllUsersForStats();
+    let publicStats = { total_usuarios: 0 };
+    if (window.supabaseGetPublicStats && window.isSupabaseConfigured?.()) {
+        try { publicStats = await window.supabaseGetPublicStats(); }
+        catch (error) { console.warn('Estatísticas públicas indisponíveis.'); }
+    }
     
     const totalDenuncias = denuncias.length;
     const pendentes = denuncias.filter(d => d.status === 'pendente').length;
     const emAnalise = denuncias.filter(d => d.status === 'em-analise').length;
     const resolvidas = denuncias.filter(d => d.status === 'resolvido').length;
-    const totalUsuarios = users.length;
+    const totalUsuarios = publicStats?.total_usuarios || 0;
     
     animateCounter('totalDenuncias', totalDenuncias);
     animateCounter('pendentes', pendentes);
@@ -559,17 +355,17 @@ async function loadRecentComplaints() {
     container.innerHTML = recentDenuncias.map(denuncia => `
         <div class="complaint-card animate-on-scroll">
             <div class="complaint-image">
-                <img src="${escapeHtml(denuncia.foto || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400')}" alt="${escapeHtml(denuncia.titulo)}">
+                <img src="${escapeHtml('icons/city-line.svg')}" alt="${escapeHtml(denuncia.titulo)}">
             </div>
             <div class="complaint-content">
                 <span class="complaint-category">
                     <i class="${getCategoryIcon(denuncia.categoria)}"></i>
                     ${escapeHtml(denuncia.categoria)}
                 </span>
-                <h3 class="complaint-title">${escapeHtml(denuncia.titulo)}</h3>
+                <h3 class="complaint-title">${escapeHtml(denuncia.titulo || 'Ocorrência registrada')}</h3>
                 <p class="complaint-address">
                     <i class="fas fa-map-marker-alt"></i>
-                    ${escapeHtml(denuncia.endereco)}
+                    ${escapeHtml(denuncia.endereco || 'Palmeirais-PI')}
                 </p>
                 <div class="complaint-meta-row">
                     <span class="complaint-user">
@@ -612,45 +408,37 @@ function generateId() {
     });
 }
 
-// Obter usuário atual
+// Obter usuário atual somente após confirmação do Supabase.
 function getCurrentUser() {
-    const userJson = sessionStorage.getItem('cidadeLimpa_currentUser') || localStorage.getItem('cidadeLimpa_currentUser');
-    if (!userJson) return null;
-    try {
-        return JSON.parse(userJson);
-    } catch (error) {
-        sessionStorage.removeItem('cidadeLimpa_currentUser');
-        localStorage.removeItem('cidadeLimpa_currentUser');
-        return null;
-    }
+    return window.__cidadeLimpaVerifiedUser || null;
 }
 
 async function restoreSupabaseSession() {
-    const currentUser = getCurrentUser();
-    if (currentUser || !window.supabaseGetSessionUser) return currentUser;
-
-    try {
-        const supabaseUser = await window.supabaseGetSessionUser();
-        if (!supabaseUser) return null;
-
-        sessionStorage.setItem('cidadeLimpa_currentUser', JSON.stringify(supabaseUser));
-        return supabaseUser;
-    } catch (error) {
-        console.warn('Não foi possível restaurar a sessão do Supabase:', error);
+    if (!window.supabaseGetSessionUser || !window.isSupabaseConfigured?.()) {
+        window.__cidadeLimpaVerifiedUser = null;
         return null;
     }
+    if (!window.__cidadeLimpaSessionPromise) {
+        window.__cidadeLimpaSessionPromise = window.supabaseGetSessionUser()
+            .then(user => {
+                window.__cidadeLimpaVerifiedUser = user || null;
+                return window.__cidadeLimpaVerifiedUser;
+            })
+            .catch(() => {
+                window.__cidadeLimpaVerifiedUser = null;
+                return null;
+            });
+    }
+    return window.__cidadeLimpaSessionPromise;
 }
 
-// Obter todas as denúncias
+// Os registros privados ficam apenas em memória, não em localStorage.
 function getDenuncias() {
-    const stored = JSON.parse(localStorage.getItem('cidadeLimpa_denuncias')) || [];
-    return stored.map(normalizeComplaint);
+    return window.__cidadeLimpaComplaintCache || [];
 }
 
-// Salvar denúncias
 function saveDenuncias(denuncias) {
-    const normalized = (denuncias || []).map(normalizeComplaint);
-    localStorage.setItem('cidadeLimpa_denuncias', JSON.stringify(normalized));
+    window.__cidadeLimpaComplaintCache = (denuncias || []).map(normalizeComplaint);
 }
 
 // Formatar data
@@ -728,7 +516,7 @@ function showToast(message, type = 'success') {
     
     toast.innerHTML = `
         <i class="${icons[type] || icons.success}"></i>
-        <span class="toast-message">${message}</span>
+        <span class="toast-message">${escapeHtml(message)}</span>
         <button class="toast-close" onclick="this.parentElement.remove()">
             <i class="fas fa-times"></i>
         </button>
@@ -811,6 +599,9 @@ async function logout() {
         }
     }
 
+    window.__cidadeLimpaVerifiedUser = null;
+    window.__cidadeLimpaSessionPromise = null;
+    window.__cidadeLimpaComplaintCache = [];
     sessionStorage.removeItem('cidadeLimpa_currentUser');
     localStorage.removeItem('cidadeLimpa_currentUser');
     showToast('Logout realizado com sucesso!', 'success');
@@ -1085,37 +876,6 @@ document.addEventListener('keydown', function(e) {
         });
         document.body.style.overflow = '';
     }
-});
-
-// ===============================================
-// INICIALIZAÇÃO DO SISTEMA
-// ===============================================
-
-async function initializeApp() {
-    if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
-        return;
-    }
-
-    const users = safeParseStorage('cidadeLimpa_users', []);
-    const adminExists = users.some(u => u && u.isAdmin);
-
-    if (!adminExists) {
-        const defaultAdmin = {
-            id: generateId(),
-            nome: 'Administrador',
-            email: 'admin@palmeirais.pi.gov.br',
-            senhaHash: await hashPassword('Palmeirais@2026!Segura'),
-            isAdmin: true,
-            dataCadastro: new Date().toISOString()
-        };
-        users.push(defaultAdmin);
-        localStorage.setItem('cidadeLimpa_users', JSON.stringify(users));
-    }
-}
-
-// Executar inicialização quando o documento carregar
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
 });
 
 // ===============================================
