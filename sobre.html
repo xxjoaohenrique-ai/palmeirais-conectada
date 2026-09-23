@@ -50,20 +50,31 @@
     <section class="about-page">
         <div class="container">
             <!-- Hero -->
-            <div class="about-hero">
-                <h1>
-                    <i class="fas fa-city"></i>
-                    Sobre o Palmeirais Conectada
-                </h1>
-                <p>
-                    Somos uma plataforma colaborativa que conecta cidadãos de Palmeirais e o poder público 
-                    para resolver problemas urbanos de forma rápida e eficiente. 
-                    Acreditamos que juntos podemos construir uma cidade melhor para todos.
-                </p>
+            <div class="about-hero" aria-labelledby="about-heading">
+                <div class="about-hero-copy">
+                    <p class="about-eyebrow"><span aria-hidden="true"></span> CONHEÇA O PROJETO</p>
+                    <h1 id="about-heading">Sobre o <span>Palmeirais Conectada</span></h1>
+                    <p class="about-hero-description">
+                        Somos uma plataforma colaborativa que conecta cidadãos de Palmeirais e o poder público
+                        para resolver problemas urbanos de forma rápida e eficiente.
+                        Acreditamos que juntos podemos construir uma cidade melhor para todos.
+                    </p>
+                    <div class="about-hero-actions">
+                        <a href="#about-mission" class="about-action-primary">Conheça nossa proposta <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                        <a href="#about-categories" class="about-action-secondary">O que posso denunciar? <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="about-hero-art" aria-hidden="true">
+                    <div class="about-art-glow"></div>
+                    <img src="icons/city-line.svg" alt="" width="336" height="252">
+                    <span class="about-art-label">CIDADE MAIS FORTE COM A SUA VOZ</span>
+                    <div class="about-art-rule"></div>
+                    <span class="about-art-footer">Palmeirais · Piauí</span>
+                </div>
             </div>
             
             <!-- Missão e Visão -->
-            <div class="about-grid">
+            <div class="about-grid" id="about-mission">
                 <div class="about-card">
                     <h2>
                         <i class="fas fa-bullseye"></i>
@@ -92,7 +103,7 @@
             </div>
             
             <!-- Valores -->
-            <div class="about-card about-values">
+            <div class="about-card about-values" id="about-values">
                 <h2>
                     <i class="fas fa-heart"></i>
                     Nossos Valores
@@ -126,7 +137,7 @@
             </div>
             
             <!-- Categorias -->
-            <h2 class="about-section-title">
+            <h2 class="about-section-title" id="about-categories">
                 <i class="fas fa-tags" style="color: var(--primary);"></i>
                 O que você pode denunciar?
             </h2>
@@ -180,7 +191,7 @@
             </div>
             
             <!-- Equipe -->
-            <h2 class="about-section-title about-team-title">
+            <h2 class="about-section-title about-team-title" id="about-team">
                 <i class="fas fa-users" style="color: var(--primary);"></i>
                 Nossa Equipe
             </h2>
@@ -210,7 +221,7 @@
             </div>
             
             <!-- FAQ -->
-            <div class="about-card about-faq">
+            <div class="about-card about-faq" id="about-faq">
                 <h2>
                     <i class="fas fa-question-circle"></i>
                     Perguntas Frequentes
