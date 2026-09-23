@@ -541,7 +541,7 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-    return password.length >= 6;
+    return password.length >= 12;
 }
 
 function validateRequired(value) {
