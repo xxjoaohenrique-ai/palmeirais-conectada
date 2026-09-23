@@ -17,19 +17,18 @@ const itemsPerPage = 10;
 // ===============================================
 
 async function loadAdminDashboard() {
-    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetComplaints) {
+    if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetAdminComplaints) {
         try {
             // Banco remoto é a fonte oficial: registros excluídos não podem voltar do cache local.
-            allDenuncias = (await window.supabaseGetComplaints()).map(normalizeComplaint);
+            allDenuncias = (await window.supabaseGetAdminComplaints()).map(normalizeComplaint);
         } catch (error) {
             console.error('Não foi possível consultar denúncias:', error);
             showToast('Erro ao carregar denúncias do servidor. Tente novamente.', 'error');
             return;
         }
     } else {
-        allDenuncias = getDenuncias();
+        allDenuncias = [];
     }
-    saveDenuncias(allDenuncias);
     updateAdminStats();
     // Preserve os filtros selecionados após atualização em tempo real ou edição.
     applyFilters(document.getElementById('searchInput')?.value?.toLowerCase() || '');
