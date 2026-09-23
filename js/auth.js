@@ -121,8 +121,8 @@ async function handlePasswordUpdate(event) {
     const errorDiv = document.getElementById('resetError');
     const submitButton = event.currentTarget?.querySelector('button[type="submit"]');
 
-    if (password.length < 6) {
-        showError(errorDiv, 'A nova senha deve ter pelo menos 6 caracteres.');
+    if (password.length < 12) {
+        showError(errorDiv, 'A nova senha deve ter pelo menos 12 caracteres.');
         return;
     }
 
@@ -209,7 +209,7 @@ async function handleCadastro(event) {
     }
     
     if (!validatePassword(senha)) {
-        showError(errorDiv, 'A senha deve ter pelo menos 6 caracteres.');
+        showError(errorDiv, 'A senha deve ter pelo menos 12 caracteres.');
         return;
     }
     
