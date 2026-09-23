@@ -1,0 +1,163 @@
+/* Layout responsivo da página Sobre. Estilos limitados a body.page-about. */
+body.page-about { --about-accent:#27bd9a; --about-border:rgba(112,171,170,.22); }
+body.page-about .navbar {
+  background:#102437; border-bottom:1px solid #23465a; box-shadow:none;
+}
+body.page-about .nav-container { max-width:1500px; gap: .85rem; }
+body.page-about .nav-logo {
+  display:flex; flex:0 1 auto; min-width:0; gap:.65rem;
+  font-size:clamp(1rem,1.4vw,1.28rem); color:#f5fcff;
+}
+body.page-about .nav-logo .brand-mark { width:62px; height:52px; object-fit:contain; flex-shrink:0; }
+body.page-about .nav-logo .brand-wordmark { display:block; min-width:0; white-space:nowrap; line-height:1.12; letter-spacing:-.035em; }
+body.page-about .brand-wordmark strong { color:#4bd7b0; }
+body.page-about .brand-wordmark small {
+  display:block; padding-top:.35rem; color:#b1c5ce; letter-spacing:.19em;
+  text-transform:uppercase; font-size:.48em; font-weight:600;
+}
+body.page-about .nav-link { color:#d4e2ee; font-weight:600; white-space:nowrap; padding:.65rem .75rem; }
+body.page-about .nav-link.active, body.page-about .nav-link:hover { color:#fff; background:#19466d; }
+body.page-about .nav-link.btn-nav-outline { border-color:#f34f5c; color:#ff7780 !important; }
+body.page-about .nav-link.btn-nav-outline:hover { color:#fff !important; background:#b9293a; }
+body.page-about .theme-toggle { flex-shrink:0; margin-left:0; background:#194657; color:#d8e8ee; }
+body.page-about .nav-toggle { color:#f4ffff; }
+body.page-about .about-page {
+  min-width:0; padding:calc(var(--navbar-height) + clamp(1.6rem, 4vw, 3.5rem))
+    clamp(.8rem, 3vw, 2rem) clamp(2rem, 5vw, 4rem);
+}
+body.page-about .about-page > .container { max-width:1200px; min-width:0; width:100%; padding-inline:0; }
+body.page-about .about-hero { max-width:840px; margin:0 auto clamp(2rem, 5vw, 4rem); }
+body.page-about .about-hero h1 {
+  display:flex; align-items:center; justify-content:center; gap:.75rem; flex-wrap:wrap;
+  font-size:clamp(1.65rem, 4vw, 3rem); line-height:1.17;
+  margin-bottom:clamp(.85rem,2vw,1.5rem); overflow-wrap:break-word;
+}
+body.page-about .about-hero p { font-size:clamp(.96rem,1.7vw,1.25rem); line-height:1.7; }
+body.page-about .about-grid {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(.9rem,2.2vw,2rem); margin-bottom:clamp(2rem,4vw,4rem);
+}
+body.page-about .about-card { min-width:0; padding:clamp(1.1rem, 2.6vw, 2.5rem); }
+body.page-about .about-card h2 {
+  font-size:clamp(1.2rem,2.2vw,1.5rem); line-height:1.3;
+  display:flex; align-items:flex-start; gap:.65rem;
+}
+body.page-about .about-card h2 i { flex:0 0 auto; margin-top:.12rem; }
+body.page-about .about-card p { overflow-wrap:break-word; line-height:1.7; }
+body.page-about .about-values { margin-bottom:clamp(2rem,4vw,4rem); }
+body.page-about .about-values-list {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.85rem 1.3rem; margin-top:1.5rem; width:100%;
+}
+body.page-about .about-values-list li { min-width:0; margin:0; overflow-wrap:break-word; }
+body.page-about .about-values-list li i { flex:0 0 auto; }
+body.page-about .about-section-title {
+  text-align:center; font-size:clamp(1.5rem,3vw,2rem); line-height:1.25;
+  margin:0 0 1rem; overflow-wrap:break-word;
+}
+body.page-about .about-team-title { margin-bottom:clamp(1.1rem,2vw,2rem); }
+body.page-about .about-section-intro {
+  text-align:center; color:var(--text-secondary); margin-bottom:clamp(1.2rem,3vw,2rem);
+  line-height:1.6;
+}
+body.page-about .about-categories {
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(.85rem,2vw,1.5rem); margin-bottom:clamp(2rem,4vw,4rem);
+}
+body.page-about .category-card { min-width:0; padding:clamp(1.2rem,2vw,2rem); cursor:default; }
+body.page-about .category-card h3, body.page-about .category-card p { overflow-wrap:break-word; }
+body.page-about .team-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(.9rem,2vw,1.5rem); }
+body.page-about .team-card { min-width:0; padding:clamp(1.1rem,2.2vw,2rem); }
+body.page-about .team-card h3, body.page-about .team-card p { overflow-wrap:break-word; }
+body.page-about .about-faq { margin-top:clamp(2rem,4vw,4rem); }
+body.page-about .about-faq details, body.page-about .about-faq summary {
+  min-width:0; max-width:100%; overflow-wrap:break-word;
+}
+body.page-about .about-faq summary { line-height:1.5; padding:.15rem 0; }
+body.page-about .about-cta {
+  margin-top:clamp(2rem,4vw,4rem);
+  border-radius:var(--radius-xl); padding:clamp(2rem,5vw,5rem) clamp(1rem,3vw,3rem);
+}
+body.page-about .about-cta h2 { font-size:clamp(1.55rem,3vw,2.5rem); line-height:1.22; }
+body.page-about .about-cta .btn { max-width:100%; white-space:normal; min-height:48px; }
+body.page-about .footer-grid { grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr)); gap:clamp(1rem,3vw,3rem); }
+body.page-about .footer-col, body.page-about .footer-col li { min-width:0; overflow-wrap:anywhere; }
+body.page-about .footer-col h3 { font-size:clamp(1.12rem,1.8vw,1.5rem); overflow-wrap:break-word; }
+body.page-about .contact-info li { align-items:flex-start; }
+body.page-about .contact-info li i { flex:0 0 20px; margin-top:.25rem; }
+@media(max-width:1100px) and (min-width:769px) {
+  body.page-about .nav-container { padding-inline:clamp(.7rem,2vw,1.25rem); }
+  body.page-about .nav-logo { font-size:1.04rem; }
+  body.page-about .nav-logo .brand-mark { width:49px; height:44px; }
+  body.page-about .nav-toggle {
+    display:inline-flex; align-items:center; justify-content:center;
+    flex:0 0 44px; width:44px; height:44px; border-radius:10px;
+    background:rgba(255,255,255,.08); order:2;
+  }
+  body.page-about .theme-toggle { order:3; flex:0 0 44px; }
+  body.page-about .nav-menu {
+    position:fixed; top:calc(var(--navbar-height) + 8px); left:clamp(.8rem,2vw,1.5rem);
+    right:clamp(.8rem,2vw,1.5rem); width:auto; max-height:calc(100dvh - var(--navbar-height) - 20px);
+    overflow-y:auto; display:flex; flex-direction:column; align-items:stretch;
+    padding:.7rem; gap:.3rem; background:#102437; border:1px solid #2b5163;
+    border-radius:14px; box-shadow:0 20px 50px rgba(0,0,0,.25);
+    opacity:0; visibility:hidden; transform:translateY(-9px); pointer-events:none;
+    transition:opacity .2s, transform .2s, visibility .2s; z-index:1200;
+  }
+  body.page-about .nav-menu.active { opacity:1; visibility:visible; transform:none; pointer-events:auto; }
+  body.page-about .nav-link { width:100%; min-height:46px; justify-content:flex-start; }
+  body.page-about .footer-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:900px) {
+  body.page-about .about-grid { grid-template-columns:1fr; }
+  body.page-about .about-categories { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  body.page-about .team-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  body.page-about .footer-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:768px) {
+  body.page-about .nav-container { gap:.45rem; }
+  body.page-about .nav-logo { flex:1 1 auto; width:0; max-width:none; min-width:0; font-size:clamp(.9rem,3.7vw,1.1rem); }
+  body.page-about .nav-logo .brand-mark { width:43px; height:40px; }
+  body.page-about .nav-logo .brand-wordmark {
+    display:block; min-width:0; max-width:100%; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+  }
+  body.page-about .brand-wordmark small {
+    font-size:.43em; letter-spacing:.08em; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+  }
+  body.page-about .nav-menu { background:#102437; border-color:#23465a; }
+  body.page-about .nav-link { min-height:46px; }
+  body.page-about .about-page {
+    padding:calc(var(--navbar-height) + 1.35rem) .9rem 2rem;
+  }
+  body.page-about .about-values-list { grid-template-columns:1fr; }
+  body.page-about .about-card { border-radius:1.1rem; }
+  body.page-about .about-hero h1 { gap:.4rem; }
+  body.page-about .about-hero h1 i { font-size:.85em; }
+  body.page-about .about-cta { padding:2rem 1rem; }
+  body.page-about .about-cta .btn { width:100%; }
+  body.page-about .footer { padding-top:2rem; }
+}
+@media(max-width:600px) {
+  body.page-about .about-categories, body.page-about .team-grid,
+  body.page-about .footer-grid { grid-template-columns:1fr; }
+  body.page-about .about-page { padding-inline:max(.75rem,env(safe-area-inset-left,0px)) max(.75rem,env(safe-area-inset-right,0px)); }
+  body.page-about .about-card,body.page-about .category-card,
+  body.page-about .team-card { padding:1.25rem; }
+  body.page-about .about-hero h1 { font-size:clamp(1.65rem,7vw,2.1rem); }
+  body.page-about .about-hero p { font-size:1rem; }
+  body.page-about .team-avatar { width:78px; height:78px; font-size:2rem; }
+  body.page-about .about-faq details { padding:.8rem !important; }
+  body.page-about .about-section-title { font-size:1.55rem; }
+  body.page-about .footer-grid { gap:1.5rem; }
+}
+@media(max-width:360px) {
+  body.page-about .nav-logo .brand-mark { width:34px; }
+  body.page-about .brand-wordmark small { display:none; }
+  body.page-about .about-page { padding-inline:.65rem; }
+  body.page-about .about-hero h1 { font-size:1.56rem; }
+}
+@media(prefers-reduced-motion:reduce) {
+  body.page-about .team-card:hover,body.page-about .category-card:hover { transform:none; }
+}
