@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - teste-app-android-iphone
   workflow_dispatch:
 
 permissions:
@@ -46,4 +47,4 @@ jobs:
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --commit-dirty=true
+          command: pages deploy . --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ github.ref_name }} --commit-dirty=true
