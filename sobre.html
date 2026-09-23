@@ -136,61 +136,87 @@
                 </ul>
             </div>
             
-            <!-- Categorias -->
-            <h2 class="about-section-title" id="about-categories">
-                <i class="fas fa-tags" style="color: var(--primary);"></i>
-                O que você pode denunciar?
-            </h2>
-            <p class="about-section-intro">
-                Nossa plataforma aceita denúncias das seguintes categorias:
-            </p>
-            
-            <div class="categories-grid about-categories">
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
-                        <i class="fas fa-trash"></i>
+            <!-- Categorias: apresentação visual; o formulário de denúncias permanece inalterado -->
+            <section class="about-report-topics" id="about-categories" aria-labelledby="about-categories-title">
+                <div class="about-topics-heading">
+                    <div class="about-topics-heading-copy">
+                        <p class="about-topics-eyebrow"><span aria-hidden="true"></span> COMO PODEMOS MELHORAR PALMEIRAIS</p>
+                        <h2 id="about-categories-title">O que você pode <span>denunciar?</span></h2>
+                        <p>Encontrou algum problema na cidade? Conheça as categorias disponíveis e ajude a construir uma Palmeirais melhor para todos.</p>
                     </div>
-                    <h3>Lixo Acumulado</h3>
-                    <p>Descarte irregular em vias públicas, praças e terrenos</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                        <i class="fas fa-dumpster"></i>
+                    <div class="about-topics-counter" aria-label="6 categorias de denúncias">
+                        <strong>06</strong>
+                        <span>categorias<br>disponíveis</span>
                     </div>
-                    <h3>Entulho</h3>
-                    <p>Restos de construção e materiais descartados</p>
                 </div>
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
-                        <i class="fas fa-water"></i>
+
+                <div class="categories-grid about-categories">
+                    <article class="category-card about-topic-card about-topic-waste">
+                        <div class="about-topic-top">
+                            <div class="category-icon"><i class="fas fa-trash" aria-hidden="true"></i></div>
+                            <span class="about-topic-number" aria-hidden="true">01</span>
+                        </div>
+                        <h3>Lixo Acumulado</h3>
+                        <p>Descarte irregular em vias públicas, praças e terrenos</p>
+                        <span class="about-topic-label">Limpeza urbana</span>
+                    </article>
+                    <article class="category-card about-topic-card about-topic-debris">
+                        <div class="about-topic-top">
+                            <div class="category-icon"><i class="fas fa-dumpster" aria-hidden="true"></i></div>
+                            <span class="about-topic-number" aria-hidden="true">02</span>
+                        </div>
+                        <h3>Entulho</h3>
+                        <p>Restos de construção e materiais descartados</p>
+                        <span class="about-topic-label">Espaços públicos</span>
+                    </article>
+                    <article class="category-card about-topic-card about-topic-sewage">
+                        <div class="about-topic-top">
+                            <div class="category-icon"><i class="fas fa-water" aria-hidden="true"></i></div>
+                            <span class="about-topic-number" aria-hidden="true">03</span>
+                        </div>
+                        <h3>Esgoto Vazando</h3>
+                        <p>Vazamentos e problemas de saneamento básico</p>
+                        <span class="about-topic-label">Saneamento</span>
+                    </article>
+                    <article class="category-card about-topic-card about-topic-light">
+                        <div class="about-topic-top">
+                            <div class="category-icon"><i class="fas fa-lightbulb" aria-hidden="true"></i></div>
+                            <span class="about-topic-number" aria-hidden="true">04</span>
+                        </div>
+                        <h3>Iluminação Pública</h3>
+                        <p>Postes queimados, piscando ou com defeito</p>
+                        <span class="about-topic-label">Iluminação</span>
+                    </article>
+                    <article class="category-card about-topic-card about-topic-road">
+                        <div class="about-topic-top">
+                            <div class="category-icon"><i class="fas fa-road" aria-hidden="true"></i></div>
+                            <span class="about-topic-number" aria-hidden="true">05</span>
+                        </div>
+                        <h3>Buracos nas Ruas</h3>
+                        <p>Pavimentação danificada e buracos perigosos</p>
+                        <span class="about-topic-label">Vias e mobilidade</span>
+                    </article>
+                    <article class="category-card about-topic-card about-topic-land">
+                        <div class="about-topic-top">
+                            <div class="category-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
+                            <span class="about-topic-number" aria-hidden="true">06</span>
+                        </div>
+                        <h3>Terrenos Abandonados</h3>
+                        <p>Terrenos com mato alto, entulho ou abandonados</p>
+                        <span class="about-topic-label">Cuidado com a cidade</span>
+                    </article>
+                </div>
+
+                <div class="about-topics-cta">
+                    <div>
+                        <strong>Viu algum desses problemas?</strong>
+                        <p>Faça sua denúncia e acompanhe o andamento pelo site.</p>
                     </div>
-                    <h3>Esgoto Vazando</h3>
-                    <p>Vazamentos e problemas de saneamento básico</p>
+                    <a href="denuncia.html" class="about-topics-link">Fazer denúncia <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                 </div>
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3>Iluminação Pública</h3>
-                    <p>Postes queimados, piscando ou com defeito</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        <i class="fas fa-road"></i>
-                    </div>
-                    <h3>Buracos nas Ruas</h3>
-                    <p>Pavimentação danificada e buracos perigosos</p>
-                </div>
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <h3>Terrenos Abandonados</h3>
-                    <p>Terrenos com mato alto, entulho ou abandonados</p>
-                </div>
-            </div>
-            
-            <!-- Equipe -->
+            </section>
+
+                        <!-- Equipe -->
             <h2 class="about-section-title about-team-title" id="about-team">
                 <i class="fas fa-users" style="color: var(--primary);"></i>
                 Nossa Equipe
