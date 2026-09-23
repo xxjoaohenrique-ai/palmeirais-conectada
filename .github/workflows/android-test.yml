@@ -39,11 +39,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Configure Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android API 36
-        run: sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Install Android API 36 using runner SDK
+        run: |
+          test -n "$ANDROID_HOME"
+          command -v sdkmanager
+          sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0'
 
       - name: Install Bubblewrap and noninteractive configuration
         run: |
