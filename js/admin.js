@@ -29,11 +29,13 @@ async function loadAdminDashboard() {
     } else {
         allDenuncias = getDenuncias();
     }
-    filteredDenuncias = [...allDenuncias];
     saveDenuncias(allDenuncias);
-    
     updateAdminStats();
-    renderDenunciasTable();
+    // Preserve os filtros selecionados após atualização em tempo real ou edição.
+    applyFilters(document.getElementById('searchInput')?.value?.toLowerCase() || '');
+    if (typeof window.updateAdminExtraPanels === 'function') {
+        window.updateAdminExtraPanels(allDenuncias);
+    }
 }
 
 function setupRealtimeAdminDashboard() {
@@ -137,7 +139,14 @@ function renderDenunciasTable() {
     if (!tbody) return;
     
     // Atualizar contador
-    countLabel.textContent = `${filteredDenuncias.length} denúncia(s)`;
+    const visibleCount = filteredDenuncias.length;
+    countLabel.textContent = `Mostrando ${visibleCount === 0 ? 0 : Math.min(itemsPerPage, visibleCount - (currentPage - 1) * itemsPerPage)} de ${visibleCount} denúncias`;
+    const summary = document.getElementById('adminPageSummary');
+    if (summary) {
+        const start = visibleCount ? (currentPage - 1) * itemsPerPage + 1 : 0;
+        const end = Math.min(currentPage * itemsPerPage, visibleCount);
+        summary.textContent = `Exibindo ${start} a ${end} de ${visibleCount} resultados`;
+    }
     
     if (filteredDenuncias.length === 0) {
         tbody.innerHTML = `
@@ -157,59 +166,27 @@ function renderDenunciasTable() {
     const endIndex = startIndex + itemsPerPage;
     const pageItems = filteredDenuncias.slice(startIndex, endIndex);
     
-    tbody.innerHTML = pageItems.map(denuncia => `
+    tbody.innerHTML = pageItems.map(denuncia => {
+        const safeId = /^[a-zA-Z0-9_-]+$/.test(String(denuncia.id)) ? String(denuncia.id) : '';
+        const date = new Date(denuncia.data);
+        const time = Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        return `
         <tr>
-            <td>
-                <div style="max-width: 200px;">
-                    <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${denuncia.titulo}
-                    </strong>
-                </div>
-            </td>
-            <td>
-                <span class="complaint-category" style="white-space: nowrap;">
-                    <i class="${getCategoryIcon(denuncia.categoria)}"></i>
-                    ${denuncia.categoria}
-                </span>
-            </td>
-            <td>
-                <span style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
-                    <i class="fas fa-map-marker-alt"></i>
-                    ${truncateText(denuncia.endereco, 25)}
-                </span>
-            </td>
-            <td>
-                <span style="display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-user" style="color: var(--primary);"></i>
-                    ${denuncia.userName}
-                </span>
-            </td>
-            <td>
-                <span style="color: var(--text-muted);">
-                    ${formatDate(denuncia.data)}
-                </span>
-            </td>
-            <td>
-                <span class="status-badge ${denuncia.status}">
-                    <i class="${getStatusIcon(denuncia.status)}"></i>
-                    ${capitalizeFirst(denuncia.status.replace('-', ' '))}
-                </span>
-            </td>
+            <td><strong>${adminEscapeHtml(denuncia.titulo)}</strong><span class="admin-cell-muted">${adminEscapeHtml(truncateText(denuncia.descricao, 56))}</span></td>
+            <td><span class="complaint-category"><i class="${getCategoryIcon(denuncia.categoria)}" aria-hidden="true"></i>${adminEscapeHtml(denuncia.categoria)}</span></td>
+            <td>${adminEscapeHtml(denuncia.endereco)}</td>
+            <td>${adminEscapeHtml(denuncia.userName)}<span class="admin-cell-muted">${adminEscapeHtml(denuncia.userEmail)}</span></td>
+            <td>${adminEscapeHtml(formatDate(denuncia.data))}<span class="admin-cell-muted">${time}</span></td>
+            <td><span class="status-badge ${denuncia.status}"><i class="${getStatusIcon(denuncia.status)}" aria-hidden="true"></i> ${capitalizeFirst(denuncia.status.replace('-', ' '))}</span></td>
             <td>
                 <div class="table-actions">
-                    <a href="detalhes.html?id=${denuncia.id}" class="btn-icon view" title="Ver detalhes">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <button class="btn-icon edit" title="Alterar status" onclick="openStatusModal('${denuncia.id}', '${denuncia.status}')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-icon delete" title="Excluir" onclick="openDeleteModal('${denuncia.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <a href="detalhes.html?id=${encodeURIComponent(denuncia.id)}" class="btn-icon view" title="Ver detalhes" aria-label="Ver detalhes de ${adminEscapeHtml(denuncia.titulo)}"><i class="fas fa-eye" aria-hidden="true"></i></a>
+                    <button class="btn-icon edit" type="button" title="Alterar status" aria-label="Alterar status de ${adminEscapeHtml(denuncia.titulo)}" onclick="openStatusModal('${safeId}', '${denuncia.status}')"><i class="fas fa-edit" aria-hidden="true"></i></button>
+                    <button class="btn-icon delete" type="button" title="Excluir" aria-label="Excluir ${adminEscapeHtml(denuncia.titulo)}" onclick="openDeleteModal('${safeId}')"><i class="fas fa-trash" aria-hidden="true"></i></button>
                 </div>
             </td>
-        </tr>
-    `).join('');
+        </tr>`;
+    }).join('');
     
     renderPagination();
 }
@@ -341,8 +318,18 @@ async function confirmDelete() {
 // ===============================================
 
 function truncateText(text, maxLength) {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    const value = String(text || '');
+    if (value.length <= maxLength) return value;
+    return value.substring(0, maxLength) + '...';
+}
+
+function adminEscapeHtml(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 // ===============================================
