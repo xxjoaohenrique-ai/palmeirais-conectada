@@ -1,0 +1,176 @@
+/* Página Minhas Denúncias: estilo isolado; nenhum seletor afeta outras telas. */
+.page-my-complaints {
+  --md-bg: #f1f6fa;
+  --md-top: #e6f3f7;
+  --md-panel: #ffffff;
+  --md-field: #f4f9fc;
+  --md-border: #d5e5ed;
+  --md-text: #142a3d;
+  --md-muted: #516a7d;
+  --md-subtle: #6f8999;
+  --md-blue: #176ec2;
+  --md-mint: #11bd9b;
+  --md-shadow: 0 14px 34px rgba(20, 53, 75, .07);
+  background: var(--md-bg);
+  color: var(--md-text);
+}
+[data-theme="dark"] .page-my-complaints {
+  --md-bg: #081e2d;
+  --md-top: #0b2637;
+  --md-panel: #102b3d;
+  --md-field: #122f43;
+  --md-border: #245066;
+  --md-text: #f4f8fd;
+  --md-muted: #b8cadd;
+  --md-subtle: #8ba7bc;
+  --md-blue: #227cd3;
+  --md-mint: #42d6b5;
+  --md-shadow: 0 16px 40px rgba(0, 9, 21, .19);
+}
+.page-my-complaints .navbar {
+  background: #102437;
+  border-bottom: 1px solid #23465a;
+  box-shadow: none;
+}
+.page-my-complaints .nav-container { max-width: 1500px; gap: .85rem; }
+.page-my-complaints .nav-logo { display: flex; gap: .6rem; color: #fff; flex-shrink: 0; font-size: clamp(.98rem,1.5vw,1.3rem); }
+.page-my-complaints .nav-logo .brand-mark { width: 62px; height: 52px; object-fit: contain; flex-shrink: 0; }
+.page-my-complaints .nav-logo .brand-wordmark { display: block; line-height: 1.1; white-space: nowrap; letter-spacing: -.03em; }
+.page-my-complaints .brand-wordmark strong { color: #47d8b1; }
+.page-my-complaints .brand-wordmark small { display: block; margin-top: .45rem; font-size: .49em; letter-spacing: .25em; text-transform: uppercase; color: #adbfca; }
+.page-my-complaints .nav-link { color: #d0deec; font-weight: 600; border: 1px solid transparent; white-space: nowrap; padding: .62rem .82rem; }
+.page-my-complaints .nav-link:hover, .page-my-complaints .nav-link.active { background: #19466d; color: #fff; }
+.page-my-complaints .nav-link.active i { color: #49c8fa; }
+.page-my-complaints .nav-link.btn-nav-outline { border-color: #f34f5c; color: #ff747c !important; }
+.page-my-complaints .nav-link.btn-nav-outline:hover { background: #b9293a; color: #fff !important; }
+.page-my-complaints .theme-toggle { color: #d8e8ee; background: #194657; margin-left: 0; }
+.page-my-complaints .nav-toggle { color: #fff; }
+.page-my-complaints .dashboard {
+  min-height: calc(100dvh - var(--navbar-height));
+  padding: calc(var(--navbar-height) + 2rem) 1.25rem 3.5rem;
+  background: radial-gradient(ellipse at 0% 25%, rgba(17,155,157,.08),transparent 48%),
+              radial-gradient(ellipse at 100% 90%, rgba(27,130,182,.06),transparent 40%),
+              var(--md-bg);
+}
+.page-my-complaints .dashboard > .container { max-width: 1390px; width: 100%; }
+.page-my-complaints .dashboard-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  margin-bottom: 1.55rem; padding: 1.7rem 2.3rem; border: 1px solid var(--md-border);
+  border-radius: 20px; background: var(--md-panel); box-shadow: var(--md-shadow);
+}
+[data-theme="dark"] .page-my-complaints .dashboard-header { background: linear-gradient(115deg, #12364a, #102b3d); border-color: var(--md-border); box-shadow: var(--md-shadow); }
+.page-my-complaints .dashboard-heading { display: flex; align-items: center; gap: 1.55rem; min-width: 0; }
+.page-my-complaints .dashboard-heading-icon {
+  display: grid; place-items: center; flex: 0 0 74px; width: 74px; height: 74px;
+  border-radius: 18px; font-size: 2rem; color: #52dce7;
+  background: linear-gradient(140deg,#087f9c,#195b8c);
+}
+.page-my-complaints .dashboard-heading-copy { min-width: 0; }
+.page-my-complaints .dashboard-eyebrow { color: var(--md-subtle); font-size: .76rem; letter-spacing: .11em; text-transform: uppercase; font-weight: 700; margin: 0 0 .25rem; }
+.page-my-complaints .dashboard-title { display: block; font-size: clamp(1.65rem, 2.5vw, 2.2rem); line-height: 1.2; letter-spacing: -.04em; margin: 0 0 .25rem; color: var(--md-text); }
+.page-my-complaints .dashboard-subtitle { color: var(--md-muted); font-size: .96rem; margin: 0; line-height: 1.6; }
+.page-my-complaints .dashboard-new {
+  white-space: nowrap; background: linear-gradient(110deg,#1786e0,#1469b8);
+  color: #fff; min-height: 54px; padding: .8rem 1.5rem; border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(20,110,195,.15); border: 1px solid rgba(255,255,255,.1);
+}
+.page-my-complaints .dashboard-new:hover { background: linear-gradient(110deg,#2d96e8,#237ac9); color: #fff; }
+.page-my-complaints .dashboard-cards {
+  display: grid; grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 1.25rem; margin: 0 0 1.55rem;
+}
+.page-my-complaints .dashboard-card {
+  min-width: 0; min-height: 126px; border: 1px solid var(--md-border);
+  border-radius: 17px; background: var(--md-panel); box-shadow: var(--md-shadow);
+  padding: 1.4rem; gap: 1.2rem; transform: none;
+}
+[data-theme="dark"] .page-my-complaints .dashboard-card { background: #102b3d; border-color: var(--md-border); box-shadow: var(--md-shadow); }
+.page-my-complaints .dashboard-card::before { height: 3px; box-shadow: none; }
+.page-my-complaints .dashboard-card-pending::before { background: linear-gradient(90deg,#ffbf4c,#7e8376); }
+.page-my-complaints .dashboard-card-analysis::before { background: linear-gradient(90deg,#50d1ff,#2778e5); }
+.page-my-complaints .dashboard-card-resolved::before { background: linear-gradient(90deg,#48e3b0,#198e81); }
+.page-my-complaints .dashboard-card-icon {
+  flex: 0 0 64px; width: 64px; height: 64px; border-radius: 16px;
+  font-size: 1.7rem; box-shadow: none;
+}
+.page-my-complaints .dashboard-card-icon.yellow { background: linear-gradient(135deg,#ffb82e,#db900d); }
+.page-my-complaints .dashboard-card-icon.blue { background: linear-gradient(135deg,#268bc8,#166296); }
+.page-my-complaints .dashboard-card-icon.green { background: linear-gradient(135deg,#33cc97,#139266); }
+.page-my-complaints .dashboard-card-info h3 { color: var(--md-text); font-size: 2rem; line-height: 1.1; margin-bottom: .25rem; }
+.page-my-complaints .dashboard-card-info p { color: var(--md-muted); font-weight: 650; font-size: .96rem; }
+.page-my-complaints .filters-bar {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem;
+  border: 1px solid var(--md-border); border-radius: 17px;
+  background: var(--md-panel); box-shadow: var(--md-shadow); margin-bottom: 1.55rem;
+}
+[data-theme="dark"] .page-my-complaints .filters-bar { background: #102b3d; border-color: var(--md-border); box-shadow: var(--md-shadow); }
+.page-my-complaints .search-box { flex: 1; min-width: 0; }
+.page-my-complaints .search-box i { color: var(--md-subtle); }
+.page-my-complaints .search-box input, .page-my-complaints .filter-select {
+  min-height: 51px; width: 100%; border: 1px solid var(--md-border);
+  border-radius: 12px; background: var(--md-field);
+  color: var(--md-text); font-size: .95rem;
+}
+[data-theme="dark"] .page-my-complaints .search-box input,
+[data-theme="dark"] .page-my-complaints .filter-select { background: var(--md-field); border-color: var(--md-border); color: var(--md-text); }
+.page-my-complaints .search-box input::placeholder { color: var(--md-subtle); }
+.page-my-complaints .filter-select { flex: 0 0 220px; width: 220px; cursor: pointer; }
+.page-my-complaints .search-box input:focus-visible, .page-my-complaints .filter-select:focus-visible,
+.page-my-complaints a:focus-visible, .page-my-complaints button:focus-visible {
+  outline: 3px solid #4ab6ee; outline-offset: 3px;
+}
+.page-my-complaints .my-complaints-grid { grid-template-columns: repeat(auto-fill,minmax(min(100%,320px),1fr)); gap: 1.25rem; }
+.page-my-complaints .no-complaints {
+  width: 100%; min-height: 280px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .75rem;
+  padding: 2.5rem 1.25rem; border: 1px dashed var(--md-border); border-radius: 20px;
+  background: var(--md-panel); color: var(--md-muted); box-shadow: var(--md-shadow);
+}
+[data-theme="dark"] .page-my-complaints .no-complaints { background: linear-gradient(120deg,#102b3d,#0d3444); border-color: var(--md-border); box-shadow: var(--md-shadow); }
+.page-my-complaints .no-complaints i { font-size: 3.2rem; margin: 0; opacity: .75; color: var(--md-subtle); }
+.page-my-complaints .no-complaints p { color: var(--md-text); font-size: 1.12rem; font-weight: 650; }
+.page-my-complaints .no-complaints .btn { margin-top: .5rem; border-radius: 11px; background: #177fd1; color: #fff; padding: .85rem 1.3rem; }
+.page-my-complaints .my-complaint-card { border: 1px solid var(--md-border); border-radius: 16px; background: var(--md-panel); box-shadow: var(--md-shadow); }
+.page-my-complaints .my-complaint-card:hover { transform: translateY(-3px); }
+.page-my-complaints .my-complaint-content { padding: 1.35rem; }
+.page-my-complaints .my-complaint-image { height: 186px; }
+.page-my-complaints .my-complaint-title { color: var(--md-text); }
+.page-my-complaints .my-complaint-description, .page-my-complaints .my-complaint-meta { color: var(--md-muted); }
+.page-my-complaints .my-complaint-meta { flex-wrap: wrap; gap: .65rem 1rem; }
+.page-my-complaints .footer { padding: 1rem 0; background: #0b2030; border-top: 1px solid #214456; }
+.page-my-complaints .footer-bottom { padding: 0; }
+.page-my-complaints .footer p { color: #bacbd7; font-size: .82rem; }
+@media (max-width: 1120px) {
+  .page-my-complaints .nav-container { padding-inline: .85rem; }
+  .page-my-complaints .nav-link { padding-inline: .55rem; font-size: .83rem; }
+  .page-my-complaints .nav-logo .brand-mark { width: 48px; }
+  .page-my-complaints .nav-logo { font-size: .98rem; }
+}
+@media (max-width: 768px) {
+  .page-my-complaints .nav-logo { width: auto; max-width: calc(100% - 110px); }
+  .page-my-complaints .nav-logo .brand-mark { width: 43px; height: 43px; }
+  .page-my-complaints .brand-wordmark small { letter-spacing: .12em; }
+  .page-my-complaints .nav-menu { background: #102437; border: 1px solid #23465a; }
+  .page-my-complaints .dashboard { padding: calc(var(--navbar-height) + 1.2rem) .85rem 2rem; }
+  .page-my-complaints .dashboard-header { padding: 1.2rem; align-items: stretch; flex-direction: column; gap: 1rem; }
+  .page-my-complaints .dashboard-heading { gap: 1rem; }
+  .page-my-complaints .dashboard-heading-icon { flex-basis: 54px; width: 54px; height: 54px; font-size: 1.5rem; border-radius: 13px; }
+  .page-my-complaints .dashboard-cards { grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: .75rem; }
+  .page-my-complaints .dashboard-card { padding: 1rem; min-height: 110px; gap: .75rem; }
+  .page-my-complaints .dashboard-card-icon { width: 48px; height: 48px; flex-basis: 48px; font-size: 1.25rem; border-radius: 12px; }
+  .page-my-complaints .filters-bar { padding: .7rem; }
+}
+@media (max-width: 520px) {
+  .page-my-complaints .dashboard-title { font-size: 1.6rem; }
+  .page-my-complaints .dashboard-subtitle { font-size: .88rem; }
+  .page-my-complaints .dashboard-new { width: 100%; justify-content: center; }
+  .page-my-complaints .dashboard-cards { grid-template-columns: 1fr !important; }
+  .page-my-complaints .dashboard-card { min-height: 92px; }
+  .page-my-complaints .filters-bar { flex-direction: column; align-items: stretch; }
+  .page-my-complaints .filter-select { width: 100%; flex: 0 0 auto; }
+  .page-my-complaints .no-complaints { min-height: 265px; }
+  .page-my-complaints .brand-wordmark small { font-size: .43em; letter-spacing: .06em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-my-complaints .my-complaint-card:hover { transform: none; }
+}
