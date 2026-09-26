@@ -1,25 +1,17 @@
-# Publicacao automatica
+# Publicação do Palmeirais Conectada
 
-O workflow `.github/workflows/deploy-cloudflare.yml` publica o site no Cloudflare Pages sempre que houver `push` na branch `main`.
+O site é publicado pelo Vercel a partir da branch `main`. O projeto usa
+`vercel.json` e `scripts/build-vercel.mjs` para montar `site-dist/` somente
+com HTML, CSS, JavaScript, ícones e arquivos da PWA. O Vercel não precisa instalar
+as dependências do `package.json` para esta versão estática.
 
-## Configuracao inicial
+- Site novo: https://palmeirais-conectada.vercel.app/
+- Banco e autenticação: Supabase, configurados no `js/supabase-config.js`.
+  A chave publishable é pública; as tabelas e os arquivos dependem de RLS.
+- O endereço antigo do Cloudflare Pages continua independente até ser
+  desativado ou redirecionado no painel Cloudflare. O workflow do Cloudflare é
+  apenas manual e exige um token válido em GitHub Actions Secrets.
 
-1. Crie um repositorio no GitHub e envie o conteudo desta pasta para a branch `main`.
-2. No Cloudflare Pages, crie um projeto vazio com o mesmo nome usado em `CLOUDFLARE_PROJECT_NAME`.
-3. Crie um token de API no Cloudflare com permissao `Account > Cloudflare Pages > Edit`.
-4. No GitHub, abra `Settings > Secrets and variables > Actions` e adicione:
-   - `CLOUDFLARE_API_TOKEN`: token criado no Cloudflare.
-   - `CLOUDFLARE_ACCOUNT_ID`: Account ID da conta Cloudflare.
-   - `CLOUDFLARE_PROJECT_NAME`: nome do projeto no Cloudflare Pages.
-5. Faça um novo `push` na branch `main` ou execute o workflow manualmente em `Actions > Deploy to Cloudflare Pages > Run workflow`.
-
-## Variaveis do Supabase
-
-Como este projeto e um site estatico, as variaveis precisam estar no GitHub Actions para serem gravadas no arquivo publico durante o deploy. No mesmo menu `Settings > Secrets and variables > Actions`, adicione:
-
-- `SUPABASE_URL`: URL do projeto Supabase.
-- `SUPABASE_ANON_KEY`: chave publica (publishable/anon) do projeto Supabase.
-
-Variaveis criadas somente no painel do Cloudflare Pages nao ficam disponiveis para JavaScript estatico no navegador.
-
-Depois disso, cada alteracao enviada para `main` sera publicada automaticamente.
+Para alterar o site, envie uma atualização para `main` e confira o novo
+deployment no Vercel. Não coloque tokens privados, senhas, chaves service role
+ou outros segredos em `js/` nem em arquivos enviados ao navegador.
