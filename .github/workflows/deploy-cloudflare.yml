@@ -1,4 +1,4 @@
-﻿name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME || vars.CLOUDFLARE_PROJECT_NAME }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL || vars.SUPABASE_URL }}
@@ -28,22 +28,27 @@ jobs:
         run: |
           for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_PROJECT_NAME SUPABASE_URL SUPABASE_ANON_KEY; do
             if [ -z "${!name}" ]; then
-              echo "::error::Missing required value for $name. Add it in Settings > Secrets and variables > Actions or set repository variables."
+              echo "::error::Missing required value for $name. Add the Cloudflare API token as an Actions secret."
               exit 1
             fi
           done
 
-      - name: Generate Supabase frontend configuration
+      - name: Prepare public site files
         shell: bash
         run: |
-          cat > js/supabase-config.js <<EOF
+          mkdir -p site-dist
+          cp -- *.html manifest.webmanifest robots.txt sitemap.xml sw.js site-dist/
+          cp -R -- css js icons public site-dist/
+          cat > site-dist/js/supabase-config.js <<EOF
           window.SUPABASE_URL = '${SUPABASE_URL}';
           window.SUPABASE_ANON_KEY = '${SUPABASE_ANON_KEY}';
           EOF
+          test ! -e site-dist/.wrangler
+          test ! -e site-dist/package.json
 
-      - name: Deploy static site with Wrangler
+      - name: Deploy public files with Wrangler
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --commit-dirty=true
+          command: pages deploy site-dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }}
