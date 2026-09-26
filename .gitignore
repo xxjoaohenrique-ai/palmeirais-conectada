@@ -15,6 +15,7 @@ __v0_jsx-dev-runtime.ts
 
 # Build artifacts
 dist/
+site-dist/
 build/
 coverage/
 
