@@ -34,3 +34,35 @@
 }
 @media(max-width:768px) {#installAppButton { width:100%; min-height:50px; }}
 @media(prefers-reduced-motion:reduce) {#installAppButton {transition:none !important;}}
+/* Home screen install card: recognizable app icon beside the action. */
+.install-app-action {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 0 10px;
+  max-width: 390px;
+}
+.install-app-logo {
+  display: block;
+  width: 46px;
+  height: 46px;
+  border-radius: 11px;
+  box-shadow: 0 5px 16px rgba(0,0,0,.2);
+}
+#installAppButton { min-height: 48px; }
+.install-app-caption {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  color: rgba(239,255,249,.82);
+  font-size: .82rem;
+  line-height: 1.45;
+  text-align: left;
+}
+@media(max-width:768px) {
+  .install-app-action { width: 100%; max-width: none; }
+  .install-app-logo { width: 48px; height: 48px; }
+  #installAppButton { width: 100%; min-height: 52px; }
+  .install-app-caption { font-size: .85rem; }
+}
+@media(prefers-reduced-motion:reduce) { .install-app-action * { scroll-behavior: auto; } }
+
