@@ -41,4 +41,26 @@ assert.match(worker, /request\.mode !== 'navigate'/);
 assert.match(worker, /url\.origin !== self\.location\.origin/);
 assert.ok(!/cache\.put\s*\(/.test(worker), 'Do not cache user data');
 assert.ok(!/SUPABASE_ANON_KEY|access_token|refresh_token/.test(worker));
-console.log('PWA validation passed: manifest, PNG dimensions, iOS metadata, offline privacy.');
+
+const mainJs = read('js/main.js');
+assert.match(mainJs, /cidadeLimpa_palette_version/);
+assert.match(mainJs, /localStorage\.getItem\('cidadeLimpa_theme'\) \|\| 'dark'/);
+
+const vercelConfig = JSON.parse(read('vercel.json'));
+const globalHeaders = vercelConfig.headers
+  .find((entry) => entry.source === '/(.*)')?.headers ?? [];
+const headerMap = new Map(globalHeaders.map(({ key, value }) => [key.toLowerCase(), value]));
+assert.equal(headerMap.get('x-content-type-options'), 'nosniff');
+assert.equal(headerMap.get('x-frame-options'), 'DENY');
+assert.equal(headerMap.get('referrer-policy'), 'strict-origin-when-cross-origin');
+assert.ok(headerMap.has('permissions-policy'));
+assert.ok(headerMap.has('strict-transport-security'));
+
+for (const source of ['/sw.js', '/js/supabase-config.js']) {
+  const cacheHeaders = vercelConfig.headers
+    .find((entry) => entry.source === source)?.headers ?? [];
+  const cacheControl = cacheHeaders.find(({ key }) => key.toLowerCase() === 'cache-control');
+  assert.match(cacheControl?.value ?? '', /must-revalidate/);
+}
+
+console.log('Validation passed: PWA, offline privacy, dark palette migration, and Vercel security headers.');

@@ -75,7 +75,17 @@ function normalizeComplaint(complaint = {}) {
 // ===============================================
 
 function initializeTheme() {
-    const savedTheme = localStorage.getItem('cidadeLimpa_theme') || 'light';
+    const paletteVersion = '2';
+    const storedPaletteVersion = localStorage.getItem('cidadeLimpa_palette_version');
+    const savedTheme = storedPaletteVersion === paletteVersion
+        ? (localStorage.getItem('cidadeLimpa_theme') || 'dark')
+        : 'dark';
+
+    // A nova identidade visual usa o verde escuro da página inicial em todo o site.
+    // A versão evita que uma preferência antiga por fundo branco mantenha páginas
+    // visualmente incompatíveis após a atualização.
+    localStorage.setItem('cidadeLimpa_palette_version', paletteVersion);
+    localStorage.setItem('cidadeLimpa_theme', savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
     
