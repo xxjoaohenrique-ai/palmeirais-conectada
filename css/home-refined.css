@@ -175,3 +175,109 @@ body.page-home a:focus-visible, body.page-home button:focus-visible {
   body.page-home .category-card:hover,
   body.page-home .step-card:hover { transform: none; }
 }
+
+/* O tema claro precisa substituir também as cores fixas do layout de referência. */
+[data-theme="light"] body.page-home {
+  --home-ink: #17343b;
+  --home-muted: #526a70;
+  --home-border: #d4e2dc;
+  --home-mint: #096b51;
+  --reference-mint: var(--home-mint);
+  color-scheme: light;
+}
+[data-theme="light"] body.page-home .navbar {
+  background: rgba(251,250,247,.97);
+  border-color: var(--home-border);
+}
+[data-theme="light"] body.page-home :is(.nav-logo, .nav-link, .nav-toggle, .theme-toggle) {
+  color: var(--home-ink);
+}
+[data-theme="light"] body.page-home .nav-link:is(:hover, .active) { color: var(--home-mint); }
+[data-theme="light"] body.page-home .theme-toggle { background: #e2eee7; }
+[data-theme="light"] body.page-home .theme-toggle:hover { background: #d1e7da; }
+[data-theme="light"] body.page-home .brand-wordmark small { color: var(--home-muted); }
+[data-theme="light"] body.page-home .hero {
+  background-color: var(--bg-secondary);
+  background-image: linear-gradient(90deg,rgba(251,250,247,.98),rgba(238,244,242,.94) 53%,rgba(238,244,242,.68)), var(--reference-photo);
+  color: var(--home-ink);
+}
+[data-theme="light"] body.page-home .hero::before { background: none; }
+[data-theme="light"] body.page-home :is(.hero-title, .hero-headline, .feature-card h2) { color: var(--home-ink); }
+[data-theme="light"] body.page-home :is(.hero-title span:last-child, .hero-eyebrow) { color: var(--home-mint); }
+[data-theme="light"] body.page-home :is(.hero-subtitle, .install-app-caption) { color: var(--home-muted); }
+[data-theme="light"] body.page-home .hero-buttons :is(.btn-outline, #installAppButton) {
+  background: rgba(255,255,255,.7);
+  color: var(--home-mint);
+  border-color: var(--home-mint);
+}
+[data-theme="light"] body.page-home .hero-buttons :is(.btn-outline, #installAppButton):hover { background: #e2eee7; }
+[data-theme="light"] body.page-home .hero-buttons .btn-primary {
+  background: #096b51;
+  border-color: #096b51;
+}
+[data-theme="light"] body.page-home .hero-buttons .btn-primary:hover { background: #07543f; }
+[data-theme="light"] body.page-home .feature-strip {
+  background: var(--bg-primary);
+  color: var(--home-ink);
+}
+[data-theme="light"] body.page-home :is(.feature-card, .stat-card) {
+  background: var(--bg-card);
+  border-color: var(--home-border);
+}
+[data-theme="light"] body.page-home .feature-icon { background: #e2eee7; }
+[data-theme="light"] body.page-home .stats { background: var(--bg-secondary); }
+
+[data-theme="light"] body.page-home #categorias {
+  --cat-mint: var(--home-mint);
+  --cat-ink: var(--home-ink);
+  --cat-muted: var(--home-muted);
+  background: var(--bg-primary);
+}
+[data-theme="light"] body.page-home #categorias :is(.section-title, .category-copy h3, .category-benefit strong) { color: var(--home-ink); }
+[data-theme="light"] body.page-home #categorias :is(.section-subtitle, .category-breadcrumb, .category-benefit p, .category-empty) { color: var(--home-muted); }
+[data-theme="light"] body.page-home #categorias .category-search {
+  background: var(--bg-card);
+  border-color: var(--home-border);
+}
+[data-theme="light"] body.page-home #categorias .category-search input { color: var(--home-ink); }
+[data-theme="light"] body.page-home #categorias .category-search input::placeholder,
+[data-theme="light"] body.page-home #categorias .category-search > i { color: var(--home-muted); }
+[data-theme="light"] body.page-home #categorias .category-search button { background: var(--home-mint); }
+[data-theme="light"] body.page-home #categorias .category-card {
+  --card-accent: #096b51;
+  --card-rgb: 9,107,81;
+  background: var(--bg-card);
+}
+[data-theme="light"] body.page-home #categorias .category-card:nth-child(2) { --card-accent: #875605; --card-rgb: 135,86,5; }
+[data-theme="light"] body.page-home #categorias .category-card:nth-child(3) { --card-accent: #235fac; --card-rgb: 35,95,172; }
+[data-theme="light"] body.page-home #categorias .category-card:nth-child(4) { --card-accent: #795b00; --card-rgb: 121,91,0; }
+[data-theme="light"] body.page-home #categorias .category-card:nth-child(5) { --card-accent: #b33838; --card-rgb: 179,56,56; }
+[data-theme="light"] body.page-home #categorias .category-card:nth-child(6) { --card-accent: #7942ab; --card-rgb: 121,66,171; }
+[data-theme="light"] body.page-home #categorias .category-benefits { border-color: var(--home-border); }
+[data-theme="light"] body.page-home #categorias :is(.category-search button, .category-cta):focus-visible {
+  outline-color: var(--home-mint);
+}
+
+[data-theme="light"] body.page-home .footer { background: var(--bg-secondary); color: var(--home-ink); }
+[data-theme="light"] body.page-home .footer-col h4 { color: var(--home-ink); }
+[data-theme="light"] body.page-home :is(.footer-col p, .footer-col ul li a, .contact-info li, .footer-bottom, .no-complaints) { color: var(--home-muted); }
+[data-theme="light"] body.page-home .footer-grid { border-color: var(--home-border); }
+[data-theme="light"] body.page-home .social-links a { background: #e2eee7; color: var(--home-mint); }
+[data-theme="light"] body.page-home .social-links a:hover { background: #d1e7da; }
+[data-theme="light"] body.page-home .footer-col ul li a:hover { color: var(--home-mint); }
+[data-theme="light"] body.page-home .pwa-install-dialog { background: var(--bg-card); color: var(--home-ink); }
+[data-theme="light"] body.page-home :is(.pwa-install-dialog h2, .pwa-install-close) { color: var(--home-ink); }
+[data-theme="light"] body.page-home .pwa-install-dialog p { color: var(--home-muted); }
+[data-theme="light"] body.page-home .pwa-install-symbol { color: var(--home-mint); }
+[data-theme="light"] body.page-home .pwa-install-done { background: var(--home-mint); }
+[data-theme="light"] body.page-home :is(a, button):focus-visible { outline-color: var(--home-mint); }
+
+@media(max-width:768px) {
+  [data-theme="light"] body.page-home :is(.nav-menu, .mobile-app-nav) {
+    background: rgba(251,250,247,.98);
+    border-color: var(--home-border);
+  }
+  [data-theme="light"] body.page-home .mobile-app-nav :is(a, button) { color: var(--home-muted); }
+  [data-theme="light"] body.page-home .mobile-app-nav .active { background: #e2eee7; color: var(--home-mint); }
+  [data-theme="light"] body.page-home .mobile-app-nav .primary-action { color: var(--home-mint); }
+}

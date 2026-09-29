@@ -8,6 +8,9 @@
 // ===============================================
 
 document.addEventListener('DOMContentLoaded', async function() {
+    // O tema deve responder sem esperar a restauração da sessão.
+    initializeTheme();
+
     await restoreSupabaseSession();
     // Eliminar credenciais e relatórios antigos armazenados neste navegador.
     localStorage.removeItem('cidadeLimpa_users');
@@ -15,9 +18,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     localStorage.removeItem('cidadeLimpa_currentUser');
     sessionStorage.removeItem('cidadeLimpa_currentUser');
 
-    // Inicializar tema
-    initializeTheme();
-    
     // Inicializar navbar
     initializeNavbar();
     
@@ -75,16 +75,10 @@ function normalizeComplaint(complaint = {}) {
 // ===============================================
 
 function initializeTheme() {
-    const paletteVersion = '2';
-    const storedPaletteVersion = localStorage.getItem('cidadeLimpa_palette_version');
-    const savedTheme = storedPaletteVersion === paletteVersion
-        ? (localStorage.getItem('cidadeLimpa_theme') || 'dark')
-        : 'dark';
+    // Preservar a escolha do usuário, inclusive de versões anteriores.
+    const storedTheme = localStorage.getItem('cidadeLimpa_theme');
+    const savedTheme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
 
-    // A nova identidade visual usa o verde escuro da página inicial em todo o site.
-    // A versão evita que uma preferência antiga por fundo branco mantenha páginas
-    // visualmente incompatíveis após a atualização.
-    localStorage.setItem('cidadeLimpa_palette_version', paletteVersion);
     localStorage.setItem('cidadeLimpa_theme', savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
@@ -107,6 +101,9 @@ function toggleTheme() {
 function updateThemeIcon(theme) {
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
+        const label = theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro';
+        themeToggle.setAttribute('aria-label', label);
+        themeToggle.setAttribute('title', label);
         const icon = themeToggle.querySelector('i');
         if (icon) {
             icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
