@@ -25,7 +25,7 @@
         <div class="nav-container">
             <div class="admin-brand-group">
                 <a class="nav-logo" href="index.html" aria-label="Palmeirais Conectada, início">
-                    <span class="admin-brand-icon"><i class="fas fa-city" aria-hidden="true"></i></span>
+                    <span class="admin-brand-icon"><i class="fas fa-city" aria-hidden="true"></i><i class="fas fa-star admin-brand-star" aria-hidden="true"></i></span>
                     <span class="admin-brand-copy">Palmeirais <b>Conectada</b><small>Sua cidade mais limpa e organizada</small></span>
                 </a>
                 <button class="admin-menu-circle" id="adminSidebarToggle" type="button" aria-label="Recolher menu lateral">
@@ -99,20 +99,20 @@
 
                 <div class="dashboard-cards" aria-label="Resumo das denúncias">
                     <article class="dashboard-card">
-                        <div class="dashboard-card-top"><span class="dashboard-card-icon blue"><i class="fas fa-file-alt" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="totalDenuncias">0</h3><p>Total de denúncias</p></div></div>
-                        <p class="admin-card-foot"><i class="fas fa-database" aria-hidden="true"></i> Registradas no sistema</p>
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon blue"><i class="fas fa-file-alt" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="totalDenuncias">0</h3><p>Total de denúncias</p><small>Registradas no sistema</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
+                        <span class="admin-card-percent">+0%</span>
                     </article>
                     <article class="dashboard-card">
-                        <div class="dashboard-card-top"><span class="dashboard-card-icon yellow"><i class="fas fa-clock" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="pendentes">0</h3><p>Pendentes</p></div></div>
-                        <p class="admin-card-foot"><i class="fas fa-hourglass-half" aria-hidden="true"></i> Aguardando atendimento</p>
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon yellow"><i class="fas fa-clock" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="pendentes">0</h3><p>Pendentes</p><small>Aguardando atendimento</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
+                        <span class="admin-card-percent">+0%</span>
                     </article>
                     <article class="dashboard-card">
-                        <div class="dashboard-card-top"><span class="dashboard-card-icon red"><i class="fas fa-search" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="emAnalise">0</h3><p>Em análise</p></div></div>
-                        <p class="admin-card-foot"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Em acompanhamento</p>
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon red"><i class="fas fa-search" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="emAnalise">0</h3><p>Em análise</p><small>Em acompanhamento</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
+                        <span class="admin-card-percent">+0%</span>
                     </article>
                     <article class="dashboard-card">
-                        <div class="dashboard-card-top"><span class="dashboard-card-icon green"><i class="fas fa-check-circle" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="resolvidos">0</h3><p>Resolvidos</p></div></div>
-                        <p class="admin-card-foot"><i class="fas fa-check" aria-hidden="true"></i> Atendimentos concluídos</p>
+                        <div class="dashboard-card-top"><span class="dashboard-card-icon green"><i class="fas fa-check-circle" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="resolvidos">0</h3><p>Resolvidos</p><small>Atendimentos concluídos</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
+                        <span class="admin-card-percent">+0%</span>
                     </article>
                 </div>
 
@@ -134,21 +134,23 @@
                         </div>
                     </article>
 
-                    <article class="admin-panel-card admin-quick-actions">
-                        <div class="admin-panel-title"><span><i class="fas fa-bolt"></i> Ações Rápidas</span><i class="fas fa-chevron-right"></i></div>
-                        <a href="denuncia.html"><span class="quick-icon green"><i class="fas fa-plus"></i></span>Nova Denúncia<i class="fas fa-chevron-right"></i></a>
-                        <button type="button" id="adminQuickExport"><span class="quick-icon purple"><i class="fas fa-file-lines"></i></span>Gerar Relatório<i class="fas fa-chevron-right"></i></button>
-                        <a href="#mapa"><span class="quick-icon yellow"><i class="fas fa-map"></i></span>Ver no Mapa<i class="fas fa-chevron-right"></i></a>
-                        <a href="#configuracoes"><span class="quick-icon blue"><i class="fas fa-gear"></i></span>Configurações<i class="fas fa-chevron-right"></i></a>
-                    </article>
-                </section>
+                    <div class="admin-right-stack">
+                        <article class="admin-panel-card admin-quick-actions">
+                            <div class="admin-panel-title"><span><i class="fas fa-bolt"></i> Ações Rápidas</span><i class="fas fa-chevron-right"></i></div>
+                            <a href="denuncia.html"><span class="quick-icon green"><i class="fas fa-plus"></i></span>Nova Denúncia<i class="fas fa-chevron-right"></i></a>
+                            <button type="button" id="adminQuickExport"><span class="quick-icon purple"><i class="fas fa-file-lines"></i></span>Gerar Relatório<i class="fas fa-chevron-right"></i></button>
+                            <a href="#mapa"><span class="quick-icon yellow"><i class="fas fa-map"></i></span>Ver no Mapa<i class="fas fa-chevron-right"></i></a>
+                            <a href="#configuracoes"><span class="quick-icon blue"><i class="fas fa-gear"></i></span>Configurações<i class="fas fa-chevron-right"></i></a>
+                        </article>
 
-                <section id="mapa" class="admin-system-strip" aria-label="Status do sistema">
-                    <span><i class="fas fa-circle"></i> Status do Sistema</span>
-                    <span><i class="fas fa-database"></i> Banco de dados <b>Online</b></span>
-                    <span><i class="fas fa-code"></i> API do sistema <b>Online</b></span>
-                    <span><i class="far fa-bell"></i> Notificações <b>Online</b></span>
-                    <span><i class="fas fa-hard-drive"></i> Armazenamento <b>Online</b></span>
+                        <article id="mapa" class="admin-panel-card admin-system-card" aria-label="Status do sistema">
+                            <div class="admin-panel-title"><span><i class="fas fa-circle admin-online-dot"></i> Status do Sistema</span></div>
+                            <div class="admin-system-row"><span><i class="fas fa-database"></i> Banco de dados</span><b>Online</b></div>
+                            <div class="admin-system-row"><span><i class="fas fa-code"></i> API do sistema</span><b>Online</b></div>
+                            <div class="admin-system-row"><span><i class="far fa-bell"></i> Notificações</span><b>Online</b></div>
+                            <div class="admin-system-row"><span><i class="fas fa-hard-drive"></i> Armazenamento</span><b>Online</b></div>
+                        </article>
+                    </div>
                 </section>
 
                 <section id="denuncias" class="admin-complaints-section" aria-labelledby="adminComplaintHeading">
