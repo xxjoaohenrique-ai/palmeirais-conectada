@@ -321,3 +321,58 @@ body.admin-page.admin-sidebar-collapsed .admin-user-card { justify-content:cente
   .admin-page .admin-system-strip > span:not(:first-child) { flex:1 1 45%; }
 }
 @media (prefers-reduced-motion: reduce) { .admin-page .admin-wave { animation:none; } }
+
+
+/* Ajustes finos para a referência visual de 01/10 */
+.admin-page .admin-brand-icon { position:relative; color:#ffbf38; border-color:rgba(255,188,52,.48); background:linear-gradient(145deg,rgba(255,184,40,.08),rgba(23,101,163,.16)); }
+.admin-page .admin-brand-star { position:absolute; top:-7px; right:2px; font-size:.48rem; color:#ffd55c; }
+.admin-page .admin-brand-copy b { color:#00e2a6; }
+
+.admin-page .dashboard-card-info { min-width:0; }
+.admin-page .dashboard-card-info small { display:block; color:var(--v2-muted); font-size:.72rem; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.admin-page .admin-card-sparkles { margin-left:auto; color:rgba(0,229,171,.26); letter-spacing:4px; font-size:.86rem; padding-top:2px; }
+.admin-page .dashboard-card:nth-child(2) .admin-card-sparkles { color:rgba(255,181,29,.24); }
+.admin-page .dashboard-card:nth-child(3) .admin-card-sparkles { color:rgba(255,66,94,.26); }
+.admin-page .dashboard-card:nth-child(4) .admin-card-sparkles { color:rgba(24,144,255,.28); }
+.admin-page .admin-card-percent {
+  position:absolute; right:17px; bottom:14px; z-index:3; min-width:46px; height:28px; padding:0 9px;
+  border-radius:999px; display:grid; place-items:center; color:#fff; font-size:.72rem; font-weight:800;
+  background:rgba(0,201,151,.24); border:1px solid rgba(0,231,174,.18);
+}
+.admin-page .dashboard-card:nth-child(2) .admin-card-percent { background:rgba(255,181,29,.16); border-color:rgba(255,181,29,.18); }
+.admin-page .dashboard-card:nth-child(3) .admin-card-percent { background:rgba(255,66,94,.16); border-color:rgba(255,66,94,.18); }
+.admin-page .dashboard-card:nth-child(4) .admin-card-percent { background:rgba(24,144,255,.18); border-color:rgba(24,144,255,.2); }
+
+.admin-page .admin-right-stack { display:grid; gap:14px; min-width:0; }
+.admin-page .admin-right-stack .admin-quick-actions { display:flex; flex-direction:column; }
+.admin-page .admin-system-card { padding-bottom:12px; }
+.admin-page .admin-online-dot { color:#00e9a8 !important; font-size:.62rem; text-shadow:0 0 8px rgba(0,233,168,.5); }
+.admin-page .admin-system-row {
+  min-height:38px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  color:#c7d8ea; font-size:.72rem; border-top:1px solid rgba(77,137,196,.1);
+}
+.admin-page .admin-system-row:first-of-type { border-top:0; }
+.admin-page .admin-system-row span { display:flex; align-items:center; gap:10px; min-width:0; }
+.admin-page .admin-system-row span i { width:18px; text-align:center; color:#a9c8ea; }
+.admin-page .admin-system-row b { color:#fff; background:#00a979; border-radius:999px; padding:4px 9px; font-size:.62rem; flex:0 0 auto; }
+
+.admin-page .admin-overview-grid {
+  align-items:start;
+  grid-template-columns:minmax(0,1.75fr) minmax(300px,.95fr) minmax(260px,.7fr);
+}
+.admin-page .admin-chart-card,
+.admin-page #categorias { min-height:250px; }
+.admin-page .admin-right-stack .admin-panel-card { min-height:0; }
+
+@media (max-width:1320px) {
+  .admin-page .admin-right-stack { grid-column:1 / -1; grid-template-columns:1fr 1fr; }
+  .admin-page .admin-right-stack .admin-quick-actions { grid-column:auto; display:flex; }
+}
+@media (max-width:1060px) {
+  .admin-page .admin-right-stack { grid-template-columns:1fr; }
+}
+@media (max-width:560px) {
+  .admin-page .admin-card-sparkles { display:none; }
+  .admin-page .admin-card-percent { right:10px; bottom:10px; min-width:40px; height:24px; font-size:.64rem; }
+  .admin-page .dashboard-card-info small { font-size:.64rem; }
+}
