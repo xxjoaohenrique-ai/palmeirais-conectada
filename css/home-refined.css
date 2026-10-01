@@ -83,21 +83,106 @@ body.page-home .feature-card p {
   margin-bottom: .6rem;
 }
 body.page-home .feature-cta { color: var(--home-mint); font-size: .85rem; }
+/* Cartões de estatísticas conforme a referência; ondas apenas decorativas. */
 body.page-home .stats {
   padding: clamp(2rem, 4vw, 3.4rem) 0;
-  background: #0b2530;
+  background: #051c24;
 }
-body.page-home .stats .container { max-width: 1250px; }
-body.page-home .stats-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: .7rem; }
+body.page-home .stats .container { max-width: 1440px; }
+body.page-home .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(.8rem, 1.3vw, 1.15rem);
+}
 body.page-home .stat-card {
-  min-width: 0; padding: 1.05rem .7rem;
-  border-radius: 12px; border: 1px solid var(--home-border);
-  background: #102e39; box-shadow: none; transform: none;
+  --stat-accent: #00e3b0;
+  --stat-tint: rgba(0, 227, 176, .15);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  min-height: 202px;
+  padding: 17px 10px 48px;
+  text-align: center;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 197, 193, .5);
+  background: radial-gradient(ellipse at 50% 0%, rgba(0, 135, 130, .1), transparent 65%), linear-gradient(135deg, #03242c, #061e28);
+  box-shadow: inset 0 0 24px rgba(0, 210, 185, .04);
+  transform: none;
 }
-body.page-home .stat-card:hover { transform: none; box-shadow: none; border-color: rgba(91,218,177,.5); }
-body.page-home .stat-icon { font-size: 1.15rem; margin-bottom: .45rem; }
-body.page-home .stat-number { font-size: clamp(1.55rem, 2.4vw, 2.3rem); line-height: 1.2; }
-body.page-home .stat-label { font-size: .79rem; line-height: 1.45; }
+body.page-home .stat-card:nth-child(2) {
+  --stat-accent: #f6ca4c;
+  --stat-tint: rgba(246, 202, 76, .15);
+}
+body.page-home .stat-card:nth-child(3) {
+  --stat-accent: #00cfee;
+  --stat-tint: rgba(0, 207, 238, .15);
+}
+body.page-home .stat-card:nth-child(5) {
+  --stat-accent: #00dfdb;
+  --stat-tint: rgba(0, 223, 219, .15);
+}
+body.page-home .stat-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 26%;
+  right: 26%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--stat-accent), transparent);
+  box-shadow: 0 0 14px 3px var(--stat-tint);
+  pointer-events: none;
+}
+body.page-home .stat-card::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 9px;
+  height: 32px;
+  background: var(--stat-accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='32' viewBox='0 0 240 32'%3E%3Cpath d='M0 15 Q30 37 60 17 T120 17 T180 17 T240 17' fill='none' stroke='white' stroke-width='1.4'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='32' viewBox='0 0 240 32'%3E%3Cpath d='M0 15 Q30 37 60 17 T120 17 T180 17 T240 17' fill='none' stroke='white' stroke-width='1.4'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  opacity: .85;
+  pointer-events: none;
+}
+body.page-home .stat-card:hover {
+  transform: none;
+  border-color: var(--stat-accent);
+  box-shadow: inset 0 0 24px var(--stat-tint);
+}
+body.page-home .stat-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--stat-accent);
+  background: var(--stat-tint);
+  color: var(--stat-accent);
+  box-shadow: inset 0 0 16px var(--stat-tint);
+  font-size: 1.65rem;
+}
+body.page-home .stat-number {
+  margin: 0 0 3px;
+  color: #f3f8fb;
+  font-size: clamp(1.9rem, 2.7vw, 2.5rem);
+  font-weight: 750;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+body.page-home .stat-label {
+  margin: 0;
+  color: #e0e8ec;
+  font-size: .9rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
 body.page-home #categorias {
   padding-block: clamp(2.5rem,5vw,4rem);
   background: #092b28;
