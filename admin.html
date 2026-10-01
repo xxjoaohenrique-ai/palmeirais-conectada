@@ -17,15 +17,42 @@
     <link rel="stylesheet" href="css/mobile-app.css">
     <link rel="stylesheet" href="css/micro-animations.css">
     <link rel="stylesheet" href="css/admin-panel.css">
+    <link rel="stylesheet" href="css/admin-dashboard-v2.css">
 </head>
 <body class="admin-page">
     <!-- Somente esta página usa o layout administrativo. Todos os IDs funcionais foram preservados. -->
-    <nav class="navbar admin-topbar" aria-label="Navegação principal">
+    <nav class="navbar admin-topbar admin-topbar-v2" aria-label="Navegação principal">
         <div class="nav-container">
-            <a class="nav-logo" href="index.html" aria-label="Palmeirais Conectada, início">
-                <i class="fas fa-city" aria-hidden="true"></i>
-                <span>Palmeirais <b>Conectada</b></span>
-            </a>
+            <div class="admin-brand-group">
+                <a class="nav-logo" href="index.html" aria-label="Palmeirais Conectada, início">
+                    <span class="admin-brand-icon"><i class="fas fa-city" aria-hidden="true"></i></span>
+                    <span class="admin-brand-copy">Palmeirais <b>Conectada</b><small>Sua cidade mais limpa e organizada</small></span>
+                </a>
+                <button class="admin-menu-circle" id="adminSidebarToggle" type="button" aria-label="Recolher menu lateral">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <label class="admin-global-search" for="adminTopSearch">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input id="adminTopSearch" type="search" placeholder="Buscar denúncias, usuários ou relatórios..." aria-label="Busca rápida do painel">
+                <kbd>Ctrl + K</kbd>
+            </label>
+
+            <div class="admin-top-actions">
+                <button class="admin-icon-button" id="adminThemeToggle" type="button" title="Alternar tema do painel" aria-label="Alternar tema do painel">
+                    <i class="fas fa-sun" aria-hidden="true"></i>
+                </button>
+                <button class="admin-icon-button" type="button" aria-label="Notificações">
+                    <i class="far fa-bell" aria-hidden="true"></i><span class="admin-notification-badge">3</span>
+                </button>
+                <div class="admin-top-profile">
+                    <span class="admin-avatar" id="adminAvatar" aria-hidden="true">AD</span>
+                    <span class="admin-top-profile-copy"><strong id="adminDisplayName">Administrador</strong><small>Painel administrativo</small></span>
+                    <button class="admin-profile-menu" type="button" aria-label="Opções do administrador"><i class="fas fa-chevron-down"></i></button>
+                </div>
+            </div>
+
             <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">
                 <i class="fas fa-bars" aria-hidden="true"></i>
             </button>
@@ -34,37 +61,39 @@
                 <li><a href="admin.html" class="nav-link active"><i class="fas fa-chart-bar" aria-hidden="true"></i> Painel Admin</a></li>
                 <li><a href="#" class="nav-link btn-nav-outline" onclick="logout(); return false;"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sair</a></li>
             </ul>
-            <button class="theme-toggle" id="adminThemeToggle" type="button" title="Alternar tema do painel" aria-label="Alternar tema do painel">
-                <i class="fas fa-sun" aria-hidden="true"></i>
-            </button>
         </div>
     </nav>
 
     <div class="admin-shell">
-        <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu administrativo">
+        <aside class="admin-sidebar admin-sidebar-v2" id="adminSidebar" aria-label="Menu administrativo">
             <nav class="admin-side-nav" aria-label="Seções do painel">
-                <a href="#dashboard" class="admin-side-link active" aria-current="page"><i class="fas fa-th-large" aria-hidden="true"></i><span>Dashboard</span></a>
-                <a href="#denuncias" class="admin-side-link"><i class="fas fa-file-alt" aria-hidden="true"></i><span>Denúncias</span></a>
-                <a href="#relatorios" class="admin-side-link"><i class="fas fa-chart-bar" aria-hidden="true"></i><span>Relatórios</span></a>
+                <a href="#dashboard" class="admin-side-link active" aria-current="page"><i class="fas fa-house" aria-hidden="true"></i><span>Dashboard</span><i class="fas fa-chevron-right admin-side-arrow" aria-hidden="true"></i></a>
+                <a href="#denuncias" class="admin-side-link"><i class="fas fa-bullhorn" aria-hidden="true"></i><span>Denúncias</span></a>
+                <a href="#relatorios" class="admin-side-link"><i class="fas fa-chart-column" aria-hidden="true"></i><span>Relatórios</span><i class="fas fa-chevron-right admin-side-arrow" aria-hidden="true"></i></a>
                 <a href="#usuarios" class="admin-side-link"><i class="fas fa-users" aria-hidden="true"></i><span>Usuários</span></a>
-                <a href="#configuracoes" class="admin-side-link"><i class="fas fa-cog" aria-hidden="true"></i><span>Configurações</span></a>
+                <a href="#mapa" class="admin-side-link"><i class="fas fa-location-dot" aria-hidden="true"></i><span>Mapa da Cidade</span></a>
+                <a href="#categorias" class="admin-side-link"><i class="fas fa-grip" aria-hidden="true"></i><span>Categorias</span></a>
+                <a href="#configuracoes" class="admin-side-link"><i class="fas fa-gear" aria-hidden="true"></i><span>Configurações</span></a>
             </nav>
-            <div class="admin-side-footer">
-                <strong>Palmeirais Conectada</strong>
-                <p>Cidadania para uma<br>cidade melhor.</p>
-                <small>v1.0.0</small>
+            <div class="admin-side-footer admin-user-card">
+                <span class="admin-avatar" aria-hidden="true">AD</span>
+                <span><strong>Administrador</strong><small>Acesso administrativo</small></span>
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
             </div>
         </aside>
         <main class="dashboard admin-content" id="dashboard">
             <div class="container">
-                <header class="dashboard-header">
+                <header class="dashboard-header dashboard-header-v2">
                     <div>
-                        <h1 class="dashboard-title">Painel Administrativo</h1>
-                        <p class="admin-subtitle">Acompanhe e gerencie as denúncias da sua cidade.</p>
+                        <h1 class="dashboard-title">Olá, Administrador! <span class="admin-wave">👋</span></h1>
+                        <p class="admin-subtitle">Acompanhe e gerencie as denúncias da sua cidade em tempo real.</p>
                     </div>
-                    <div class="admin-profile" aria-label="Administrador conectado">
-                        <span class="admin-avatar" id="adminAvatar" aria-hidden="true">AD</span>
-                        <span><strong id="adminDisplayName">Administrador</strong><small>Acesso administrativo</small></span>
+                    <div class="admin-header-tools">
+                        <div class="admin-date-card">
+                            <i class="far fa-calendar" aria-hidden="true"></i>
+                            <span><strong id="adminCurrentDate">Hoje</strong><small>Palmeirais - PI</small></span>
+                        </div>
+                        <a class="admin-new-complaint" href="denuncia.html"><i class="fas fa-plus" aria-hidden="true"></i><span>Nova Denúncia</span><i class="fas fa-paper-plane" aria-hidden="true"></i></a>
                     </div>
                 </header>
 
@@ -86,6 +115,41 @@
                         <p class="admin-card-foot"><i class="fas fa-check" aria-hidden="true"></i> Atendimentos concluídos</p>
                     </article>
                 </div>
+
+                <section class="admin-overview-grid" aria-label="Visão geral do painel">
+                    <article class="admin-panel-card admin-chart-card">
+                        <div class="admin-panel-title"><span><i class="fas fa-chart-simple"></i> Denúncias nos últimos 30 dias</span><button type="button"><i class="far fa-calendar"></i> Últimos 30 dias <i class="fas fa-chevron-down"></i></button></div>
+                        <div class="admin-line-chart" aria-hidden="true">
+                            <div class="chart-grid"></div>
+                            <svg viewBox="0 0 700 180" preserveAspectRatio="none"><polyline points="0,145 40,145 80,145 120,145 160,145 200,145 240,145 280,145 320,145 360,145 400,145 440,145 480,145 520,145 560,145 600,145 640,145 700,145" /></svg>
+                            <span class="chart-zero-label">0</span>
+                        </div>
+                    </article>
+
+                    <article class="admin-panel-card" id="categorias">
+                        <div class="admin-panel-title"><span><i class="fas fa-layer-group"></i> Categorias mais denunciadas</span><a href="#relatorios" aria-label="Ver relatórios"><i class="fas fa-chevron-right"></i></a></div>
+                        <div class="admin-category-summary">
+                            <div class="admin-donut" aria-hidden="true"><span id="adminDonutTotal">0<small>Total</small></span></div>
+                            <div id="adminCategoryQuickList" class="admin-category-legend"></div>
+                        </div>
+                    </article>
+
+                    <article class="admin-panel-card admin-quick-actions">
+                        <div class="admin-panel-title"><span><i class="fas fa-bolt"></i> Ações Rápidas</span><i class="fas fa-chevron-right"></i></div>
+                        <a href="denuncia.html"><span class="quick-icon green"><i class="fas fa-plus"></i></span>Nova Denúncia<i class="fas fa-chevron-right"></i></a>
+                        <button type="button" id="adminQuickExport"><span class="quick-icon purple"><i class="fas fa-file-lines"></i></span>Gerar Relatório<i class="fas fa-chevron-right"></i></button>
+                        <a href="#mapa"><span class="quick-icon yellow"><i class="fas fa-map"></i></span>Ver no Mapa<i class="fas fa-chevron-right"></i></a>
+                        <a href="#configuracoes"><span class="quick-icon blue"><i class="fas fa-gear"></i></span>Configurações<i class="fas fa-chevron-right"></i></a>
+                    </article>
+                </section>
+
+                <section id="mapa" class="admin-system-strip" aria-label="Status do sistema">
+                    <span><i class="fas fa-circle"></i> Status do Sistema</span>
+                    <span><i class="fas fa-database"></i> Banco de dados <b>Online</b></span>
+                    <span><i class="fas fa-code"></i> API do sistema <b>Online</b></span>
+                    <span><i class="far fa-bell"></i> Notificações <b>Online</b></span>
+                    <span><i class="fas fa-hard-drive"></i> Armazenamento <b>Online</b></span>
+                </section>
 
                 <section id="denuncias" class="admin-complaints-section" aria-labelledby="adminComplaintHeading">
                     <div class="filters-bar" role="search" aria-label="Filtrar denúncias">
@@ -207,6 +271,7 @@
     <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/admin-layout.js"></script>
+    <script src="js/admin-dashboard-v2.js"></script>
     <script>
         // Verificar se é admin
         document.addEventListener('DOMContentLoaded', async function() {
