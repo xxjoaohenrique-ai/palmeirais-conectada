@@ -41,7 +41,10 @@
 .admin-page .admin-menu-anchor { position:relative; }
 .admin-page .admin-dropdown {
   position:absolute; top:calc(100% + 14px); right:0; z-index:1300; width:330px; max-height:70vh;
-  overflow:auto; padding:16px; border:1px solid var(--admin-border); border-radius:12px;
+  /* O limite global de 100% comprimia o menu à largura do botão de 48px. */
+  max-width:calc(100vw - 24px); overflow-y:auto; overflow-x:hidden;
+  overflow-wrap:anywhere; white-space:normal;
+  padding:16px; border:1px solid var(--admin-border); border-radius:12px;
   background:var(--admin-header); color:var(--admin-text); box-shadow:0 16px 42px rgba(0,0,0,.25);
 }
 .admin-page .admin-dropdown > strong { display:block; margin-bottom:8px; }
