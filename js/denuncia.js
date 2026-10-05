@@ -110,7 +110,8 @@ async function handleDenuncia(event) {
     
     if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
         try {
-            await syncComplaintToSupabase(novaDenuncia);
+            const { error } = await window.supabaseCreateComplaint(novaDenuncia);
+            if (error) throw error;
         } catch (error) {
             console.error('Falha ao gravar denúncia no Supabase:', error);
             showError(errorDiv, 'Não foi possível gravar a denúncia no servidor. Tente novamente.');
