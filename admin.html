@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/micro-animations.css">
     <link rel="stylesheet" href="css/admin-panel.css">
     <link rel="stylesheet" href="css/admin-dashboard-v2.css">
+    <link rel="stylesheet" href="css/admin-functional.css">
 </head>
 <body class="admin-page">
     <!-- Somente esta página usa o layout administrativo. Todos os IDs funcionais foram preservados. -->
@@ -35,7 +36,7 @@
 
             <label class="admin-global-search" for="adminTopSearch">
                 <i class="fas fa-search" aria-hidden="true"></i>
-                <input id="adminTopSearch" type="search" placeholder="Buscar denúncias, usuários ou relatórios..." aria-label="Busca rápida do painel">
+                <input id="adminTopSearch" type="search" placeholder="Buscar denúncia, endereço ou cidadão..." aria-label="Buscar denúncias">
                 <kbd>Ctrl + K</kbd>
             </label>
 
@@ -43,13 +44,27 @@
                 <button class="admin-icon-button" id="adminThemeToggle" type="button" title="Alternar tema do painel" aria-label="Alternar tema do painel">
                     <i class="fas fa-sun" aria-hidden="true"></i>
                 </button>
-                <button class="admin-icon-button" type="button" aria-label="Notificações">
-                    <i class="far fa-bell" aria-hidden="true"></i><span class="admin-notification-badge">3</span>
-                </button>
+                <div class="admin-menu-anchor">
+                    <button class="admin-icon-button" id="adminNotificationsButton" type="button" aria-label="Ver denúncias pendentes" aria-expanded="false" aria-controls="adminNotificationsPanel">
+                        <i class="far fa-bell" aria-hidden="true"></i><span class="admin-notification-badge" id="adminPendingBadge" hidden>0</span>
+                    </button>
+                    <section class="admin-dropdown" id="adminNotificationsPanel" aria-label="Denúncias pendentes" hidden>
+                        <strong>Denúncias aguardando atendimento</strong>
+                        <div id="adminPendingList"></div>
+                        <button type="button" id="adminViewPending">Ver todas as pendentes</button>
+                    </section>
+                </div>
                 <div class="admin-top-profile">
                     <span class="admin-avatar" id="adminAvatar" aria-hidden="true">AD</span>
                     <span class="admin-top-profile-copy"><strong id="adminDisplayName">Administrador</strong><small>Painel administrativo</small></span>
-                    <button class="admin-profile-menu" type="button" title="Sair do painel" aria-label="Sair do painel" onclick="logout(); return false;"><i class="fas fa-chevron-down"></i></button>
+                    <div class="admin-menu-anchor">
+                        <button class="admin-profile-menu" id="adminProfileMenu" type="button" aria-label="Abrir menu da conta" aria-expanded="false" aria-controls="adminProfileDropdown"><i class="fas fa-chevron-down"></i></button>
+                        <div class="admin-dropdown" id="adminProfileDropdown" hidden>
+                            <strong id="adminProfileName">Administrador</strong><span id="adminProfileEmail"></span>
+                            <a href="#configuracoes">Configurações do painel</a>
+                            <button type="button" onclick="logout()">Sair da conta</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -81,12 +96,12 @@
                 <i class="fas fa-chevron-right" aria-hidden="true"></i>
             </div>
         </aside>
-        <main class="dashboard admin-content" id="dashboard">
+        <main class="dashboard admin-content" id="adminContent">
             <div class="container">
                 <header class="dashboard-header dashboard-header-v2">
                     <div>
-                        <h1 class="dashboard-title">Olá, Administrador! <span class="admin-wave">👋</span></h1>
-                        <p class="admin-subtitle">Acompanhe e gerencie as denúncias da sua cidade em tempo real.</p>
+                        <h1 class="dashboard-title" id="adminViewTitle" tabindex="-1">Olá, Administrador! 👋</h1>
+                        <p class="admin-subtitle" id="adminViewDescription">Acompanhe e gerencie as denúncias da sua cidade em tempo real.</p>
                     </div>
                     <div class="admin-header-tools">
                         <div class="admin-date-card">
@@ -97,39 +112,41 @@
                     </div>
                 </header>
 
-                <div class="dashboard-cards" aria-label="Resumo das denúncias">
+                <div class="admin-load-error" id="adminDataError" role="alert" hidden><span>Não foi possível atualizar as denúncias. Os dados exibidos podem estar desatualizados.</span><button type="button" id="adminRetryLoad">Tentar novamente</button></div>
+                <div class="dashboard-cards" id="dashboard" data-admin-view="dashboard" aria-label="Resumo das denúncias">
                     <article class="dashboard-card">
                         <div class="dashboard-card-top"><span class="dashboard-card-icon blue"><i class="fas fa-file-alt" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="totalDenuncias">0</h3><p>Total de denúncias</p><small>Registradas no sistema</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
-                        <span class="admin-card-percent">+0%</span>
+                        <span class="admin-card-percent" data-today-status="todos">0 hoje</span>
                     </article>
                     <article class="dashboard-card">
                         <div class="dashboard-card-top"><span class="dashboard-card-icon yellow"><i class="fas fa-clock" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="pendentes">0</h3><p>Pendentes</p><small>Aguardando atendimento</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
-                        <span class="admin-card-percent">+0%</span>
+                        <span class="admin-card-percent" data-today-status="pendente">0 hoje</span>
                     </article>
                     <article class="dashboard-card">
                         <div class="dashboard-card-top"><span class="dashboard-card-icon red"><i class="fas fa-search" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="emAnalise">0</h3><p>Em análise</p><small>Em acompanhamento</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
-                        <span class="admin-card-percent">+0%</span>
+                        <span class="admin-card-percent" data-today-status="em-analise">0 hoje</span>
                     </article>
                     <article class="dashboard-card">
                         <div class="dashboard-card-top"><span class="dashboard-card-icon green"><i class="fas fa-check-circle" aria-hidden="true"></i></span><div class="dashboard-card-info"><h3 id="resolvidos">0</h3><p>Resolvidos</p><small>Atendimentos concluídos</small></div><span class="admin-card-sparkles" aria-hidden="true">✦ ✦</span></div>
-                        <span class="admin-card-percent">+0%</span>
+                        <span class="admin-card-percent" data-today-status="resolvido">0 hoje</span>
                     </article>
                 </div>
 
-                <section class="admin-overview-grid" aria-label="Visão geral do painel">
+                <section class="admin-overview-grid" data-admin-view="dashboard" aria-label="Visão geral do painel">
                     <article class="admin-panel-card admin-chart-card">
-                        <div class="admin-panel-title"><span><i class="fas fa-chart-simple"></i> Denúncias nos últimos 30 dias</span><button type="button"><i class="far fa-calendar"></i> Últimos 30 dias <i class="fas fa-chevron-down"></i></button></div>
-                        <div class="admin-line-chart" aria-hidden="true">
+                        <div class="admin-panel-title"><span id="adminChartTitle"><i class="fas fa-chart-simple"></i> Denúncias nos últimos 30 dias</span><select id="adminChartPeriod" aria-label="Período do gráfico"><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option></select></div>
+                        <div class="admin-line-chart" id="adminLineChart" role="img" aria-label="Denúncias por dia">
                             <div class="chart-grid"></div>
-                            <svg viewBox="0 0 700 180" preserveAspectRatio="none"><polyline points="0,145 40,145 80,145 120,145 160,145 200,145 240,145 280,145 320,145 360,145 400,145 440,145 480,145 520,145 560,145 600,145 640,145 700,145" /></svg>
-                            <span class="chart-zero-label">0</span>
+                            <svg viewBox="0 0 700 180" preserveAspectRatio="none" aria-hidden="true"><polyline id="adminChartLine" points="0,160 700,160" /></svg>
+                            <span class="chart-max-label" id="adminChartMax">0</span><span class="chart-zero-label">0</span>
                         </div>
+                        <div class="admin-chart-caption"><span id="adminChartStart"></span><strong id="adminChartCount">Carregando registros...</strong><span id="adminChartEnd"></span></div>
                     </article>
 
-                    <article class="admin-panel-card" id="categorias">
+                    <article class="admin-panel-card" id="adminCategoryOverview">
                         <div class="admin-panel-title"><span><i class="fas fa-layer-group"></i> Categorias mais denunciadas</span><a href="#relatorios" aria-label="Ver relatórios"><i class="fas fa-chevron-right"></i></a></div>
                         <div class="admin-category-summary">
-                            <div class="admin-donut" aria-hidden="true"><span id="adminDonutTotal">0<small>Total</small></span></div>
+                            <div class="admin-donut" id="adminDonut" aria-hidden="true"><span id="adminDonutTotal">0<small>Total</small></span></div>
                             <div id="adminCategoryQuickList" class="admin-category-legend"></div>
                         </div>
                     </article>
@@ -143,17 +160,18 @@
                             <a href="#configuracoes"><span class="quick-icon blue"><i class="fas fa-gear"></i></span>Configurações<i class="fas fa-chevron-right"></i></a>
                         </article>
 
-                        <article id="mapa" class="admin-panel-card admin-system-card" aria-label="Status do sistema">
+                        <article class="admin-panel-card admin-system-card" aria-label="Status do sistema">
                             <div class="admin-panel-title"><span><i class="fas fa-circle admin-online-dot"></i> Status do Sistema</span></div>
-                            <div class="admin-system-row"><span><i class="fas fa-database"></i> Banco de dados</span><b>Online</b></div>
-                            <div class="admin-system-row"><span><i class="fas fa-code"></i> API do sistema</span><b>Online</b></div>
-                            <div class="admin-system-row"><span><i class="far fa-bell"></i> Notificações</span><b>Online</b></div>
-                            <div class="admin-system-row"><span><i class="fas fa-hard-drive"></i> Armazenamento</span><b>Online</b></div>
+                            <div class="admin-system-row"><span><i class="fas fa-wifi"></i> Conexão</span><b id="adminNetworkStatus">Verificando</b></div>
+                            <div class="admin-system-row"><span><i class="fas fa-database"></i> Consulta ao banco</span><b id="adminDatabaseStatus">Carregando</b></div>
+                            <div class="admin-system-row"><span><i class="fas fa-arrows-rotate"></i> Sincronização</span><b id="adminSyncStatus">Conectando</b></div>
+                            <div class="admin-system-row"><span><i class="far fa-clock"></i> Última consulta</span><b id="adminLastRefresh">—</b></div>
                         </article>
                     </div>
                 </section>
 
-                <section id="denuncias" class="admin-complaints-section" aria-labelledby="adminComplaintHeading">
+                <section id="denuncias" class="admin-complaints-section" data-admin-view="denuncias" hidden aria-labelledby="adminComplaintHeading">
+                    <p id="adminActiveFilterLabel" class="admin-cell-muted" hidden></p>
                     <div class="filters-bar" role="search" aria-label="Filtrar denúncias">
                         <label class="search-box" for="searchInput"><i class="fas fa-search" aria-hidden="true"></i><input type="search" id="searchInput" placeholder="Buscar denúncias..." aria-label="Buscar denúncias" oninput="handleAdminSearch()"></label>
                         <select class="filter-select" id="categoryFilter" aria-label="Filtrar por categoria" onchange="handleAdminFilter()">
@@ -172,6 +190,7 @@
                             <option value="resolvido">Resolvido</option>
                         </select>
                         <button type="button" class="admin-filter-btn" id="adminFilterButton"><i class="fas fa-filter" aria-hidden="true"></i> Filtrar</button>
+                        <button type="button" class="admin-secondary-button" id="adminClearFilters">Limpar filtros</button>
                     </div>
                     <div class="table-container">
                         <div class="table-header">
@@ -191,16 +210,26 @@
                     </div>
                 </section>
 
-                <section class="admin-extra-panel" id="relatorios" aria-labelledby="adminReportsTitle">
-                    <div class="admin-section-heading"><div><h2 id="adminReportsTitle"><i class="fas fa-chart-bar" aria-hidden="true"></i> Relatórios</h2><p>Distribuição das denúncias por categoria, com base nos registros carregados.</p></div><button class="admin-filter-btn" type="button" id="adminExportCsv"><i class="fas fa-file-csv" aria-hidden="true"></i> Exportar CSV</button></div>
+                <section class="admin-extra-panel" id="relatorios" data-admin-view="relatorios" hidden aria-labelledby="adminReportsTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminReportsTitle"><i class="fas fa-chart-bar" aria-hidden="true"></i> Relatórios</h2><p id="adminReportTotal">Carregando registros...</p></div><div class="admin-section-actions"><select id="adminReportPeriod" aria-label="Período do relatório"><option value="all">Todo o período</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option></select><button class="admin-filter-btn" type="button" id="adminExportCsv"><i class="fas fa-file-csv" aria-hidden="true"></i> Exportar CSV</button><button class="admin-secondary-button" type="button" id="adminPrintReport"><i class="fas fa-print" aria-hidden="true"></i> Imprimir / Salvar PDF</button></div></div>
                     <div id="adminCategoriesSummary" class="admin-report-grid" aria-live="polite"></div>
+                    <div class="admin-table-scroll"><table class="complaints-table"><thead><tr><th>Título</th><th>Categoria</th><th>Endereço</th><th>Data</th><th>Status</th></tr></thead><tbody id="adminReportTable"></tbody></table></div>
                 </section>
-                <section class="admin-extra-panel" id="usuarios" aria-labelledby="adminUsersTitle">
-                    <div class="admin-section-heading"><div><h2 id="adminUsersTitle"><i class="fas fa-users" aria-hidden="true"></i> Cidadãos com denúncias</h2><p>Somente autores presentes nas denúncias carregadas; não é uma lista de todas as contas cadastradas.</p></div></div>
-                    <div id="adminReportersSummary" class="admin-report-grid" aria-live="polite"></div>
+                <section class="admin-extra-panel" id="usuarios" data-admin-view="usuarios" hidden aria-labelledby="adminUsersTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminUsersTitle"><i class="fas fa-users" aria-hidden="true"></i> Usuários cadastrados</h2><p id="adminUsersCount" aria-live="polite">Carregando contas...</p></div><label class="admin-field"><span>Buscar usuário</span><input type="search" id="adminUserSearch" placeholder="Nome ou e-mail"></label></div>
+                    <div class="admin-table-scroll"><table class="complaints-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Denúncias</th><th>Ações</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div>
                 </section>
-                <section class="admin-extra-panel" id="configuracoes" aria-labelledby="adminSettingsTitle">
-                    <div class="admin-section-heading"><div><h2 id="adminSettingsTitle"><i class="fas fa-cog" aria-hidden="true"></i> Configurações do painel</h2><p>Personalize somente a aparência da área administrativa.</p></div><button type="button" class="admin-filter-btn" id="adminThemeSetting"><i class="fas fa-adjust" aria-hidden="true"></i> Alternar tema</button></div>
+                <section class="admin-extra-panel" id="mapa" data-admin-view="mapa" hidden aria-labelledby="adminMapTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminMapTitle"><i class="fas fa-map" aria-hidden="true"></i> Mapa da Cidade</h2><p>Mapa de referência de Palmeirais e endereços das denúncias. Abra um endereço para buscar sua localização no OpenStreetMap.</p></div></div>
+                    <div class="admin-map-layout"><iframe id="adminCityMap" title="Mapa de Palmeirais no OpenStreetMap" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-43.09%2C-5.995%2C-43.04%2C-5.957&amp;layer=mapnik"></iframe><div><label class="admin-field"><span>Buscar endereço ou denúncia</span><input type="search" id="adminMapSearch" placeholder="Rua, bairro ou título"></label><p class="admin-cell-muted">Os registros atuais contêm endereços, sem coordenadas GPS. As posições das denúncias não são marcadas automaticamente.</p><div id="adminMapAddresses" class="admin-address-list"></div></div></div>
+                </section>
+                <section class="admin-extra-panel" id="categorias" data-admin-view="categorias" hidden aria-labelledby="adminCategoriesTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminCategoriesTitle"><i class="fas fa-layer-group" aria-hidden="true"></i> Categorias</h2><p>Selecione uma categoria para consultar as denúncias correspondentes.</p></div></div>
+                    <div id="adminAllCategories" class="admin-report-grid"></div>
+                </section>
+                <section class="admin-extra-panel" id="configuracoes" data-admin-view="configuracoes" hidden aria-labelledby="adminSettingsTitle">
+                    <div class="admin-section-heading"><div><h2 id="adminSettingsTitle"><i class="fas fa-cog" aria-hidden="true"></i> Configurações do painel</h2><p>Preferências de aparência e visualização dos registros.</p></div></div>
+                    <div class="admin-settings-grid"><div class="admin-report-item"><strong>Tema do painel</strong><p id="adminThemeLabel">Escuro</p><button type="button" class="admin-filter-btn" id="adminThemeSetting"><i class="fas fa-adjust" aria-hidden="true"></i> Alternar tema</button></div><label class="admin-report-item admin-field"><strong>Denúncias por página</strong><select id="adminPageSize"><option value="10">10 registros</option><option value="25">25 registros</option><option value="50">50 registros</option></select></label><div class="admin-report-item"><strong>Atualizar dados</strong><p>Consulte novamente as denúncias e contas cadastradas.</p><button type="button" class="admin-filter-btn" id="adminRefreshData"><i class="fas fa-arrows-rotate" aria-hidden="true"></i> Atualizar agora</button></div></div>
                 </section>
             </div>
         </main>
@@ -282,6 +311,7 @@
             
             // Carregar dashboard
             loadAdminDashboard();
+            loadAdminProfiles();
             setupRealtimeAdminDashboard();
         });
     </script>

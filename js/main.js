@@ -28,14 +28,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     initializeScrollAnimations();
     initChatbot();
     
-    // Carregar estatísticas
-    loadStats();
-    
-    // Carregar denúncias recentes
-    loadRecentComplaints();
-
-    // Sincronizar dados em tempo real
-    setupRealtimeDashboard();
+    // O painel administrativo calcula suas estatísticas a partir da consulta autorizada.
+    if (!document.body.classList.contains('admin-page')) {
+        loadStats();
+        loadRecentComplaints();
+        setupRealtimeDashboard();
+    }
 });
 
 // ===============================================

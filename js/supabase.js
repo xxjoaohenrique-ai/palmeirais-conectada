@@ -196,12 +196,12 @@
 
     async function getProfiles() {
         const supabase = getSupabaseClient();
-        if (!supabase) return [];
+        if (!supabase) throw new Error('Supabase não configurado.');
 
-        const { data, error } = await supabase.from('profiles').select('*');
+        const { data, error } = await supabase.from('profiles').select('id,nome,email,is_admin,created_at').order('created_at', { ascending: false });
         if (error) {
             console.warn('Não foi possível consultar perfis no Supabase:', error.message);
-            return [];
+            throw error;
         }
 
         return data || [];

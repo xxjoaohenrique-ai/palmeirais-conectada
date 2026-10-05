@@ -10,31 +10,54 @@
 let allDenuncias = [];
 let filteredDenuncias = [];
 let currentPage = 1;
-const itemsPerPage = 10;
+let itemsPerPage = 10;
+let profilesPromise = null;
+try {
+    const saved = Number(localStorage.getItem('cidadeLimpa_admin_page_size'));
+    if ([10, 25, 50].includes(saved)) itemsPerPage = saved;
+} catch (_) {}
 
 // ===============================================
 // CARREGAR DASHBOARD
 // ===============================================
 
 async function loadAdminDashboard() {
+    window.setAdminDataState?.('loading');
     if (window.isSupabaseConfigured && window.isSupabaseConfigured() && window.supabaseGetAdminComplaints) {
         try {
             // Banco remoto é a fonte oficial: registros excluídos não podem voltar do cache local.
             allDenuncias = (await window.supabaseGetAdminComplaints()).map(normalizeComplaint);
         } catch (error) {
             console.error('Não foi possível consultar denúncias:', error);
+            window.setAdminDataState?.('error');
             showToast('Erro ao carregar denúncias do servidor. Tente novamente.', 'error');
             return;
         }
     } else {
-        allDenuncias = [];
+        window.setAdminDataState?.('error');
+        return;
     }
     updateAdminStats();
     // Preserve os filtros selecionados após atualização em tempo real ou edição.
-    applyFilters(document.getElementById('searchInput')?.value?.toLowerCase() || '');
+    applyFilters(document.getElementById('searchInput')?.value?.toLowerCase() || '', true);
     if (typeof window.updateAdminExtraPanels === 'function') {
         window.updateAdminExtraPanels(allDenuncias);
     }
+    window.setAdminDataState?.('loaded');
+}
+
+async function loadAdminProfiles() {
+    if (profilesPromise) return profilesPromise;
+    profilesPromise = (async () => {
+        try {
+            if (!getCurrentUser()?.isAdmin || !window.isSupabaseConfigured?.() || !window.supabaseGetProfiles) throw new Error('Consulta administrativa indisponível.');
+            window.updateAdminProfiles?.(await window.supabaseGetProfiles());
+        } catch (error) {
+            console.error('Não foi possível consultar usuários:', error);
+            window.updateAdminProfiles?.(null, true);
+        }
+    })();
+    try { await profilesPromise; } finally { profilesPromise = null; }
 }
 
 function setupRealtimeAdminDashboard() {
@@ -46,7 +69,10 @@ function setupRealtimeAdminDashboard() {
 
     window.__cidadeLimpaAdminChannel = window.supabaseSubscribeToComplaints(() => {
         loadAdminDashboard();
-    }, window.handleRealtimeStatus);
+    }, (status) => {
+        window.handleRealtimeStatus?.(status);
+        window.setAdminSyncStatus?.(status);
+    });
 
     if (window.startComplaintRefreshFallback) {
         window.startComplaintRefreshFallback();
@@ -73,7 +99,8 @@ function animateAdminCounter(elementId, target) {
     const element = document.getElementById(elementId);
     if (!element) return;
     
-    let current = 0;
+    let current = Number(element.textContent) || 0;
+    if (current === target) return;
     const increment = Math.max(1, target / 20);
     const timer = setInterval(() => {
         current += increment;
@@ -100,7 +127,7 @@ function handleAdminFilter() {
     applyFilters(query);
 }
 
-function applyFilters(query = '') {
+function applyFilters(query = '', preservePage = false) {
     const categoryFilter = document.getElementById('categoryFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
     
@@ -120,10 +147,12 @@ function applyFilters(query = '') {
         const matchesStatus = statusFilter === 'todos' || 
             denuncia.status === statusFilter;
         
-        return matchesSearch && matchesCategory && matchesStatus;
+        const matchesReporter = !window.__adminReporterFilter || denuncia.userId === window.__adminReporterFilter;
+        const matchesDate = !window.__adminRangeDays || window.adminInPeriod(denuncia, window.__adminRangeDays);
+        return matchesSearch && matchesCategory && matchesStatus && matchesReporter && matchesDate;
     });
     
-    currentPage = 1;
+    currentPage = preservePage ? Math.min(currentPage, Math.max(1, Math.ceil(filteredDenuncias.length / itemsPerPage))) : 1;
     renderDenunciasTable();
 }
 
@@ -238,11 +267,20 @@ function renderPagination() {
 }
 
 function goToPage(page) {
-    currentPage = page;
+    currentPage = Math.max(1, Math.min(page, Math.ceil(filteredDenuncias.length / itemsPerPage) || 1));
     renderDenunciasTable();
     
     // Scroll para o topo da tabela
     document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+function setAdminPageSize(value) {
+    const size = Number(value);
+    if (![10, 25, 50].includes(size)) return;
+    itemsPerPage = size;
+    currentPage = 1;
+    try { localStorage.setItem('cidadeLimpa_admin_page_size', String(size)); } catch (_) {}
+    renderDenunciasTable();
 }
 
 // ===============================================
@@ -258,6 +296,10 @@ function openStatusModal(id, currentStatus) {
 async function saveStatus() {
     const id = document.getElementById('modalDenunciaId').value;
     const novoStatus = document.getElementById('novoStatus').value;
+    if (!window.isSupabaseConfigured?.()) {
+        showToast('O serviço está indisponível. O status não foi alterado.', 'error');
+        return;
+    }
 
     if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
         try {
@@ -293,6 +335,10 @@ function openDeleteModal(id) {
 
 async function confirmDelete() {
     const id = document.getElementById('deleteDenunciaId').value;
+    if (!window.isSupabaseConfigured?.()) {
+        showToast('O serviço está indisponível. A denúncia não foi excluída.', 'error');
+        return;
+    }
 
     if (window.isSupabaseConfigured && window.isSupabaseConfigured()) {
         try {
@@ -336,6 +382,8 @@ function adminEscapeHtml(value) {
 // ===============================================
 
 window.loadAdminDashboard = loadAdminDashboard;
+window.loadAdminProfiles = loadAdminProfiles;
+window.setAdminPageSize = setAdminPageSize;
 window.handleAdminSearch = handleAdminSearch;
 window.handleAdminFilter = handleAdminFilter;
 window.goToPage = goToPage;
@@ -343,3 +391,8 @@ window.openStatusModal = openStatusModal;
 window.saveStatus = saveStatus;
 window.openDeleteModal = openDeleteModal;
 window.confirmDelete = confirmDelete;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('adminPageSize');
+    if (select) select.value = String(itemsPerPage);
+});
