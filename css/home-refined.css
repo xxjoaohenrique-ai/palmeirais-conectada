@@ -1139,3 +1139,87 @@ body.page-home #categorias .category-benefit p {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Restaura as cores originais individuais dos cards de categorias. */
+body.page-home #categorias .category-card {
+  --card-accent: #40dfab;
+  --card-rgb: 64,223,171;
+  border-color: rgba(var(--card-rgb), .28) !important;
+  background:
+    linear-gradient(135deg, rgba(var(--card-rgb), .10), rgba(255,255,255,.96) 42%, #f8fbfb 100%) !important;
+}
+
+body.page-home #categorias .category-card:nth-child(2) {
+  --card-accent: #f0b853;
+  --card-rgb: 240,184,83;
+}
+
+body.page-home #categorias .category-card:nth-child(3) {
+  --card-accent: #69aefb;
+  --card-rgb: 105,174,251;
+}
+
+body.page-home #categorias .category-card:nth-child(4) {
+  --card-accent: #f3c74b;
+  --card-rgb: 243,199,75;
+}
+
+body.page-home #categorias .category-card:nth-child(5) {
+  --card-accent: #f47878;
+  --card-rgb: 244,120,120;
+}
+
+body.page-home #categorias .category-card:nth-child(6) {
+  --card-accent: #c593f5;
+  --card-rgb: 197,147,245;
+}
+
+body.page-home #categorias .category-icon {
+  color: var(--card-accent) !important;
+  background: radial-gradient(circle, rgba(var(--card-rgb), .18), transparent 72%) !important;
+  filter: drop-shadow(0 5px 8px rgba(var(--card-rgb), .18));
+}
+
+body.page-home #categorias .category-cta,
+body.page-home #categorias .category-cta span,
+body.page-home #categorias .category-cta i {
+  color: var(--card-accent) !important;
+}
+
+body.page-home #categorias .category-cta {
+  border-color: rgba(var(--card-rgb), .30) !important;
+  background: rgba(var(--card-rgb), .07) !important;
+}
+
+body.page-home #categorias .category-card:hover {
+  border-color: rgba(var(--card-rgb), .58) !important;
+  box-shadow: 0 20px 38px rgba(var(--card-rgb), .14) !important;
+}
+
+body.page-home #categorias .category-cta:hover {
+  background: rgba(var(--card-rgb), .13) !important;
+  border-color: rgba(var(--card-rgb), .50) !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-card {
+  background:
+    linear-gradient(135deg, rgba(var(--card-rgb), .09), rgba(12,50,46,.96) 42%, rgba(10,40,37,.96) 100%) !important;
+  border-color: rgba(var(--card-rgb), .24) !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-icon {
+  color: var(--card-accent) !important;
+  background: radial-gradient(circle, rgba(var(--card-rgb), .16), transparent 72%) !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-cta,
+[data-theme="dark"] body.page-home #categorias .category-cta span,
+[data-theme="dark"] body.page-home #categorias .category-cta i {
+  color: var(--card-accent) !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-cta {
+  background: rgba(var(--card-rgb), .055) !important;
+  border-color: rgba(var(--card-rgb), .24) !important;
+}
