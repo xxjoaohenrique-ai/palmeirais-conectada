@@ -225,19 +225,27 @@
     </section>
 
     <!-- Recent Complaints Section -->
-    <section class="recent-complaints">
+    <section class="recent-complaints" id="cidade-movimento">
         <div class="container">
-            <h2 class="section-title">
-                <i class="fas fa-clock"></i>
-                A cidade em movimento
-            </h2>
+            <div class="recent-kicker">
+                <i class="fas fa-clock" aria-hidden="true"></i>
+                <span>REGISTROS RECENTES</span>
+            </div>
+
+            <h2 class="section-title">A cidade em movimento</h2>
             <p class="section-subtitle">Veja os registros recentes da comunidade.</p>
             
             <div class="complaints-grid" id="recentComplaints">
                 <!-- Denúncias serão carregadas via JavaScript -->
                 <div class="no-complaints">
-                    <i class="fas fa-inbox"></i>
-                    <p>Nenhuma denúncia registrada ainda.</p>
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <h3>Nenhuma denúncia registrada ainda</h3>
+                    <p>Assim que a comunidade começar a enviar registros, eles aparecerão aqui.</p>
+                    <a href="cadastro.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Participar agora
+                    </a>
                 </div>
             </div>
         </div>
