@@ -907,3 +907,235 @@ body.page-home .no-complaints .btn {
     font-size: 1.8rem;
   }
 }
+
+
+/* Correção final da seção Categorias - tema claro/escuro */
+body.page-home #categorias {
+  position: relative;
+  padding-block: clamp(3rem, 5vw, 4.5rem);
+  background: #eef7f6 !important;
+}
+
+body.page-home #categorias .category-breadcrumb,
+body.page-home #categorias .category-breadcrumb a,
+body.page-home #categorias .category-breadcrumb span,
+body.page-home #categorias .category-breadcrumb i {
+  color: #6b8790 !important;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .section-title {
+  color: #143b45 !important;
+  text-align: center;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .section-title em,
+body.page-home #categorias .section-title i {
+  color: #32c7a7 !important;
+}
+
+body.page-home #categorias .section-subtitle {
+  color: #607982 !important;
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 1.8rem;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .category-search {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .4rem;
+  background: #ffffff !important;
+  border: 1px solid rgba(20, 75, 80, .12) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 28px rgba(31, 70, 73, .08);
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .category-search i {
+  color: #9ab2b7 !important;
+  margin-left: .5rem;
+}
+
+body.page-home #categorias .category-search input {
+  flex: 1;
+  border: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  color: #24454e !important;
+}
+
+body.page-home #categorias .category-search input::placeholder {
+  color: #8aa1a7 !important;
+}
+
+body.page-home #categorias .category-search button {
+  min-width: 124px;
+  min-height: 52px;
+  border: 0 !important;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #22c7a4, #16b38e) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body.page-home #categorias .categories-grid {
+  gap: 1rem;
+}
+
+body.page-home #categorias .category-card {
+  opacity: 1 !important;
+  background: linear-gradient(180deg, #ffffff, #f7fbfb) !important;
+  border: 1px solid rgba(20, 75, 80, .12) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 16px 34px rgba(31, 70, 73, .08) !important;
+  padding: 1.2rem !important;
+  transform: none;
+}
+
+body.page-home #categorias .category-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 199, 164, .35) !important;
+  box-shadow: 0 20px 38px rgba(31, 70, 73, .12) !important;
+}
+
+body.page-home #categorias .category-icon {
+  background: rgba(34, 199, 164, .10) !important;
+  color: #22c7a4 !important;
+  border-radius: 14px;
+}
+
+body.page-home #categorias .category-copy h3,
+body.page-home #categorias .category-card h3 {
+  color: #163d47 !important;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .category-copy p,
+body.page-home #categorias .category-card p {
+  color: #698189 !important;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .category-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  margin-top: 1rem;
+  padding: .95rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(34, 199, 164, .20) !important;
+  background: rgba(34, 199, 164, .05) !important;
+  color: #1eb596 !important;
+  text-decoration: none;
+  font-weight: 700;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .category-cta i,
+body.page-home #categorias .category-cta span {
+  color: #1eb596 !important;
+  opacity: 1 !important;
+}
+
+body.page-home #categorias .category-benefits {
+  margin-top: 1.8rem;
+  border-top: 1px solid rgba(20, 75, 80, .08);
+  padding-top: 1.6rem;
+}
+
+body.page-home #categorias .category-benefit {
+  background: #ffffff !important;
+  border: 1px solid rgba(20, 75, 80, .10) !important;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(31, 70, 73, .06);
+}
+
+body.page-home #categorias .category-benefit strong {
+  color: #163d47 !important;
+}
+
+body.page-home #categorias .category-benefit p {
+  color: #698189 !important;
+}
+
+[data-theme="dark"] body.page-home #categorias {
+  background: #082722 !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-breadcrumb,
+[data-theme="dark"] body.page-home #categorias .category-breadcrumb a,
+[data-theme="dark"] body.page-home #categorias .category-breadcrumb span,
+[data-theme="dark"] body.page-home #categorias .category-breadcrumb i {
+  color: #9fc9c0 !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .section-title {
+  color: #f1fffb !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .section-subtitle {
+  color: #b9d9d2 !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-search {
+  background: rgba(12, 50, 46, .96) !important;
+  border-color: rgba(72, 221, 188, .15) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .22);
+}
+
+[data-theme="dark"] body.page-home #categorias .category-search input {
+  color: #ecfffb !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-search input::placeholder {
+  color: #8fb8b0 !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-card,
+[data-theme="dark"] body.page-home #categorias .category-benefit {
+  background: linear-gradient(180deg, rgba(12, 50, 46, .96), rgba(10, 40, 37, .96)) !important;
+  border-color: rgba(72, 221, 188, .15) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .22) !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-card h3,
+[data-theme="dark"] body.page-home #categorias .category-benefit strong {
+  color: #f1fffb !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-card p,
+[data-theme="dark"] body.page-home #categorias .category-benefit p {
+  color: #b6d5cf !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-cta {
+  background: rgba(45, 207, 177, .08) !important;
+  border-color: rgba(88, 223, 196, .16) !important;
+  color: #58dfc4 !important;
+}
+
+[data-theme="dark"] body.page-home #categorias .category-cta i,
+[data-theme="dark"] body.page-home #categorias .category-cta span {
+  color: #58dfc4 !important;
+}
+
+@media (max-width: 768px) {
+  body.page-home #categorias .category-search {
+    padding: .55rem;
+  }
+
+  body.page-home #categorias .category-search button {
+    min-width: 100px;
+    min-height: 48px;
+  }
+
+  body.page-home #categorias .categories-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
