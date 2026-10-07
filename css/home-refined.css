@@ -376,3 +376,102 @@ body.page-home .feature-card p { color: #d4e4e9; font-size: .85rem; margin-botto
   body.page-home .feature-strip-inner { grid-template-columns: 1fr; gap: 12px; }
   body.page-home .feature-card { padding: 17px; }
 }
+
+
+/* Tema claro/escuro da página inicial: mantém o visual da capa e faz o restante
+   da home acompanhar corretamente o botão de tema. */
+[data-theme="light"] body.page-home {
+  --home-ink: #18343a;
+  --home-muted: #5f7479;
+  --home-border: rgba(24, 83, 88, .14);
+  --home-mint: #0b8f78;
+}
+
+[data-theme="light"] body.page-home .navbar {
+  background: rgba(247, 251, 250, .96);
+  border-color: rgba(11, 143, 120, .28);
+  box-shadow: 0 5px 22px rgba(20, 78, 75, .10);
+}
+
+[data-theme="light"] body.page-home .brand-wordmark,
+[data-theme="light"] body.page-home .nav-link,
+[data-theme="light"] body.page-home .theme-toggle,
+[data-theme="light"] body.page-home .nav-toggle {
+  color: #173d46;
+}
+
+[data-theme="light"] body.page-home .brand-wordmark strong,
+[data-theme="light"] body.page-home .nav-link:is(:hover,.active),
+[data-theme="light"] body.page-home .theme-toggle {
+  color: #0b8f78;
+}
+
+[data-theme="light"] body.page-home .nav-menu {
+  background: rgba(247, 251, 250, .98);
+}
+
+[data-theme="light"] body.page-home .theme-toggle {
+  background: rgba(11, 143, 120, .08);
+  border-color: rgba(11, 143, 120, .22);
+}
+
+[data-theme="light"] body.page-home .feature-strip,
+[data-theme="light"] body.page-home .stats,
+[data-theme="light"] body.page-home #categorias,
+[data-theme="light"] body.page-home .how-it-works,
+[data-theme="light"] body.page-home .recent-complaints {
+  background: #eef5f4;
+}
+
+[data-theme="light"] body.page-home .feature-card,
+[data-theme="light"] body.page-home .stat-card,
+[data-theme="light"] body.page-home .step-card,
+[data-theme="light"] body.page-home .complaint-card {
+  background: #ffffff;
+  border-color: rgba(22, 74, 79, .12);
+  box-shadow: 0 8px 24px rgba(31, 70, 73, .07);
+}
+
+[data-theme="light"] body.page-home .feature-card h2,
+[data-theme="light"] body.page-home .stat-number,
+[data-theme="light"] body.page-home .stat-label {
+  color: #173d46;
+}
+
+[data-theme="light"] body.page-home .feature-card p {
+  color: #667b80;
+}
+
+[data-theme="light"] body.page-home .feature-icon,
+[data-theme="light"] body.page-home .stat-icon {
+  background: rgba(11, 143, 120, .09);
+}
+
+[data-theme="light"] body.page-home #categorias .category-card,
+[data-theme="light"] body.page-home #categorias .category-benefit,
+[data-theme="light"] body.page-home #categorias .category-search {
+  background-color: #ffffff;
+}
+
+[data-theme="dark"] body.page-home .how-it-works,
+[data-theme="dark"] body.page-home .recent-complaints {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] body.page-home .feature-strip {
+  background: #031b25;
+}
+
+[data-theme="dark"] body.page-home .stats {
+  background: #051c24;
+}
+
+[data-theme="dark"] body.page-home #categorias {
+  background: #092b28;
+}
+
+/* "Como funciona" e "A cidade em movimento" usam a mesma superfície em cada tema. */
+body.page-home .how-it-works,
+body.page-home .recent-complaints {
+  transition: background-color .25s ease, color .25s ease;
+}
